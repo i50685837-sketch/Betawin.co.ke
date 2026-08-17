@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Betawin — Table Games</title>
+
+<style>
+:root{
+  --bg:#0A0E12;
+  --panel:#141C26;
+  --panel2:#101720;
+  --line:#223040;
+  --lime:#B4FF39;
+  --text:#EDF2F7;
+  --muted:#7C8998;
+  --danger:#FF6B6B;
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  min-height:100vh;
+}
+
+button{
+  font:inherit;
+  color:inherit;
+  border:0;
+  cursor:pointer;
+}
+
+a{
+  text-decoration:none;
+  color:inherit;
+}
+
+/* TOPBAR */
+.topbar{
+  height:66px;
+  position:sticky;
+  top:0;
+  z-index:20;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 15px;
+  background:rgba(10,14,18,.96);
+  border-bottom:1px solid var(--line);
+  backdrop-filter:blur(12px);
+}
+
+.left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.menu{
+  width:40px;
+  height:40px;
+  border-radius:10px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:21px;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-weight:800;
+  letter-spacing:.5px;
+}
+
+.logo-box{
+  width:31px;
+  height:31px;
+  border-radius:8px;
+  background:var(--lime);
+  color:#071009;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.wallet{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:9px 13px;
+  color:var(--lime);
+  font-weight:700;
+}
+
+/* DRAWER */
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+  z-index:30;
+}
+
+.overlay.open{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.drawer{
+  position:fixed;
+  top:0;
+  left:0;
+  bottom:0;
+  width:280px;
+  background:#0E141C;
+  border-right:1px solid var(--line);
+  transform:translateX(-100%);
+  transition:.28s;
+  z-index:40;
+  display:flex;
+  flex-direction:column;
+}
+
+.drawer.open{
+  transform:translateX(0);
+}
+
+.drawer-head{
+  padding:22px 18px;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.avatar{
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  background:var(--panel);
+  border:1px solid var(--line);
+  color:var(--lime);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:800;
+}
+
+.user-name{
+  font-weight:700;
+}
+
+.user-sub{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.nav{
+  padding:12px 10px;
+  overflow-y:auto;
+  flex:1;
+}
+
+.nav a{
+  display:flex;
+  align-items:center;
+  gap:13px;
+  padding:13px 12px;
+  border-radius:10px;
+  color:var(--muted);
+  font-size:14px;
+  margin-bottom:3px;
+}
+
+.nav a:hover,
+.nav a.active{
+  background:rgba(180,255,57,.1);
+  color:var(--lime);
+}
+
+.nav-icon{
+  width:22px;
+  text-align:center;
+  font-size:18px;
+}
+
+.logout{
+  padding:15px;
+  border-top:1px solid var(--line);
+}
+
+.logout button{
+  width:100%;
+  text-align:left;
+  padding:13px;
+  color:var(--danger);
+  background:none;
+}
+
+/* MAIN */
+main{
+  max-width:900px;
+  margin:auto;
+  padding:20px 15px 90px;
+}
+
+.heading{
+  margin-bottom:18px;
+}
+
+.heading h1{
+  font-size:23px;
+}
+
+.heading p{
+  color:var(--muted);
+  font-size:13px;
+  margin-top:5px;
+}
+
+/* CATEGORIES */
+.categories{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding-bottom:12px;
+}
+
+.categories button{
+  white-space:nowrap;
+  padding:9px 14px;
+  border-radius:20px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  color:var(--muted);
+}
+
+.categories button.active{
+  background:var(--lime);
+  color:#071009;
+  border-color:var(--lime);
+  font-weight:700;
+}
+
+/* GAMES */
+.games{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+
+.game{
+  min-height:175px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:linear-gradient(145deg,#18222e,#101720);
+  overflow:hidden;
+  position:relative;
+}
+
+.game-art{
+  height:105px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:48px;
+  background:radial-gradient(circle at center,#263747,#101720);
+}
+
+.game-info{
+  padding:11px;
+}
+
+.game-name{
+  font-weight:700;
+  font-size:14px;
+}
+
+.game-type{
+  color:var(--muted);
+  font-size:11px;
+  margin-top:3px;
+}
+
+.game button{
+  margin-top:9px;
+  width:100%;
+  padding:8px;
+  border-radius:8px;
+  background:var(--lime);
+  color:#071009;
+  font-weight:700;
+}
+
+.badge{
+  position:absolute;
+  top:8px;
+  left:8px;
+  padding:4px 7px;
+  border-radius:6px;
+  background:rgba(0,0,0,.65);
+  color:var(--lime);
+  font-size:10px;
+  font-weight:700;
+}
+
+.notice{
+  margin-top:18px;
+  padding:13px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--panel);
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.5;
+}
+
+@media(min-width:700px){
+  .games{
+    grid-template-columns:repeat(3,1fr);
+  }
+}
+
+@media(max-width:380px){
+  .logo span{
+    display:none;
+  }
+
+  .wallet{
+    font-size:12px;
+    padding:8px 10px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+
+  <div class="left">
+
+    <button class="menu" id="menuBtn">
+      ☰
+    </button>
+
+    <div class="logo">
+      <div class="logo-box">B</div>
+      <span>BETAWIN</span>
+    </div>
+
+  </div>
+
+  <button class="wallet" id="walletBtn">
+    💳 KES <span id="balance">0.00</span>
+  </button>
+
+</header>
+
+
+<!-- DRAWER -->
+
+<div class="overlay" id="overlay"></div>
+
+<aside class="drawer" id="drawer">
+
+  <div class="drawer-head">
+
+    <div class="avatar" id="avatar">
+      U
+    </div>
+
+    <div>
+      <div class="user-name" id="userName">
+        User
+      </div>
+
+      <div class="user-sub">
+        Betawin account
+      </div>
+    </div>
+
+  </div>
+
+
+  <nav class="nav">
+
+    <a href="index.html">
+      <span class="nav-icon">🏠</span>
+      Home
+    </a>
+
+    <a href="sports.html">
+      <span class="nav-icon">⚽</span>
+      Sports
+    </a>
+
+    <a href="live-games.html">
+      <span class="nav-icon">🔴</span>
+      Live Games
+    </a>
+
+    <a href="betslip.html">
+      <span class="nav-icon">🎟️</span>
+      Betslip
+    </a>
+
+    <a href="my-bets.html">
+      <span class="nav-icon">📋</span>
+      My Bets
+    </a>
+
+    <a href="casino.html">
+      <span class="nav-icon">🎰</span>
+      Casino
+    </a>
+
+    <a href="table-games.html" class="active">
+      <span class="nav-icon">🃏</span>
+      Table Games
+    </a>
+
+    <a href="wallet.html">
+      <span class="nav-icon">💳</span>
+      Wallet
+    </a>
+
+    <a href="deposit.html">
+      <span class="nav-icon">➕</span>
+      Deposit
+    </a>
+
+    <a href="withdraw.html">
+      <span class="nav-icon">➖</span>
+      Withdraw
+    </a>
+
+    <a href="profile.html">
+      <span class="nav-icon">👤</span>
+      Profile
+    </a>
+
+    <a href="notifications.html">
+      <span class="nav-icon">🔔</span>
+      Notifications
+    </a>
+
+    <a href="settings.html">
+      <span class="nav-icon">⚙️</span>
+      Settings
+    </a>
+
+  </nav>
+
+
+  <div class="logout">
+
+    <button id="logoutBtn">
+      🚪 Logout
+    </button>
+
+  </div>
+
+</aside>
+
+
+<!-- CONTENT -->
+
+<main>
+
+  <div class="heading">
+    <h1>🃏 Table Games</h1>
+    <p>Explore available table-game categories.</p>
+  </div>
+
+
+  <div class="categories">
+
+    <button class="active">
+      All
+    </button>
+
+    <button>
+      Cards
+    </button>
+
+    <button>
+      Roulette
+    </button>
+
+    <button>
+      Dice
+    </button>
+
+  </div>
+
+
+  <section class="games">
+
+    <article class="game">
+
+      <span class="badge">
+        CARDS
+      </span>
+
+      <div class="game-art">
+        🃏
+      </div>
+
+      <div class="game-info">
+        <div class="game-name">
+          Blackjack
+        </div>
+
+        <div class="game-type">
+          Card table
+        </div>
+
+        <button onclick="openGame('Blackjack')">
+          View Game
+        </button>
+      </div>
+
+    </article>
+
+
+    <article class="game">
+
+      <span class="badge">
+        ROULETTE
+      </span>
+
+      <div class="game-art">
+        🎡
+      </div>
+
+      <div class="game-info">
+        <div class="game-name">
+          Roulette
+        </div>
+
+        <div class="game-type">
+          Roulette table
+        </div>
+
+        <button onclick="openGame('Roulette')">
+          View Game
+        </button>
+      </div>
+
+    </article>
+
+
+    <article class="game">
+
+      <span class="badge">
+        DICE
+      </span>
+
+      <div class="game-art">
+        🎲
+      </div>
+
+      <div class="game-info">
+        <div class="game-name">
+          Dice
+        </div>
+
+        <div class="game-type">
+          Dice table
+        </div>
+
+        <button onclick="openGame('Dice')">
+          View Game
+        </button>
+
+      </div>
+
+    </article>
+
+
+    <article class="game">
+
+      <span class="badge">
+        CARDS
+      </span>
+
+      <div class="game-art">
+        ♠️
+      </div>
+
+      <div class="game-info">
+
+        <div class="game-name">
+          Card Room
+        </div>
+
+        <div class="game-type">
+          Card games
+        </div>
+
+        <button onclick="openGame('Card Room')">
+          View Game
+        </button>
+
+      </div>
+
+    </article>
+
+  </section>
+
+
+  <div class="notice">
+    Game availability and results should come from your backend/API.
+    This page does not fabricate live game results or balances.
+  </div>
+
+</main>
+
+
+<script>
+
+/* DRAWER */
+
+const menuBtn =
+  document.getElementById("menuBtn");
+
+const drawer =
+  document.getElementById("drawer");
+
+const overlay =
+  document.getElementById("overlay");
+
+
+menuBtn.addEventListener("click", () => {
+
+  drawer.classList.add("open");
+  overlay.classList.add("open");
+
+});
+
+
+overlay.addEventListener("click", closeDrawer);
+
+
+function closeDrawer(){
+
+  drawer.classList.remove("open");
+  overlay.classList.remove("open");
+
+}
+
+
+/* USER */
+
+try{
+
+  const user =
+    JSON.parse(
+      localStorage.getItem("betawin_user") || "null"
+    );
+
+  if(user){
+
+    const name =
+      user.name ||
+      user.fullName ||
+      "User";
+
+    document.getElementById("userName")
+      .textContent = name;
+
+    const initials =
+      name
+        .trim()
+        .split(/\s+/)
+        .map(x => x[0])
+        .slice(0,2)
+        .join("")
+        .toUpperCase();
+
+    document.getElementById("avatar")
+      .textContent = initials || "U";
+
+  }
+
+}catch(error){
+
+  console.error("USER LOAD ERROR:",error);
+
+}
+
+
+/* BALANCE */
+
+async function loadBalance(){
+
+  const API_BASE =
+    window.BETAWIN_API_BASE ||
+    "http://localhost:5000";
+
+  const token =
+    localStorage.getItem("betawin_token");
+
+  if(!token) return;
+
+  try{
+
+    const response =
+      await fetch(
+        API_BASE + "/api/wallet/balance",
+        {
+          headers:{
+            Authorization:
+              "Bearer " + token
+          }
+        }
+      );
+
+    if(!response.ok) return;
+
+    const data =
+      await response.json();
+
+    document.getElementById("balance")
+      .textContent =
+        Number(data.balance || 0)
+          .toLocaleString(
+            "en-KE",
+            {
+              minimumFractionDigits:2
+            }
+          );
+
+  }catch(error){
+
+    console.error(
+      "BALANCE ERROR:",
+      error
+    );
+
+  }
+
+}
+
+loadBalance();
+
+
+/* WALLET */
+
+document
+  .getElementById("walletBtn")
+  .addEventListener("click", () => {
+
+    window.location.href =
+      "wallet.html";
+
+  });
+
+
+/* GAME */
+
+function openGame(game){
+
+  alert(
+    game +
+    " is not connected to a game provider yet."
+  );
+
+}
+
+
+/* LOGOUT */
+
+document
+  .getElementById("logoutBtn")
+  .addEventListener("click", () => {
+
+    localStorage.removeItem(
+      "betawin_token"
+    );
+
+    localStorage.removeItem(
+      "betawin_user"
+    );
+
+    window.location.href =
+      "login.html";
+
+  });
+
+</script>
+
+</body>
+    </html>
