@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Betawin — Withdraw</title>
+<style>
+  :root{
+    --bg: #0A0E12; --navy: #0E141C; --panel: #141C26; --line: #223040;
+    --lime: #B4FF39; --lime-dim: #8FDB1E; --text: #EDF2F7;
+    --muted: #7C8998; --muted-2: #4E5B6B; --danger: #FF6B6B; --warn: #F4C542;
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+  html,body{background:var(--bg); color:var(--text); font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif; height:100%;}
+  button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit;}
+  a{color:inherit; text-decoration:none;}
+  input{font-family:inherit;}
+
+  .topbar{
+    position:sticky; top:0; z-index:20; display:flex; align-items:center; gap:12px;
+    padding:14px 16px; background:rgba(10,14,18,0.92); backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .icon-btn{
+    width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center;
+    background:var(--panel); border:1px solid var(--line);
+  }
+  .icon-btn svg{width:19px; height:19px; stroke:var(--text);}
+  .topbar-title{font-weight:700; font-size:16px;}
+
+  .main{padding:18px 16px 90px; max-width:520px; margin:0 auto;}
+
+  .avail-card{
+    display:flex; align-items:center; justify-content:space-between;
+    background:var(--panel); border:1px solid var(--line); border-radius:14px;
+    padding:14px 16px; margin-bottom:18px;
+  }
+  .avail-label{font-size:11.5px; color:var(--muted); text-transform:uppercase; letter-spacing:1px;}
+  .avail-value{font-size:16px; font-weight:700; margin-top:2px; color:var(--lime);}
+
+  .field-label{font-size:12.5px; color:var(--muted); margin-bottom:8px; font-weight:600;}
+  .amount-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:16px;
+    padding:20px 18px; margin-bottom:16px;
+  }
+  .amount-input-row{
+    display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--line);
+    padding-bottom:14px; margin-bottom:14px;
+  }
+  .amount-cur{font-size:18px; font-weight:700; color:var(--muted);}
+  .amount-input{
+    flex:1; background:none; border:none; outline:none; color:var(--text);
+    font-size:28px; font-weight:800; font-family:ui-monospace, monospace;
+  }
+  .amount-input::placeholder{color:var(--muted-2);}
+  .limits-note{font-size:11.5px; color:var(--muted-2);}
+  .limits-note b{color:var(--muted);}
+
+  .chip-row{display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;}
+  .chip{
+    flex:1; min-width:70px; background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:10px 0; font-size:12.5px; font-weight:600; text-align:center; color:var(--muted);
+    transition:border-color .15s, color .15s, background .15s;
+  }
+  .chip:active, .chip.active{border-color:var(--lime); color:var(--lime); background:rgba(180,255,57,0.08);}
+
+  .method-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:16px;
+    padding:16px; margin-bottom:16px;
+  }
+  .method-title{font-size:13px; font-weight:700; margin-bottom:12px;}
+  .phone-input{
+    width:100%; background:var(--bg); border:1px solid var(--line); border-radius:10px;
+    padding:12px 14px; color:var(--text); font-size:14px;
+  }
+  .phone-input:focus{outline:none; border-color:var(--lime);}
+
+  .error-msg{ font-size:12px; color:var(--danger); margin:-8px 0 14px; display:none; }
+  .error-msg.show{display:block;}
+
+  .submit-btn{
+    width:100%; background:var(--lime); color:#0A0E12; font-weight:700; font-size:14.5px;
+    padding:15px; border-radius:12px; text-align:center; opacity:0.4; pointer-events:none;
+    transition:opacity .15s;
+  }
+  .submit-btn.enabled{opacity:1; pointer-events:auto;}
+  .submit-btn:active{background:var(--lime-dim);}
+
+  .status-note{
+    display:flex; align-items:center; gap:6px; justify-content:center; margin-top:14px;
+    font-size:11px; color:var(--muted-2);
+  }
+  .status-dot{width:6px; height:6px; border-radius:50%; background:var(--muted-2);}
+  .status-dot.online{background:var(--lime);}
+  .status-dot.offline{background:var(--danger);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <button class="icon-btn" onclick="window.location.href='index.html'" aria-label="Back">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
+  <div class="topbar-title">Withdraw</div>
+</header>
+
+<main class="main">
+  <div class="avail-card">
+    <div>
+      <div class="avail-label">Available to Withdraw</div>
+      <div class="avail-value" id="currentBalance">KES 0.00</div>
+    </div>
+    <div style="font-size:22px;">💰</div>
+  </div>
+
+  <div class="field-label">Enter amount</div>
+  <div class="amount-card">
+    <div class="amount-input-row">
+      <span class="amount-cur">KES</span>
+      <input class="amount-input" id="amountInput" type="number" inputmode="numeric" placeholder="0" />
+    </div>
+    <div class="limits-note">Min <b>KES 100</b> &nbsp;·&nbsp; Max <b>KES 390,009</b> per transaction</div>
+  </div>
+  <div class="error-msg" id="amountError"></div>
+
+  <div class="chip-row">
+    <div class="chip" data-amt="500">500</div>
+    <div class="chip" data-amt="1000">1,000</div>
+    <div class="chip" data-amt="5000">5,000</div>
+    <div class="chip" data-amt="20000">20,000</div>
+    <div class="chip" data-amt="max">Max</div>
+  </div>
+
+  <div class="method-card">
+    <div class="method-title">Send to M-Pesa number</div>
+    <input class="phone-input" id="phoneInput" type="tel" placeholder="07XX XXX XXX" />
+  </div>
+
+  <button class="submit-btn" id="submitBtn">Withdraw Now</button>
+
+  <div class="status-note">
+    <span class="status-dot" id="connDot"></span>
+    <span id="connText">Checking connection…</span>
+  </div>
+</main>
+
+<script>
+  const API_BASE = window.BETAWIN_API_BASE || 'http://localhost:5000';
+  const token = localStorage.getItem('betawin_token');
+  const MIN = 100, MAX = 390009;
+  let currentBalance = 0;
+  function authHeaders(){ return token ? { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' }; }
+
+  async function loadBalance(){
+    const el = document.getElementById('currentBalance');
+    try{
+      const res = await fetch(API_BASE + '/api/wallet/balance', { headers: authHeaders() });
+      if(!res.ok) throw new Error();
+      const data = await res.json();
+      currentBalance = Number(data.balance || 0);
+      el.textContent = 'KES ' + currentBalance.toLocaleString('en-KE', { minimumFractionDigits: 2 });
+    } catch(e){ currentBalance = 0; el.textContent = 'KES 0.00'; }
+  }
+  loadBalance();
+
+  async function pollHealth(){
+    const dot = document.getElementById('connDot'), txt = document.getElementById('connText');
+    try{
+      const res = await fetch(API_BASE + '/health', { headers: authHeaders() });
+      if(!res.ok) throw new Error();
+      dot.className = 'status-dot online'; txt.textContent = 'Connected';
+    } catch(e){ dot.className = 'status-dot offline'; txt.textContent = 'Offline — retrying…'; }
+  }
+  pollHealth(); setInterval(pollHealth, 15000);
+
+  const amountInput = document.getElementById('amountInput');
+  const amountError = document.getElementById('amountError');
+  const submitBtn = document.getElementById('submitBtn');
+
+  function validateAmount(){
+    const val = Number(amountInput.value);
+    if(!amountInput.value){
+      amountError.classList.remove('show'); submitBtn.classList.remove('enabled'); return false;
+    }
+    if(val < MIN){
+      amountError.textContent = `Minimum withdrawal is KES ${MIN.toLocaleString()}`;
+      amountError.classList.add('show'); submitBtn.classList.remove('enabled'); return false;
+    }
+    if(val > MAX){
+      amountError.textContent = `Maximum withdrawal is KES ${MAX.toLocaleString()}`;
+      amountError.classList.add('show'); submitBtn.classList.remove('enabled'); return false;
+    }
+    if(val > currentBalance){
+      amountError.textContent = `Amount exceeds your available balance`;
+      amountError.classList.add('show'); submitBtn.classList.remove('enabled'); return false;
+    }
+    amountError.classList.remove('show'); submitBtn.classList.add('enabled'); return true;
+  }
+  amountInput.addEventListener('input', validateAmount);
+
+  document.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      const raw = chip.dataset.amt === 'max' ? Math.min(currentBalance, MAX) : Number(chip.dataset.amt);
+      amountInput.value = raw;
+      validateAmount();
+    });
+  });
+
+  submitBtn.addEventListener('click', async () => {
+    if(!validateAmount()) return;
+    const amount = Number(amountInput.value);
+    const phone = document.getElementById('phoneInput').value;
+    if(!phone){
+      amountError.textContent = 'Enter the M-Pesa number to withdraw to';
+      amountError.classList.add('show'); return;
+    }
+    submitBtn.textContent = 'Processing…';
+    submitBtn.classList.remove('enabled');
+    try{
+      const res = await fetch(API_BASE + '/api/wallet/withdraw', {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ amount, phone })
+      });
+      if(!res.ok) throw new Error('Withdrawal request failed');
+      submitBtn.textContent = 'Withdrawal requested';
+    } catch(e){
+      submitBtn.textContent = 'Withdraw Now';
+      amountError.textContent = 'Could not reach server — try again once backend is connected';
+      amountError.classList.add('show');
+    } finally{
+      setTimeout(() => { submitBtn.classList.add('enabled'); if(submitBtn.textContent!=='Withdrawal requested') submitBtn.textContent = 'Withdraw Now'; }, 2500);
+    }
+  });
+</script>
+
+</body>
+</html>
+
