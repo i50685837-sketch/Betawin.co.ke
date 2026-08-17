@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Betawin — Sports</title>
+
+<style>
+:root{
+  --bg:#0A0E12;
+  --panel:#141C26;
+  --panel2:#101720;
+  --line:#223040;
+  --lime:#B4FF39;
+  --text:#EDF2F7;
+  --muted:#7C8998;
+  --danger:#FF6B6B;
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  -webkit-tap-highlight-color:transparent;
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  min-height:100vh;
+}
+
+button{
+  border:0;
+  font:inherit;
+  color:inherit;
+  cursor:pointer;
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+/* TOPBAR */
+
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:20;
+  height:66px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 15px;
+  background:rgba(10,14,18,.95);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+}
+
+.left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.menu{
+  width:40px;
+  height:40px;
+  border-radius:10px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:21px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-weight:800;
+  letter-spacing:.5px;
+}
+
+.logo{
+  width:31px;
+  height:31px;
+  border-radius:8px;
+  background:var(--lime);
+  color:#080c10;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.right{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.top-btn{
+  width:39px;
+  height:39px;
+  border-radius:10px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* DRAWER */
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.6);
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+  z-index:30;
+}
+
+.overlay.open{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.drawer{
+  position:fixed;
+  top:0;
+  left:0;
+  bottom:0;
+  width:275px;
+  max-width:85%;
+  background:#0E141C;
+  border-right:1px solid var(--line);
+  transform:translateX(-100%);
+  transition:.28s ease;
+  z-index:40;
+  display:flex;
+  flex-direction:column;
+}
+
+.drawer.open{
+  transform:translateX(0);
+}
+
+.drawer-head{
+  padding:22px 18px;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+
+.avatar{
+  width:43px;
+  height:43px;
+  border-radius:50%;
+  background:var(--panel);
+  border:1px solid var(--line);
+  color:var(--lime);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:800;
+}
+
+.user-name{
+  font-weight:700;
+  font-size:14px;
+}
+
+.user-sub{
+  color:var(--muted);
+  font-size:11px;
+  margin-top:3px;
+}
+
+.nav{
+  padding:13px 10px;
+  overflow-y:auto;
+  flex:1;
+}
+
+.nav-item{
+  display:flex;
+  align-items:center;
+  gap:13px;
+  padding:12px;
+  border-radius:10px;
+  color:var(--muted);
+  font-size:14px;
+  margin-bottom:3px;
+}
+
+.nav-item:hover,
+.nav-item.active{
+  background:rgba(180,255,57,.09);
+  color:var(--lime);
+}
+
+.nav-icon{
+  width:21px;
+  text-align:center;
+  font-size:17px;
+}
+
+.drawer-bottom{
+  border-top:1px solid var(--line);
+  padding:10px;
+}
+
+.logout{
+  color:var(--danger);
+}
+
+/* CONTENT */
+
+.main{
+  max-width:700px;
+  margin:auto;
+  padding:18px 15px 90px;
+}
+
+.heading{
+  font-size:21px;
+  font-weight:800;
+}
+
+.subtitle{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:4px;
+}
+
+/* SPORTS TABS */
+
+.sports-tabs{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  margin:18px 0;
+  padding-bottom:3px;
+}
+
+.sports-tabs::-webkit-scrollbar{
+  display:none;
+}
+
+.sport-tab{
+  flex-shrink:0;
+  padding:10px 14px;
+  border-radius:10px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  color:var(--muted);
+  font-size:12px;
+  font-weight:700;
+}
+
+.sport-tab.active{
+  background:var(--lime);
+  color:#080c10;
+  border-color:var(--lime);
+}
+
+/* LEAGUE */
+
+.league{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:14px;
+  margin-bottom:13px;
+  overflow:hidden;
+}
+
+.league-head{
+  padding:12px 13px;
+  background:var(--panel2);
+  border-bottom:1px solid var(--line);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.league-name{
+  font-size:12px;
+  font-weight:800;
+}
+
+.league-country{
+  font-size:10px;
+  color:var(--muted);
+}
+
+/* MATCH */
+
+.match{
+  padding:14px 13px;
+  border-bottom:1px solid var(--line);
+}
+
+.match:last-child{
+  border-bottom:0;
+}
+
+.match-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:var(--muted);
+  font-size:10px;
+  margin-bottom:11px;
+}
+
+.live{
+  color:var(--lime);
+  font-weight:800;
+}
+
+.teams{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:10px;
+}
+
+.team{
+  font-size:13px;
+  font-weight:700;
+}
+
+.team.home{
+  text-align:right;
+}
+
+.team.away{
+  text-align:left;
+}
+
+.vs{
+  color:var(--muted);
+  font-size:11px;
+}
+
+.odds{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:7px;
+  margin-top:13px;
+}
+
+.odd{
+  background:#0D131A;
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:9px 5px;
+  text-align:center;
+  font-size:11px;
+}
+
+.odd span{
+  display:block;
+  color:var(--muted);
+  font-size:9px;
+  margin-bottom:3px;
+}
+
+.odd strong{
+  color:var(--lime);
+}
+
+/* EMPTY */
+
+.empty{
+  background:var(--panel);
+  border:1px dashed var(--line);
+  border-radius:15px;
+  padding:42px 20px;
+  text-align:center;
+}
+
+.empty-icon{
+  font-size:34px;
+  margin-bottom:12px;
+}
+
+.empty-title{
+  font-weight:800;
+  margin-bottom:6px;
+}
+
+.empty-text{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.6;
+}
+
+.status{
+  text-align:center;
+  color:var(--muted);
+  font-size:10px;
+  margin-top:18px;
+}
+
+@media(max-width:420px){
+  .brand-name{
+    font-size:14px;
+  }
+
+  .teams{
+    gap:5px;
+  }
+
+  .team{
+    font-size:12px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+
+  <div class="left">
+
+    <button class="menu" id="menuBtn">☰</button>
+
+    <div class="brand">
+      <div class="logo">B</div>
+      <span>BETAWIN</span>
+    </div>
+
+  </div>
+
+  <div class="right">
+
+    <button class="top-btn" onclick="location.href='wallet.html'">
+      💳
+    </button>
+
+    <button class="top-btn" onclick="location.href='my-bets.html'">
+      🎟️
+    </button>
+
+    <button class="top-btn" onclick="location.href='profile.html'">
+      👤
+    </button>
+
+  </div>
+
+</header>
+
+
+<!-- OVERLAY -->
+
+<div class="overlay" id="overlay"></div>
+
+
+<!-- DRAWER -->
+
+<aside class="drawer" id="drawer">
+
+  <div class="drawer-head">
+
+    <div class="avatar" id="avatar">U</div>
+
+    <div>
+      <div class="user-name" id="userName">User</div>
+      <div class="user-sub">Betawin account</div>
+    </div>
+
+  </div>
+
+
+  <nav class="nav">
+
+    <a class="nav-item" href="index.html">
+      <span class="nav-icon">🏠</span>
+      Home
+    </a>
+
+    <a class="nav-item active" href="sports.html">
+      <span class="nav-icon">⚽</span>
+      Sports
+    </a>
+
+    <a class="nav-item" href="live-games.html">
+      <span class="nav-icon">🔴</span>
+      Live Games
+    </a>
+
+    <a class="nav-item" href="my-bets.html">
+      <span class="nav-icon">🎟️</span>
+      My Bets
+    </a>
+
+    <a class="nav-item" href="betslip.html">
+      <span class="nav-icon">🧾</span>
+      Betslip
+    </a>
+
+    <a class="nav-item" href="wallet.html">
+      <span class="nav-icon">💳</span>
+      Wallet
+    </a>
+
+    <a class="nav-item" href="deposit.html">
+      <span class="nav-icon">➕</span>
+      Deposit
+    </a>
+
+    <a class="nav-item" href="withdraw.html">
+      <span class="nav-icon">➖</span>
+      Withdraw
+    </a>
+
+    <a class="nav-item" href="profile.html">
+      <span class="nav-icon">👤</span>
+      Profile
+    </a>
+
+    <a class="nav-item" href="notifications.html">
+      <span class="nav-icon">🔔</span>
+      Notifications
+    </a>
+
+    <a class="nav-item" href="settings.html">
+      <span class="nav-icon">⚙️</span>
+      Settings
+    </a>
+
+    <a class="nav-item" href="support.html">
+      <span class="nav-icon">❓</span>
+      Help & Support
+    </a>
+
+  </nav>
+
+
+  <div class="drawer-bottom">
+
+    <button class="nav-item logout" id="logoutBtn">
+      <span class="nav-icon">🚪</span>
+      Logout
+    </button>
+
+  </div>
+
+</aside>
+
+
+<main class="main">
+
+  <h1 class="heading">Sports</h1>
+
+  <p class="subtitle">
+    Select a sport to view available fixtures.
+  </p>
+
+
+  <!-- SPORTS -->
+
+  <div class="sports-tabs">
+
+    <button class="sport-tab active" data-sport="football">
+      ⚽ Football
+    </button>
+
+    <button class="sport-tab" data-sport="rugby">
+      🏉 Rugby
+    </button>
+
+    <button class="sport-tab" data-sport="basketball">
+      🏀 Basketball
+    </button>
+
+    <button class="sport-tab" data-sport="tennis">
+      🎾 Tennis
+    </button>
+
+    <button class="sport-tab" data-sport="volleyball">
+      🏐 Volleyball
+    </button>
+
+  </div>
+
+
+  <!-- FIXTURES -->
+
+  <section id="fixtures">
+
+    <div class="empty">
+
+      <div class="empty-icon">⏳</div>
+
+      <div class="empty-title">
+        Waiting for sports data
+      </div>
+
+      <div class="empty-text">
+        Fixtures and results will appear here when your
+        sports API/backend provides them.
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <div class="status" id="status">
+    Sports data connection: waiting
+  </div>
+
+</main>
+
+
+<script>
+
+/* ==========================
+   DRAWER
+========================== */
+
+const menuBtn =
+  document.getElementById("menuBtn");
+
+const drawer =
+  document.getElementById("drawer");
+
+const overlay =
+  document.getElementById("overlay");
+
+
+function openDrawer(){
+
+  drawer.classList.add("open");
+  overlay.classList.add("open");
+
+}
+
+
+function closeDrawer(){
+
+  drawer.classList.remove("open");
+  overlay.classList.remove("open");
+
+}
+
+
+menuBtn.addEventListener(
+  "click",
+  openDrawer
+);
+
+overlay.addEventListener(
+  "click",
+  closeDrawer
+);
+
+
+/* ==========================
+   USER
+========================== */
+
+function loadUser(){
+
+  try{
+
+    const cached =
+      JSON.parse(
+        localStorage.getItem(
+          "betawin_user"
+        ) || "null"
+      );
+
+    if(!cached) return;
+
+    const name =
+      cached.name ||
+      cached.fullName ||
+      "User";
+
+    document.getElementById(
+      "userName"
+    ).textContent = name;
+
+
+    const initials =
+      name
+        .trim()
+        .split(/\s+/)
+        .map(word => word[0])
+        .slice(0,2)
+        .join("")
+        .toUpperCase();
+
+    document.getElementById(
+      "avatar"
+    ).textContent =
+      initials || "U";
+
+  }catch(error){
+
+    console.error(
+      "USER LOAD ERROR:",
+      error
+    );
+
+  }
+
+}
+
+loadUser();
+
+
+/* ==========================
+   LOGOUT
+========================== */
+
+document
+  .getElementById("logoutBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      localStorage.removeItem(
+        "betawin_token"
+      );
+
+      localStorage.removeItem(
+        "betawin_user"
+      );
+
+      window.location.href =
+        "login.html";
+
+    }
+  );
+
+
+/* ==========================
+   SPORTS TABS
+========================== */
+
+document
+  .querySelectorAll(".sport-tab")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        document
+          .querySelectorAll(".sport-tab")
+          .forEach(btn =>
+            btn.classList.remove("active")
+          );
+
+        button.classList.add("active");
+
+        const sport =
+          button.dataset.sport;
+
+        loadSports(sport);
+
+      }
+    );
+
+  });
+
+
+/* ==========================
+   SPORTS API
+========================== */
+
+const API_BASE =
+  window.BETAWIN_API_BASE ||
+  "http://localhost:5000";
+
+
+async function loadSports(sport){
+
+  const container =
+    document.getElementById(
+      "fixtures"
+    );
+
+  const status =
+    document.getElementById(
+      "status"
+    );
+
+  container.innerHTML = `
+    <div class="empty">
+      <div class="empty-icon">⏳</div>
+      <div class="empty-title">
+        Loading ${sport}
+      </div>
+      <div class="empty-text">
+        Waiting for the sports API.
+      </div>
+    </div>
+  `;
+
+  status.textContent =
+    "Sports data connection: loading";
+
+
+  try{
+
+    /*
+      Expected backend response:
+
+      {
+        fixtures: [
+          {
+            league: "Premier League",
+            country: "England",
+            homeTeam: "Team A",
+            awayTeam: "Team B",
+            time: "20:00",
+            odds: {
+              home: 1.80,
+              draw: 3.40,
+              away: 4.20
+            }
+          }
+        ]
+      }
+    */
+
+    const response =
+      await fetch(
+        API_BASE +
+        "/api/sports/" +
+        encodeURIComponent(sport)
+      );
+
+
+    if(!response.ok){
+
+      throw new Error(
+        "Sports endpoint unavailable"
+      );
+
+    }
+
+
+    const data =
+      await response.json();
+
+
+    const fixtures =
+      Array.isArray(data.fixtures)
+        ? data.fixtures
+        : [];
+
+
+    if(!fixtures.length){
+
+      container.innerHTML = `
+        <div class="empty">
+
+          <div class="empty-icon">📅</div>
+
+          <div class="empty-title">
+            No fixtures available
+          </div>
+
+          <div class="empty-text">
+            There are currently no fixtures
+            available for ${sport}.
+          </div>
+
+        </div>
+      `;
+
+      status.textContent =
+        "Sports data connection: connected";
+
+      return;
+
+    }
+
+
+    renderFixtures(
+      fixtures
+    );
+
+    status.textContent =
+      "Sports data connection: connected";
+
+
+  }catch(error){
+
+    console.error(
+      "SPORTS API ERROR:",
+      error
+    );
+
+
+    /*
+      Do not invent live games or odds.
+      Show a clear API waiting state.
+    */
+
+    container.innerHTML = `
+      <div class="empty">
+
+        <div class="empty-icon">📡</div>
+
+        <div class="empty-title">
+          Waiting for sports API
+        </div>
+
+        <div class="empty-text">
+          Connect your backend sports
+          endpoint to display fixtures,
+          scores and odds.
+        </div>
+
+      </div>
+    `;
+
+    status.textContent =
+      "Sports data connection: offline";
+
+  }
+
+}
+
+
+/* ==========================
+   RENDER FIXTURES
+========================== */
+
+function renderFixtures(
+  fixtures
+){
+
+  const container =
+    document.getElementById(
+      "fixtures"
+    );
+
+  container.innerHTML = "";
+
+
+  fixtures.forEach(
+    fixture => {
+
+      const league =
+        fixture.league ||
+        "Sports";
+
+      const country =
+        fixture.country ||
+        "";
+
+      const home =
+        fixture.homeTeam ||
+        "Home";
+
+      const away =
+        fixture.awayTeam ||
+        "Away";
+
+      const time =
+        fixture.time ||
+        "TBA";
+
+      const odds =
+        fixture.odds ||
+        {};
+
+
+      const card =
+        document.createElement(
+          "div"
+        );
+
+      card.className =
+        "league";
+
+
+      card.innerHTML = `
+
+        <div class="league-head">
+
+          <div class="league-name">
+            ${escapeHTML(league)}
+          </div>
+
+          <div class="league-country">
+            ${escapeHTML(country)}
+          </div>
+
+        </div>
+
+        <div class="match">
+
+          <div class="match-top">
+
+            <span>
+              ${escapeHTML(time)}
+            </span>
+
+            <span>
+              Upcoming
+            </span>
+
+          </div>
+
+          <div class="teams">
+
+            <div class="team home">
+              ${escapeHTML(home)}
+            </div>
+
+            <div class="vs">
+              VS
+            </div>
+
+            <div class="team away">
+              ${escapeHTML(away)}
+            </div>
+
+          </div>
+
+          <div class="odds">
+
+            <button class="odd">
+              <span>HOME</span>
+              <strong>
+                ${formatOdd(odds.home)}
+              </strong>
+            </button>
+
+            <button class="odd">
+              <span>DRAW</span>
+              <strong>
+                ${formatOdd(odds.draw)}
+              </strong>
+            </button>
+
+            <button class="odd">
+              <span>AWAY</span>
+              <strong>
+                ${formatOdd(odds.away)}
+              </strong>
+            </button>
+
+          </div>
+
+        </div>
+      `;
+
+
+      container.appendChild(
+        card
+      );
+
+    }
+  );
+
+}
+
+
+/* ==========================
+   HELPERS
+========================== */
+
+function formatOdd(value){
+
+  if(
+    value === undefined ||
+    value === null ||
+    value === ""
+  ){
+
+    return "—";
+
+  }
+
+  const number =
+    Number(value);
+
+  return Number.isFinite(number)
+    ? number.toFixed(2)
+    : "—";
+
+}
+
+
+function escapeHTML(value){
+
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+
+}
+
+
+/* Initial load */
+
+loadSports(
+  "football"
+);
+
+</script>
+
+</body>
+  </html>
