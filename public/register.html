@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Betawin | Register</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+
+      background: #05050b;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+
+      background:
+        linear-gradient(
+          rgba(4,4,12,.82),
+          rgba(4,4,12,.94)
+        ),
+        url("images/betawin-footballe4.jpg");
+
+      background-size: cover;
+      background-position: center;
+
+      z-index: -2;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+
+      background:
+        radial-gradient(
+          circle at 15% 20%,
+          rgba(255,20,147,.25),
+          transparent 30%
+        ),
+        radial-gradient(
+          circle at 85% 80%,
+          rgba(0,123,255,.25),
+          transparent 30%
+        );
+
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .register-box {
+      width: 100%;
+      max-width: 430px;
+
+      padding: 32px 28px;
+
+      background: rgba(8,8,18,.80);
+
+      border: 1px solid rgba(255,255,255,.12);
+
+      border-radius: 22px;
+
+      backdrop-filter: blur(18px);
+
+      box-shadow:
+        0 20px 70px rgba(0,0,0,.5);
+    }
+
+    .logo {
+      text-align: center;
+
+      font-size: 32px;
+      font-weight: 900;
+
+      margin-bottom: 8px;
+
+      background:
+        linear-gradient(
+          90deg,
+          #ff1493,
+          #9b2cff,
+          #008cff
+        );
+
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #999;
+      font-size: 14px;
+      margin-bottom: 25px;
+    }
+
+    .input-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+
+      color: #ddd;
+
+      font-size: 13px;
+      font-weight: bold;
+
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+
+      padding: 14px 15px;
+
+      border-radius: 12px;
+
+      border: 1px solid rgba(255,255,255,.14);
+
+      outline: none;
+
+      background: rgba(255,255,255,.06);
+
+      color: #fff;
+
+      font-size: 15px;
+    }
+
+    input::placeholder {
+      color: #777;
+    }
+
+    input:focus {
+      border-color: #ff1493;
+
+      box-shadow:
+        0 0 0 3px rgba(255,20,147,.10);
+    }
+
+    .password-box {
+      position: relative;
+    }
+
+    .password-box input {
+      padding-right: 65px;
+    }
+
+    .show-password {
+      position: absolute;
+
+      right: 12px;
+      top: 50%;
+
+      transform: translateY(-50%);
+
+      border: none;
+      background: transparent;
+
+      color: #aaa;
+
+      cursor: pointer;
+
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .terms {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+
+      margin: 18px 0;
+
+      color: #999;
+
+      font-size: 12px;
+
+      line-height: 1.5;
+    }
+
+    .terms input {
+      width: auto;
+      margin-top: 3px;
+    }
+
+    .terms a {
+      color: #ff69b4;
+      text-decoration: none;
+    }
+
+    .register-button {
+      width: 100%;
+
+      padding: 15px;
+
+      border: none;
+
+      border-radius: 13px;
+
+      color: white;
+
+      font-size: 16px;
+      font-weight: bold;
+
+      cursor: pointer;
+
+      background:
+        linear-gradient(
+          90deg,
+          #ff1493,
+          #007bff
+        );
+
+      box-shadow:
+        0 10px 25px rgba(255,20,147,.18);
+
+      transition: .25s;
+    }
+
+    .register-button:hover {
+      transform: translateY(-2px);
+    }
+
+    .register-button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .message {
+      display: none;
+
+      margin-top: 15px;
+      padding: 11px;
+
+      border-radius: 10px;
+
+      text-align: center;
+
+      font-size: 13px;
+    }
+
+    .message.error {
+      display: block;
+
+      color: #ff9b9b;
+
+      background: rgba(255,0,0,.08);
+
+      border: 1px solid rgba(255,0,0,.15);
+    }
+
+    .message.success {
+      display: block;
+
+      color: #8fffc1;
+
+      background: rgba(0,255,130,.08);
+
+      border: 1px solid rgba(0,255,130,.15);
+    }
+
+    .login-text {
+      text-align: center;
+
+      color: #888;
+
+      font-size: 14px;
+
+      margin-top: 22px;
+    }
+
+    .login-text a {
+      color: #ff69b4;
+
+      text-decoration: none;
+
+      font-weight: bold;
+    }
+
+    .home {
+      display: block;
+
+      text-align: center;
+
+      margin-top: 18px;
+
+      color: #777;
+
+      text-decoration: none;
+
+      font-size: 13px;
+    }
+
+    .home:hover {
+      color: #fff;
+    }
+
+    @media (max-width: 480px) {
+      .register-box {
+        padding: 27px 20px;
+      }
+
+      .logo {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="register-box">
+
+    <div class="logo">
+      BETAWIN
+    </div>
+
+    <p class="subtitle">
+      Create your Betawin account
+    </p>
+
+    <form id="registerForm">
+
+      <!-- FULL NAME -->
+
+      <div class="input-group">
+
+        <label for="fullName">
+          Full Name
+        </label>
+
+        <input
+          type="text"
+          id="fullName"
+          name="fullName"
+          placeholder="Enter your full name"
+          autocomplete="name"
+          required
+        >
+
+      </div>
+
+
+      <!-- PHONE -->
+
+      <div class="input-group">
+
+        <label for="phone">
+          Phone Number
+        </label>
+
+        <input
+          type="tel"
+          id="phone"
+          name="phone"
+          placeholder="07XXXXXXXX"
+          autocomplete="tel"
+          required
+        >
+
+      </div>
+
+
+      <!-- PASSWORD -->
+
+      <div class="input-group">
+
+        <label for="password">
+          Password
+        </label>
+
+        <div class="password-box">
+
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Create a password"
+            autocomplete="new-password"
+            minlength="6"
+            required
+          >
+
+          <button
+            type="button"
+            class="show-password"
+            data-target="password"
+          >
+            SHOW
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- CONFIRM PASSWORD -->
+
+      <div class="input-group">
+
+        <label for="confirmPassword">
+          Confirm Password
+        </label>
+
+        <div class="password-box">
+
+          <input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            placeholder="Repeat your password"
+            autocomplete="new-password"
+            minlength="6"
+            required
+          >
+
+          <button
+            type="button"
+            class="show-password"
+            data-target="confirmPassword"
+          >
+            SHOW
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- TERMS -->
+
+      <label class="terms">
+
+        <input
+          type="checkbox"
+          id="terms"
+          required
+        >
+
+        <span>
+          I agree to the
+          <a href="#">
+            Terms & Conditions
+          </a>
+          and acknowledge the platform rules.
+        </span>
+
+      </label>
+
+
+      <!-- BUTTON -->
+
+      <button
+        type="submit"
+        class="register-button"
+        id="registerButton"
+      >
+        Create Account
+      </button>
+
+
+      <!-- MESSAGE -->
+
+      <div
+        id="message"
+        class="message"
+      ></div>
+
+    </form>
+
+
+    <div class="login-text">
+
+      Already have an account?
+
+      <a href="login.html">
+        Login
+      </a>
+
+    </div>
+
+
+    <a
+      href="index.html"
+      class="home"
+    >
+      ← Back to Betawin
+    </a>
+
+  </div>
+
+
+  <script>
+
+    const form =
+      document.getElementById("registerForm");
+
+    const button =
+      document.getElementById("registerButton");
+
+    const message =
+      document.getElementById("message");
+
+
+    /* SHOW / HIDE PASSWORD */
+
+    document
+      .querySelectorAll(".show-password")
+      .forEach(btn => {
+
+        btn.addEventListener("click", () => {
+
+          const input =
+            document.getElementById(
+              btn.dataset.target
+            );
+
+          if (input.type === "password") {
+
+            input.type = "text";
+            btn.textContent = "HIDE";
+
+          } else {
+
+            input.type = "password";
+            btn.textContent = "SHOW";
+
+          }
+
+        });
+
+      });
+
+
+    /* REGISTER */
+
+    form.addEventListener(
+      "submit",
+      async (event) => {
+
+        event.preventDefault();
+
+        message.className = "message";
+        message.textContent = "";
+
+
+        const fullName =
+          document
+            .getElementById("fullName")
+            .value
+            .trim();
+
+        const phone =
+          document
+            .getElementById("phone")
+            .value
+            .trim();
+
+        const password =
+          document
+            .getElementById("password")
+            .value;
+
+        const confirmPassword =
+          document
+            .getElementById("confirmPassword")
+            .value;
+
+        const terms =
+          document
+            .getElementById("terms")
+            .checked;
+
+
+        /* VALIDATION */
+
+        if (
+          !fullName ||
+          !phone ||
+          !password ||
+          !confirmPassword
+        ) {
+
+          showError(
+            "Please complete all fields."
+          );
+
+          return;
+        }
+
+
+        if (password.length < 6) {
+
+          showError(
+            "Password must be at least 6 characters."
+          );
+
+          return;
+        }
+
+
+        if (password !== confirmPassword) {
+
+          showError(
+            "Passwords do not match."
+          );
+
+          return;
+        }
+
+
+        if (!terms) {
+
+          showError(
+            "Please accept the Terms & Conditions."
+          );
+
+          return;
+        }
+
+
+        button.disabled = true;
+
+        button.textContent =
+          "Creating Account...";
+
+
+        try {
+
+          const response =
+            await fetch(
+              "/api/auth/register",
+              {
+                method: "POST",
+
+                headers: {
+                  "Content-Type":
+                    "application/json"
+                },
+
+                body: JSON.stringify({
+                  fullName,
+                  phone,
+                  password,
+                  confirmPassword
+                })
+              }
+            );
+
+
+          const data =
+            await response
+              .json()
+              .catch(() => ({}));
+
+
+          if (!response.ok) {
+
+            throw new Error(
+              data.message ||
+              data.error ||
+              "Registration failed."
+            );
+
+          }
+
+
+          /*
+            If your backend automatically
+            logs the user in, save its token.
+          */
+
+          const token =
+            data.token ||
+            data.accessToken ||
+            data.data?.token;
+
+
+          if (token) {
+
+            localStorage.setItem(
+              "token",
+              token
+            );
+
+          }
+
+
+          if (data.user) {
+
+            localStorage.setItem(
+              "user",
+              JSON.stringify(data.user)
+            );
+
+          }
+
+
+          message.className =
+            "message success";
+
+          message.textContent =
+            "Account created successfully. Opening login...";
+
+
+          setTimeout(() => {
+
+            if (token) {
+
+              window.location.href =
+                "dashboard.html";
+
+            } else {
+
+              window.location.href =
+                "login.html";
+
+            }
+
+          }, 900);
+
+
+        } catch (error) {
+
+          showError(
+            error.message ||
+            "Unable to connect to the server."
+          );
+
+          button.disabled = false;
+
+          button.textContent =
+            "Create Account";
+
+        }
+
+      }
+    );
+
+
+    function showError(text) {
+
+      message.className =
+        "message error";
+
+      message.textContent =
+        text;
+
+    }
+
+  </script>
+
+</body>
+  </html>
