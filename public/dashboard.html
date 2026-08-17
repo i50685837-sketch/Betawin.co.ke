@@ -1556,5 +1556,312 @@ async function loadUser(){
     try{
 
       const cached =
-        JSON.parse(
+                JSON.parse(
+          localStorage.getItem(
+            "betawin_user"
+          ) || "null"
+        );
+
+      if (cached) {
+
+        const cachedName =
+          cached.name ||
+          cached.fullName ||
+          "User";
+
+        document.getElementById(
+          "greetName"
+        ).textContent =
+          cachedName;
+
+        document.getElementById(
+          "drawerName"
+        ).textContent =
+          cachedName;
+
+        document.getElementById(
+          "profileName"
+        ).textContent =
+          cachedName;
+
+        const initials =
+          cachedName
+            .trim()
+            .split(/\s+/)
+            .map(
+              word => word[0]
+            )
+            .slice(0, 2)
+            .join("")
+            .toUpperCase();
+
+        document.getElementById(
+          "avatar"
+        ).textContent =
+          initials || "U";
+
+        document.getElementById(
+          "drawerInitials"
+        ).textContent =
+          initials || "U";
+
+      }
+
+    }catch(cacheError){
+
+      console.error(
+        "CACHE ERROR:",
+        cacheError
+      );
+
+    }
+
+  }
+
+}
+
+
+/* =========================================
+   TOPBAR BUTTONS
+========================================= */
+
+document
+  .getElementById(
+    "balanceChip"
+  )
+  .addEventListener(
+    "click",
+    () => {
+
+      window.location.href =
+        "wallet.html";
+
+    }
+  );
+
+
+document
+  .getElementById(
+    "notifBtn"
+  )
+  .addEventListener(
+    "click",
+    () => {
+
+      window.location.href =
+        "notifications.html";
+
+    }
+  );
+
+
+document
+  .getElementById(
+    "profileBtn"
+  )
+  .addEventListener(
+    "click",
+    () => {
+
+      window.location.href =
+        "profile.html";
+
+    }
+  );
+
+
+/* =========================================
+   HAMBURGER MENU
+========================================= */
+
+const menuBtn =
+  document.getElementById(
+    "menuBtn"
+  );
+
+const drawer =
+  document.getElementById(
+    "drawer"
+  );
+
+const overlay =
+  document.getElementById(
+    "overlay"
+  );
+
+
+function openDrawer(){
+
+  drawer.classList.add(
+    "open"
+  );
+
+  overlay.classList.add(
+    "open"
+  );
+
+  document.body.style.overflow =
+    "hidden";
+
+}
+
+
+function closeDrawer(){
+
+  drawer.classList.remove(
+    "open"
+  );
+
+  overlay.classList.remove(
+    "open"
+  );
+
+  document.body.style.overflow =
+    "";
+
+}
+
+
+menuBtn.addEventListener(
+  "click",
+  openDrawer
+);
+
+
+overlay.addEventListener(
+  "click",
+  closeDrawer
+);
+
+
+/* =========================================
+   CLOSE DRAWER AFTER NAVIGATION
+========================================= */
+
+document
+  .querySelectorAll(
+    ".drawer a"
+  )
+  .forEach(link => {
+
+    link.addEventListener(
+      "click",
+      closeDrawer
+    );
+
+  });
+
+
+/* =========================================
+   LOGOUT
+========================================= */
+
+document
+  .getElementById(
+    "logoutBtn"
+  )
+  .addEventListener(
+    "click",
+    () => {
+
+      localStorage.removeItem(
+        "betawin_token"
+      );
+
+      localStorage.removeItem(
+        "betawin_user"
+      );
+
+      window.location.replace(
+        "login.html"
+      );
+
+    }
+  );
+
+
+/* =========================================
+   BACKEND HEALTH
+========================================= */
+
+async function checkConnection(){
+
+  const dot =
+    document.getElementById(
+      "connDot"
+    );
+
+  const text =
+    document.getElementById(
+      "connText"
+    );
+
+  try{
+
+    const response =
+      await fetch(
+        API_BASE +
+        "/api/health",
+        {
+          method:"GET"
+        }
+      );
+
+    if(!response.ok){
+
+      throw new Error(
+        "Backend unavailable"
+      );
+
+    }
+
+    const data =
+      await response.json();
+
+    if(data.success){
+
+      dot.className =
+        "conn-dot online";
+
+      text.textContent =
+        "Connected";
+
+    }else{
+
+      throw new Error(
+        "Backend error"
+      );
+
+    }
+
+  }catch(error){
+
+    console.error(
+      "HEALTH ERROR:",
+      error
+    );
+
+    dot.className =
+      "conn-dot offline";
+
+    text.textContent =
+      "Backend unavailable";
+
+  }
+
+}
+
+
+/* =========================================
+   INITIALIZE DASHBOARD
+========================================= */
+
+loadUser();
+
+checkConnection();
+
+setInterval(
+  checkConnection,
+  15000
+);
  
