@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Betawin | Notifications</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      color: #fff;
+      background: #070710;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+
+      background:
+        linear-gradient(
+          rgba(5,5,15,.88),
+          rgba(5,5,15,.96)
+        ),
+        url("../images/betawin-footballe4.jpg");
+
+      background-size: cover;
+      background-position: center;
+
+      z-index: -2;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+
+      background:
+        radial-gradient(
+          circle at 10% 15%,
+          rgba(255,20,147,.20),
+          transparent 30%
+        ),
+        radial-gradient(
+          circle at 90% 85%,
+          rgba(0,123,255,.20),
+          transparent 30%
+        );
+
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* HEADER */
+
+    header {
+      height: 70px;
+      padding: 0 6%;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      background: rgba(8,8,18,.82);
+
+      border-bottom: 1px solid rgba(255,255,255,.10);
+
+      backdrop-filter: blur(15px);
+    }
+
+    .logo {
+      font-size: 25px;
+      font-weight: 900;
+
+      background:
+        linear-gradient(
+          90deg,
+          #ff1493,
+          #9b2cff,
+          #008cff
+        );
+
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .back {
+      color: #fff;
+      text-decoration: none;
+
+      padding: 9px 15px;
+
+      border: 1px solid rgba(255,255,255,.20);
+
+      border-radius: 10px;
+
+      font-size: 13px;
+    }
+
+    /* CONTENT */
+
+    .container {
+      width: 92%;
+      max-width: 800px;
+
+      margin: 35px auto;
+    }
+
+    .title {
+      margin-bottom: 25px;
+    }
+
+    .title h1 {
+      font-size: 30px;
+      margin-bottom: 7px;
+    }
+
+    .title p {
+      color: #999;
+      font-size: 14px;
+    }
+
+    /* NOTIFICATION */
+
+    .notification {
+      display: flex;
+      gap: 15px;
+
+      padding: 18px;
+
+      margin-bottom: 12px;
+
+      border-radius: 16px;
+
+      background: rgba(255,255,255,.05);
+
+      border: 1px solid rgba(255,255,255,.09);
+
+      backdrop-filter: blur(12px);
+
+      transition: .2s;
+    }
+
+    .notification:hover {
+      transform: translateY(-2px);
+
+      border-color:
+        rgba(255,20,147,.30);
+    }
+
+    .icon {
+      min-width: 45px;
+      height: 45px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 13px;
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(255,20,147,.25),
+          rgba(0,123,255,.25)
+        );
+
+      font-size: 21px;
+    }
+
+    .notification-content {
+      flex: 1;
+    }
+
+    .notification-content h3 {
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+
+    .notification-content p {
+      color: #999;
+
+      font-size: 13px;
+
+      line-height: 1.5;
+    }
+
+    .time {
+      display: block;
+
+      color: #666;
+
+      font-size: 11px;
+
+      margin-top: 8px;
+    }
+
+    /* UNREAD */
+
+    .unread {
+      border-left:
+        3px solid #ff1493;
+
+      background:
+        rgba(255,20,147,.07);
+    }
+
+    /* EMPTY STATE */
+
+    .empty {
+      display: none;
+
+      padding: 60px 20px;
+
+      text-align: center;
+
+      color: #777;
+    }
+
+    .empty-icon {
+      font-size: 45px;
+      margin-bottom: 15px;
+    }
+
+    /* FOOTER */
+
+    footer {
+      margin-top: 50px;
+
+      padding: 20px;
+
+      text-align: center;
+
+      color: #666;
+
+      font-size: 12px;
+
+      border-top:
+        1px solid rgba(255,255,255,.08);
+    }
+
+    @media (max-width: 600px) {
+
+      .container {
+        width: 94%;
+        margin-top: 25px;
+      }
+
+      .title h1 {
+        font-size: 25px;
+      }
+
+      .notification {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+
+  <header>
+
+    <div class="logo">
+      BETAWIN
+    </div>
+
+    <a
+      href="../dashboard.html"
+      class="back"
+    >
+      ← Dashboard
+    </a>
+
+  </header>
+
+
+  <!-- CONTENT -->
+
+  <main class="container">
+
+    <div class="title">
+
+      <h1>
+        Notifications
+      </h1>
+
+      <p>
+        Stay updated with your Betawin account.
+      </p>
+
+    </div>
+
+
+    <!-- NOTIFICATION 1 -->
+
+    <div class="notification unread">
+
+      <div class="icon">
+        🎉
+      </div>
+
+      <div class="notification-content">
+
+        <h3>
+          Welcome to Betawin
+        </h3>
+
+        <p>
+          Your account has been created successfully.
+          Welcome to the Betawin community.
+        </p>
+
+        <span class="time">
+          Recently
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- NOTIFICATION 2 -->
+
+    <div class="notification">
+
+      <div class="icon">
+        🔐
+      </div>
+
+      <div class="notification-content">
+
+        <h3>
+          Account Security
+        </h3>
+
+        <p>
+          Remember to keep your password private
+          and use a strong password for your account.
+        </p>
+
+        <span class="time">
+          Today
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- NOTIFICATION 3 -->
+
+    <div class="notification">
+
+      <div class="icon">
+        ⚽
+      </div>
+
+      <div class="notification-content">
+
+        <h3>
+          Sports Updates
+        </h3>
+
+        <p>
+          Check the Sports section for the latest
+          available sports content.
+        </p>
+
+        <span class="time">
+          Recently
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- EMPTY -->
+
+    <div
+      class="empty"
+      id="empty"
+    >
+
+      <div class="empty-icon">
+        🔔
+      </div>
+
+      <p>
+        You don't have any notifications yet.
+      </p>
+
+    </div>
+
+  </main>
+
+
+  <footer>
+    © 2026 Betawin.com
+  </footer>
+
+
+  <script>
+
+    /*
+      Basic authentication check.
+
+      Users without a login token are
+      sent back to the login page.
+    */
+
+    const token =
+      localStorage.getItem("token");
+
+    if (!token) {
+
+      window.location.href =
+        "../login.html";
+
+    }
+
+  </script>
+
+</body>
+  </html>
