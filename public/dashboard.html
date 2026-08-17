@@ -1860,4 +1860,60 @@ document
     "click",
     () => {
 
-      win
+      window.location.href =
+  "notifications.html";
+
+    }
+  );
+
+
+document
+  .getElementById(
+    "profileBtn"
+  )
+  .addEventListener(
+    "click",
+    () => {
+
+      window.location.href =
+        "profile.html";
+
+    }
+  );
+
+
+/* =========================================
+   LOGOUT
+========================================= */
+
+document
+  .getElementById(
+    "logoutBtn"
+  )
+  .addEventListener(
+    "click",
+    () => {
+
+      localStorage.removeItem(
+        "betawin_token"
+      );
+
+      localStorage.removeItem(
+        "betawin_user"
+      );
+
+      closeDrawer();
+
+      window.location.replace(
+        "login.html"
+      );
+
+    }
+  );
+
+
+/* =========================================
+   START DASHBOARD
+========================================= */
+
+loadUser();
