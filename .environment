@@ -22,7 +22,9 @@ JWT_EXPIRES_IN=7d
 # API-Football / API-Sports
 # ==============================
 SPORTS_API_URL=https://v3.football.api-sports.io
-SPORTS_API_KEY=YOUR_SPORTS_API_KEY
+SPORTS_API_KEY=ApiSportsSdk.Create("API_KEY");
+ApiSportsHttpClient httpClient = sdk.ForSport(ApiSportsSport.Football);
+var football = new FootballClient(httpClient);
 
 # ==============================
 # CRASH GAME API
