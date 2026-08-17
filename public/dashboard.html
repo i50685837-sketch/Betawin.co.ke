@@ -1,0 +1,2073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+<title>Betawin — Home</title>
+
+<style>
+:root{
+  --bg:#080b10;
+  --navy:#0d131b;
+  --panel:#131b25;
+  --panel2:#192330;
+  --line:#263442;
+
+  --lime:#b4ff39;
+  --lime2:#8fdb1e;
+
+  --text:#edf2f7;
+  --muted:#7f8c9b;
+  --danger:#ff6868;
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,
+body{
+  min-height:100%;
+  background:var(--bg);
+  color:var(--text);
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
+}
+
+body{
+  overflow-x:hidden;
+}
+
+button{
+  border:0;
+  background:none;
+  color:inherit;
+  font-family:inherit;
+  cursor:pointer;
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+/* =========================================
+   TOPBAR
+========================================= */
+
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:20;
+
+  height:68px;
+
+  padding:0 14px;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  background:rgba(8,11,16,.95);
+  backdrop-filter:blur(14px);
+
+  border-bottom:1px solid var(--line);
+}
+
+.top-left{
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+
+.icon-btn{
+  width:40px;
+  height:40px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:11px;
+
+  background:var(--panel);
+  border:1px solid var(--line);
+}
+
+.icon-btn svg{
+  width:20px;
+  height:20px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.brand-mark{
+  width:31px;
+  height:31px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:8px;
+
+  background:var(--lime);
+  color:#080b10;
+
+  font-size:15px;
+  font-weight:900;
+}
+
+.brand-name{
+  font-size:16px;
+  font-weight:800;
+  letter-spacing:.5px;
+}
+
+.top-right{
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+
+.balance-chip{
+  padding:8px 11px;
+
+  border-radius:20px;
+
+  background:var(--panel);
+  border:1px solid var(--line);
+
+  color:var(--lime);
+
+  font-size:12px;
+  font-weight:800;
+}
+
+/* =========================================
+   OVERLAY
+========================================= */
+
+.overlay{
+  position:fixed;
+  inset:0;
+
+  background:rgba(0,0,0,.65);
+
+  opacity:0;
+  pointer-events:none;
+
+  transition:opacity .25s ease;
+
+  z-index:30;
+}
+
+.overlay.open{
+  opacity:1;
+  pointer-events:auto;
+}
+
+/* =========================================
+   HAMBURGER DRAWER
+========================================= */
+
+.drawer{
+  position:fixed;
+
+  top:0;
+  left:0;
+  bottom:0;
+
+  width:292px;
+  max-width:88vw;
+
+  display:flex;
+  flex-direction:column;
+
+  background:var(--navy);
+
+  border-right:1px solid var(--line);
+
+  transform:translateX(-100%);
+
+  transition:
+    transform .28s cubic-bezier(.4,0,.2,1);
+
+  z-index:40;
+}
+
+.drawer.open{
+  transform:translateX(0);
+}
+
+.drawer-head{
+  padding:22px 17px;
+
+  display:flex;
+  align-items:center;
+  gap:12px;
+
+  border-bottom:1px solid var(--line);
+}
+
+.drawer-avatar{
+  width:46px;
+  height:46px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:50%;
+
+  background:var(--panel2);
+  border:1px solid var(--line);
+
+  color:var(--lime);
+
+  font-size:15px;
+  font-weight:800;
+}
+
+.drawer-name{
+  font-size:15px;
+  font-weight:800;
+}
+
+.drawer-sub{
+  margin-top:3px;
+
+  color:var(--muted);
+
+  font-size:11px;
+}
+
+.drawer-nav{
+  flex:1;
+
+  padding:12px 10px;
+
+  overflow-y:auto;
+}
+
+.menu-section{
+  padding:12px 12px 6px;
+
+  color:#536171;
+
+  font-size:9px;
+  font-weight:900;
+
+  letter-spacing:1.2px;
+
+  text-transform:uppercase;
+}
+
+.menu-item{
+  width:100%;
+
+  display:flex;
+  align-items:center;
+
+  gap:12px;
+
+  padding:12px;
+
+  margin-bottom:2px;
+
+  border-radius:10px;
+
+  color:var(--muted);
+
+  font-size:14px;
+  font-weight:600;
+
+  transition:
+    background .15s,
+    color .15s;
+}
+
+.menu-item:hover{
+  background:var(--panel);
+  color:var(--text);
+}
+
+.menu-item.active{
+  background:rgba(180,255,57,.10);
+  color:var(--lime);
+}
+
+.menu-icon{
+  width:21px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:17px;
+}
+
+.menu-badge{
+  margin-left:auto;
+
+  min-width:22px;
+  height:20px;
+
+  padding:0 6px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:20px;
+
+  background:var(--lime);
+
+  color:#050700;
+
+  font-size:9px;
+  font-weight:900;
+}
+
+.live-badge{
+  background:#ff5353;
+  color:white;
+}
+
+.drawer-bottom{
+  padding:10px;
+
+  border-top:1px solid var(--line);
+}
+
+.logout{
+  color:var(--danger);
+}
+
+/* =========================================
+   MAIN
+========================================= */
+
+.main{
+  width:100%;
+  max-width:760px;
+
+  margin:auto;
+
+  padding:20px 15px 92px;
+}
+
+.greeting{
+  font-size:21px;
+  font-weight:800;
+}
+
+.greeting-sub{
+  margin-top:5px;
+  margin-bottom:20px;
+
+  color:var(--muted);
+
+  font-size:12px;
+}
+
+/* =========================================
+   QUICK ACTIONS
+========================================= */
+
+.quick-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+
+  gap:9px;
+
+  margin-bottom:22px;
+}
+
+.quick-card{
+  min-height:88px;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+
+  gap:7px;
+
+  border-radius:14px;
+
+  background:var(--panel);
+  border:1px solid var(--line);
+
+  transition:.18s;
+}
+
+.quick-card:active{
+  transform:scale(.97);
+}
+
+.quick-card.live{
+  border-color:rgba(180,255,57,.35);
+}
+
+.quick-icon{
+  font-size:24px;
+}
+
+.quick-title{
+  font-size:11px;
+  font-weight:800;
+}
+
+.quick-card.live .quick-title{
+  color:var(--lime);
+}
+
+/* =========================================
+   SECTION
+========================================= */
+
+.section-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  margin:20px 2px 10px;
+
+  font-size:15px;
+  font-weight:800;
+}
+
+.section-link{
+  color:var(--lime);
+  font-size:11px;
+}
+
+/* =========================================
+   SPORTS
+========================================= */
+
+.sports-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+
+.sport-card{
+  padding:16px;
+
+  border-radius:14px;
+
+  background:var(--panel);
+  border:1px solid var(--line);
+
+  transition:.18s;
+}
+
+.sport-card:active{
+  transform:scale(.98);
+}
+
+.sport-icon{
+  font-size:26px;
+  margin-bottom:9px;
+}
+
+.sport-name{
+  font-size:13px;
+  font-weight:800;
+}
+
+.sport-description{
+  margin-top:4px;
+
+  color:var(--muted);
+
+  font-size:10px;
+}
+
+/* =========================================
+   LIVE CARD
+========================================= */
+
+.live-card{
+  display:block;
+
+  padding:22px;
+
+  border-radius:15px;
+
+  background:var(--panel);
+
+  border:1px solid var(--line);
+
+  text-align:center;
+}
+
+.live-circle{
+  width:44px;
+  height:44px;
+
+  margin:0 auto 10px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:50%;
+
+  background:rgba(255,70,70,.12);
+}
+
+.live-title{
+  font-size:14px;
+  font-weight:800;
+}
+
+.live-description{
+  margin-top:6px;
+
+  color:var(--muted);
+
+  font-size:11px;
+  line-height:1.5;
+}
+
+/* =========================================
+   API STATUS
+========================================= */
+
+.odds-box{
+  margin-top:15px;
+
+  padding:23px 18px;
+
+  border-radius:15px;
+
+  background:var(--panel);
+
+  border:1px dashed var(--line);
+
+  text-align:center;
+}
+
+.odds-icon{
+  font-size:27px;
+  margin-bottom:8px;
+}
+
+.odds-title{
+  font-size:14px;
+  font-weight:800;
+}
+
+.odds-description{
+  margin-top:6px;
+
+  color:var(--muted);
+
+  font-size:11px;
+  line-height:1.5;
+}
+
+/* =========================================
+   CONNECTION
+========================================= */
+
+.connection{
+  margin-top:17px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  gap:6px;
+
+  color:var(--muted);
+
+  font-size:10px;
+}
+
+.connection-dot{
+  width:7px;
+  height:7px;
+
+  border-radius:50%;
+
+  background:var(--muted);
+}
+
+.connection-dot.online{
+  background:var(--lime);
+}
+
+.connection-dot.offline{
+  background:var(--danger);
+}
+
+/* =========================================
+   BOTTOM NAV
+========================================= */
+
+.bottom-nav{
+  position:fixed;
+
+  left:0;
+  right:0;
+  bottom:0;
+
+  height:65px;
+
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+
+  background:rgba(13,19,27,.98);
+
+  border-top:1px solid var(--line);
+
+  z-index:25;
+}
+
+.bottom-item{
+  position:relative;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+
+  gap:4px;
+
+  color:var(--muted);
+
+  font-size:10px;
+  font-weight:700;
+}
+
+.bottom-item.active{
+  color:var(--lime);
+}
+
+.bottom-icon{
+  font-size:19px;
+}
+
+.bet-count{
+  position:absolute;
+
+  top:7px;
+  margin-left:27px;
+
+  min-width:17px;
+  height:17px;
+
+  padding:0 4px;
+
+  display:none;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:20px;
+
+  background:var(--lime);
+  color:#000;
+
+  font-size:9px;
+  font-weight:900;
+}
+
+.bet-count.show{
+  display:flex;
+}
+
+/* =========================================
+   TOAST
+========================================= */
+
+.toast{
+  position:fixed;
+
+  left:50%;
+  bottom:82px;
+
+  transform:
+    translateX(-50%)
+    translateY(15px);
+
+  padding:10px 15px;
+
+  background:var(--panel2);
+
+  border:1px solid var(--line);
+  border-radius:10px;
+
+  font-size:12px;
+
+  opacity:0;
+  pointer-events:none;
+
+  transition:.25s;
+
+  z-index:100;
+}
+
+.toast.show{
+  opacity:1;
+
+  transform:
+    translateX(-50%)
+    translateY(0);
+}
+
+/* =========================================
+   DESKTOP
+========================================= */
+
+@media(min-width:700px){
+
+  .main{
+    padding-left:25px;
+    padding-right:25px;
+  }
+
+  .sports-grid{
+    grid-template-columns:repeat(4,1fr);
+  }
+
+}
+</style>
+</head>
+
+
+<body>
+
+<!-- =====================================================
+     TOPBAR
+===================================================== -->
+
+<header class="topbar">
+
+  <div class="top-left">
+
+    <button
+      class="icon-btn"
+      id="menuBtn"
+      aria-label="Open menu"
+      type="button"
+    >
+
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+      >
+        <path d="M3 6h18"/>
+        <path d="M3 12h18"/>
+        <path d="M3 18h18"/>
+      </svg>
+
+    </button>
+
+
+    <div class="brand">
+
+      <div class="brand-mark">
+        B
+      </div>
+
+      <div class="brand-name">
+        BETAWIN
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="top-right">
+
+    <button
+      class="balance-chip"
+      id="balanceChip"
+      type="button"
+    >
+      💳
+      <span id="balanceValue">
+        KES 0.00
+      </span>
+    </button>
+
+
+    <button
+      class="icon-btn"
+      id="profileBtn"
+      type="button"
+      aria-label="Profile"
+    >
+
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+      >
+        <circle
+          cx="12"
+          cy="8"
+          r="4"
+        />
+
+        <path
+          d="M4 21c0-4 4-6 8-6s8 2 8 6"
+        />
+      </svg>
+
+    </button>
+
+  </div>
+
+</header>
+
+
+<!-- =====================================================
+     DRAWER OVERLAY
+===================================================== -->
+
+<div
+  class="overlay"
+  id="overlay"
+></div>
+
+
+<!-- =====================================================
+     HAMBURGER DRAWER
+===================================================== -->
+
+<nav
+  class="drawer"
+  id="drawer"
+  aria-label="Main navigation"
+>
+
+  <!-- USER -->
+
+  <div class="drawer-head">
+
+    <div
+      class="drawer-avatar"
+      id="drawerInitials"
+    >
+      U
+    </div>
+
+    <div>
+
+      <div
+        class="drawer-name"
+        id="drawerName"
+      >
+        User
+      </div>
+
+      <div class="drawer-sub">
+        Betawin account
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="drawer-nav">
+
+    <!-- GENERAL -->
+
+    <div class="menu-section">
+      General
+    </div>
+
+
+    <a
+      class="menu-item active"
+      href="index.html"
+    >
+      <span class="menu-icon">🏠</span>
+      <span>Home</span>
+    </a>
+
+
+    <a
+      class="menu-item"
+      href="sports.html"
+    >
+      <span class="menu-icon">⚽</span>
+      <span>Sports</span>
+    </a>
+
+
+    <a
+      class="menu-item"
+      href="live-games.html"
+    >
+      <span class="menu-icon">🔴</span>
+      <span>Live Games</span>
+
+      <span class="menu-badge live-badge">
+        LIVE
+      </span>
+    </a>
+
+
+    <a
+      class="menu-item"
+      href="betslip.html"
+    >
+      <span class="menu-icon">🎟️</span>
+      <span>Betslip</span>
+
+      <span
+        class="menu-badge"
+        id="drawerBetCount"
+        style="display:none;"
+      >
+        0
+      </span>
+    </a>
+
+
+    <a
+      class="menu-item"
+      href="my-bets.html"
+    >
+      <span class="menu-icon">📋</span>
+      <span>My Bets</span>
+    </a>
+
+
+    <!-- SPORTS -->
+
+    <div class="menu-section">
+      Sports
+    </div>
+
+
+    <a
+      class="menu-item"
+      href="sports.html?category=football"
+    >
+      <span class="menu-icon">⚽</span>
+      <span>Football</span>
+    </a>
+
+
+    <a
+      class="menu-item"
+      href="sports.html?category=rugby"
+    >
+      <span class="menu-icon">🏉</span>
+      <span>Rugby</span>
+    </a>
+
+
+    <a
+      class="menu-item"
+      href="sports.html?category=jackpot"
+    >
+      <span class="menu-icon">🎯</span>
+      <span>Jackpot</span>
+    </a>
+
+
+    <a
+      class="menu-item"
+      href="sports.html?category=betawin"
+    >
+      <span class="menu-icon">🏆</span>
+      <span>Betawin Sports</span>
+    </a>
+
+
+    <!-- GAMES -->
+
+    <div class="menu-section">
+      Games
+    </div>
+
+
+    <a
+      class="menu-item"
+      href="games.html"
+    >
+      <span class="menu-icon">🎮</span>
+      <span>Games</span>
+    </a>
+
+
+    <a
+      class="menu-item"
+      href="crash-games.html"
+    >
+      <span class="menu-icon">⚡</span>
+      <span>Crash Games</span>
+    </a>
+
+
+    <a
+      class="menu-item"
+      href="casino.html"
+    >
+      <span class="menu-icon">🎰</span>
+      <span>Casino</span>
+    </a>
+
+
+    <!-- WALLET -->
+
+    <div class="menu-section">
+      Wallet
+    </div>
+
+
+    <a
+      class="menu-item"
+      href="wallet.html"
+    >
+      <span class="menu-icon">💳</span>
+      <span>Wallet</span>
+    </a>
+
+
+    <a
+      class="menu-item"
+      href="deposit.html"
+    >
+      <span class="menu-icon">➕</span>
+      <span>Deposit</span>
+    </a>
+
+
+    <a
+      class="menu-item"
+      href="withdraw.html"
+    >
+      <span class="menu-icon">➖</span>
+      <span>Withdraw</span>
+    </a>
+
+
+    <a
+      class="menu-item"
+      href="transactions.html"
+    >
+      <span class="menu-icon">💰</span>
+      <span>Transactions</span>
+    </a>
+
+
+    <!-- ACCOUNT -->
+
+    <div class="menu-section">
+      Account
+    </div>
+
+
+    <a
+      class="menu-item"
+      href="profile.html"
+    >
+      <span class="menu-icon">👤</span>
+      <span>Profile</span>
+    </a>
+
+
+    <a
+      class="menu-item"
+      href="notifications.html"
+    >
+      <span class="menu-icon">🔔</span>
+      <span>Notifications</span>
+    </a>
+
+
+    <a
+      class="menu-item"
+      href="settings.html"
+    >
+      <span class="menu-icon">⚙️</span>
+      <span>Settings</span>
+    </a>
+
+
+    <a
+      class="menu-item"
+      href="support.html"
+    >
+      <span class="menu-icon">❓</span>
+      <span>Help &amp; Support</span>
+    </a>
+
+  </div>
+
+
+  <!-- LOGOUT -->
+
+  <div class="drawer-bottom">
+
+    <button
+      class="menu-item logout"
+      id="logoutBtn"
+      type="button"
+    >
+      <span class="menu-icon">🚪</span>
+      <span>Logout</span>
+    </button>
+
+  </div>
+
+</nav>
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<main class="main">
+
+  <div class="greeting">
+    Welcome back,
+    <span id="greetName">
+      User
+    </span>
+    👋
+  </div>
+
+
+  <div class="greeting-sub">
+    Explore sports, live events and your account
+  </div>
+
+
+  <!-- QUICK ACTIONS -->
+
+  <div class="quick-grid">
+
+    <a
+      class="quick-card"
+      href="sports.html"
+    >
+
+      <div class="quick-icon">
+        ⚽
+      </div>
+
+      <div class="quick-title">
+        Sports
+      </div>
+
+    </a>
+
+
+    <a
+      class="quick-card live"
+      href="live-games.html"
+    >
+
+      <div class="quick-icon">
+        🔴
+      </div>
+
+      <div class="quick-title">
+        Live Games
+      </div>
+
+    </a>
+
+
+    <a
+      class="quick-card"
+      href="betslip.html"
+    >
+
+      <div class="quick-icon">
+        🎟️
+      </div>
+
+      <div class="quick-title">
+        Betslip
+      </div>
+
+    </a>
+
+  </div>
+
+
+  <!-- SPORTS -->
+
+  <div class="section-title">
+
+    <span>
+      Sports
+    </span>
+
+    <a
+      class="section-link"
+      href="sports.html"
+    >
+      View all
+    </a>
+
+  </div>
+
+
+  <div class="sports-grid">
+
+    <a
+      class="sport-card"
+      href="sports.html?category=football"
+    >
+
+      <div class="sport-icon">
+        ⚽
+      </div>
+
+      <div class="sport-name">
+        Football
+      </div>
+
+      <div class="sport-description">
+        Matches and events
+      </div>
+
+    </a>
+
+
+    <a
+      class="sport-card"
+      href="sports.html?category=rugby"
+    >
+
+      <div class="sport-icon">
+        🏉
+      </div>
+
+      <div class="sport-name">
+        Rugby
+      </div>
+
+      <div class="sport-description">
+        Rugby events
+      </div>
+
+    </a>
+
+
+    <a
+      class="sport-card"
+      href="sports.html?category=jackpot"
+    >
+
+      <div class="sport-icon">
+        🎯
+      </div>
+
+      <div class="sport-name">
+        Jackpot
+      </div>
+
+      <div class="sport-description">
+        Jackpot section
+      </div>
+
+    </a>
+
+
+    <a
+      class="sport-card"
+      href="sports.html?category=betawin"
+    >
+
+      <div class="sport-icon">
+        🏆
+      </div>
+
+      <div class="sport-name">
+        Betawin Sports
+      </div>
+
+      <div class="sport-description">
+        Sports section
+      </div>
+
+    </a>
+
+  </div>
+
+
+  <!-- LIVE GAMES -->
+
+  <div class="section-title">
+
+    <span>
+      Live Games
+    </span>
+
+    <a
+      class="section-link"
+      href="live-games.html"
+    >
+      Open
+    </a>
+
+  </div>
+
+
+  <a
+    class="live-card"
+    href="live-games.html"
+  >
+
+    <div class="live-circle">
+      🔴
+    </div>
+
+    <div class="live-title">
+      Currently Live
+    </div>
+
+    <div class="live-description">
+      Open the Live Games section to view
+      currently available events from your
+      connected sports-data service.
+    </div>
+
+  </a>
+
+
+  <!-- API WAITING -->
+
+  <div class="odds-box">
+
+    <div class="odds-icon">
+      ⏳
+    </div>
+
+    <div class="odds-title">
+      Sports data waiting for API
+    </div>
+
+    <div class="odds-description">
+      Events and odds can be displayed here
+      after your backend sports-data service
+      is connected.
+    </div>
+
+  </div>
+
+
+  <!-- CONNECTION -->
+
+  <div class="connection">
+
+    <span
+      class="connection-dot"
+      id="connDot"
+    ></span>
+
+    <span id="connText">
+      Checking connection…
+    </span>
+
+  </div>
+
+</main>
+
+
+<!-- =====================================================
+     BOTTOM NAV
+===================================================== -->
+
+<nav class="bottom-nav">
+
+  <a
+    class="bottom-item active"
+    href="index.html"
+  >
+
+    <div class="bottom-icon">
+      🏠
+    </div>
+
+    Home
+
+  </a>
+
+
+  <a
+    class="bottom-item"
+    href="live-games.html"
+  >
+
+    <div class="bottom-icon">
+      🔴
+    </div>
+
+    Live
+
+  </a>
+
+
+  <a
+    class="bottom-item"
+    href="betslip.html"
+  >
+
+    <div class="bottom-icon">
+      🎟️
+    </div>
+
+    <span
+      class="bet-count"
+      id="betCount"
+    >
+      0
+    </span>
+
+    Betslip
+
+  </a>
+
+
+  <a
+    class="bottom-item"
+    href="profile.html"
+  >
+
+    <div class="bottom-icon">
+      👤
+    </div>
+
+    Profile
+
+  </a>
+
+</nav>
+
+
+<!-- TOAST -->
+
+<div
+  class="toast"
+  id="toast"
+></div>
+
+
+<script>
+
+/* =====================================================
+   CONFIG
+===================================================== */
+
+const API_BASE =
+  window.BETAWIN_API_BASE ||
+  "http://localhost:5000";
+
+
+/* =====================================================
+   AUTHENTICATION
+===================================================== */
+
+const token =
+  localStorage.getItem(
+    "betawin_token"
+  );
+
+
+if(!token){
+
+  window.location.href =
+    "login.html";
+
+}
+
+
+/* =====================================================
+   AUTH HEADERS
+===================================================== */
+
+function authHeaders(){
+
+  if(!token){
+
+    return {
+      "Content-Type":
+        "application/json"
+    };
+
+  }
+
+  return {
+
+    "Authorization":
+      "Bearer " + token,
+
+    "Content-Type":
+      "application/json"
+
+  };
+
+}
+
+
+/* =====================================================
+   DRAWER
+===================================================== */
+
+const menuBtn =
+  document.getElementById(
+    "menuBtn"
+  );
+
+const drawer =
+  document.getElementById(
+    "drawer"
+  );
+
+const overlay =
+  document.getElementById(
+    "overlay"
+  );
+
+
+function openDrawer(){
+
+  drawer.classList.add(
+    "open"
+  );
+
+  overlay.classList.add(
+    "open"
+  );
+
+}
+
+
+function closeDrawer(){
+
+  drawer.classList.remove(
+    "open"
+  );
+
+  overlay.classList.remove(
+    "open"
+  );
+
+}
+
+
+menuBtn.addEventListener(
+  "click",
+  openDrawer
+);
+
+
+overlay.addEventListener(
+  "click",
+  closeDrawer
+);
+
+
+/* Close drawer after navigation */
+
+document
+  .querySelectorAll(
+    ".drawer a"
+  )
+  .forEach(link => {
+
+    link.addEventListener(
+      "click",
+      closeDrawer
+    );
+
+  });
+
+
+/* =====================================================
+   USER PROFILE
+===================================================== */
+
+async function loadUser(){
+
+  try{
+
+    const response =
+      await fetch(
+        API_BASE +
+        "/api/profile",
+        {
+          method:"GET",
+          headers:authHeaders()
+        }
+      );
+
+
+    if(!response.ok){
+
+      throw new Error(
+        "Profile request failed"
+      );
+
+    }
+
+
+    const data =
+      await response.json();
+
+
+    const user =
+      data.user ||
+      data.profile ||
+      data;
+
+
+    const name =
+      user.name ||
+      user.fullName ||
+      user.username ||
+      "User";
+
+
+    const phone =
+      user.phone ||
+      user.phoneNumber ||
+      "";
+
+
+    updateUserUI(
+      name,
+      phone
+    );
+
+
+  }catch(error){
+
+    console.error(
+      "PROFILE ERROR:",
+      error
+    );
+
+
+    /* Cached account */
+
+    try{
+
+      const cached =
+        JSON.parse(
+          localStorage.getItem(
+            "betawin_user"
+          ) || "null"
+        );
+
+
+      if(cached){
+
+        updateUserUI(
+          cached.name ||
+          cached.fullName ||
+          "User",
+
+          cached.phone ||
+          ""
+        );
+
+      }
+
+    }catch(cacheError){
+
+      console.error(
+        "CACHE USER ERROR:",
+        cacheError
+      );
+
+    }
+
+  }
+
+}
+
+
+function updateUserUI(
+  name,
+  phone
+){
+
+  document.getElementById(
+    "greetName"
+  ).textContent =
+    name;
+
+
+  document.getElementById(
+    "drawerName"
+  ).textContent =
+    name;
+
+
+  const initials =
+    String(name)
+      .trim()
+      .split(/\s+/)
+      .map(
+        word =>
+          word[0]
+      )
+      .slice(0,2)
+      .join("")
+      .toUpperCase();
+
+
+  document.getElementById(
+    "drawerInitials"
+  ).textContent =
+    initials || "U";
+
+
+  localStorage.setItem(
+    "betawin_user",
+    JSON.stringify({
+      name:name,
+      phone:phone
+    })
+  );
+
+}
+
+
+loadUser();
+
+
+/* =====================================================
+   BALANCE
+===================================================== */
+
+async function loadBalance(){
+
+  const element =
+    document.getElementById(
+      "balanceValue"
+    );
+
+
+  try{
+
+    const response =
+      await fetch(
+        API_BASE +
+        "/api/wallet/balance",
+        {
+          method:"GET",
+          headers:authHeaders()
+        }
+      );
+
+
+    if(!response.ok){
+
+      throw new Error(
+        "Balance request failed"
+      );
+
+    }
+
+
+    const data =
+      await response.json();
+
+
+    const amount =
+      Number(
+        data.balance ||
+        data.wallet?.balance ||
+        0
+      );
+
+
+    element.textContent =
+      "KES " +
+      amount.toLocaleString(
+        "en-KE",
+        {
+          minimumFractionDigits:2,
+          maximumFractionDigits:2
+        }
+      );
+
+
+  }catch(error){
+
+    console.error(
+      "BALANCE ERROR:",
+      error
+    );
+
+
+    element.textContent =
+      "KES 0.00";
+
+  }
+
+}
+
+
+loadBalance();
+
+
+/* Wallet button */
+
+document
+  .getElementById(
+    "balanceChip"
+  )
+  .addEventListener(
+    "click",
+    () => {
+
+      window.location.href =
+        "wallet.html";
+
+    }
+  );
+
+
+/* Profile button */
+
+document
+  .getElementById(
+    "profileBtn"
+  )
+  .addEventListener(
+    "click",
+    () => {
+
+      window.location.href =
+        "profile.html";
+
+    }
+  );
+
+
+/* =====================================================
+   BACKEND HEALTH
+===================================================== */
+
+const connDot =
+  document.getElementById(
+    "connDot"
+  );
+
+const connText =
+  document.getElementById(
+    "connText"
+  );
+
+
+async function checkConnection(){
+
+  try{
+
+    const response =
+      await fetch(
+        API_BASE +
+        "/health"
+      );
+
+
+    if(!response.ok){
+
+      throw new Error(
+        "Backend unavailable"
+      );
+
+    }
+
+
+    connDot.className =
+      "connection-dot online";
+
+
+    connText.textContent =
+      "Connected";
+
+
+  }catch(error){
+
+    connDot.className =
+      "connection-dot offline";
+
+
+    connText.textContent =
+      "Offline — retrying…";
+
+  }
+
+}
+
+
+checkConnection();
+
+
+setInterval(
+  checkConnection,
+  15000
+);
+
+
+/* =====================================================
+   BETSLIP COUNT
+===================================================== */
+
+function updateBetslipCount(){
+
+  let count = 0;
+
+
+  try{
+
+    const saved =
+      JSON.parse(
+        localStorage.getItem(
+          "betawin_betslip"
+        ) || "[]"
+      );
+
+
+    if(Array.isArray(saved)){
+
+      count =
+        saved.length;
+
+    }
+
+  }catch(error){
+
+    console.error(
+      "BETSLIP ERROR:",
+      error
+    );
+
+  }
+
+
+  const badge =
+    document.getElementById(
+      "betCount"
+    );
+
+
+  const drawerBadge =
+    document.getElementById(
+      "drawerBetCount"
+    );
+
+
+  if(count > 0){
+
+    badge.textContent =
+      count;
+
+    badge.classList.add(
+      "show"
+    );
+
+
+    drawerBadge.textContent =
+      count;
+
+    drawerBadge.style.display =
+      "flex";
+
+  }else{
+
+    badge.classList.remove(
+      "show"
+    );
+
+
+    drawerBadge.style.display =
+      "none";
+
+  }
+
+}
+
+
+updateBetslipCount();
+
+
+window.addEventListener(
+  "storage",
+  updateBetslipCount
+);
+
+
+setInterval(
+  updateBetslipCount,
+  1000
+);
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+document
+  .getElementById(
+    "logoutBtn"
+  )
+  .addEventListener(
+    "click",
+    () => {
+
+      localStorage.removeItem(
+        "betawin_token"
+      );
+
+
+      localStorage.removeItem(
+        "betawin_user"
+      );
+
+
+      localStorage.removeItem(
+        "betawin_betslip"
+      );
+
+
+      window.location.href =
+        "login.html";
+
+    }
+  );
+
+</script>
+
+</body>
+</html>
