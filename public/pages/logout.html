@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Betawin — Log Out</title>
+<style>
+  :root{
+    --bg:#0A0E12; --panel:#141C26; --line:#223040; --lime:#B4FF39; --lime-dim:#8FDB1E;
+    --text:#EDF2F7; --muted:#7C8998; --muted-2:#4E5B6B; --danger:#FF6B6B;
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+  html,body{background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,sans-serif; height:100%;}
+  button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit;}
+  a{color:inherit; text-decoration:none;}
+
+  .topbar{position:sticky; top:0; z-index:20; display:flex; align-items:center; gap:12px; padding:14px 16px; background:rgba(10,14,18,0.92); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+  .icon-btn{width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:var(--panel); border:1px solid var(--line);}
+  .icon-btn svg{width:19px; height:19px; stroke:var(--text);}
+  .topbar-title{font-weight:700; font-size:16px;}
+
+  .wrap{
+    min-height:calc(100vh - 66px); display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:24px; text-align:center;
+  }
+  .logout-icon{
+    width:64px; height:64px; border-radius:50%; background:rgba(255,107,107,0.1);
+    display:flex; align-items:center; justify-content:center; font-size:26px; margin-bottom:18px;
+  }
+  .logout-title{font-size:18px; font-weight:700; margin-bottom:8px;}
+  .logout-sub{font-size:13px; color:var(--muted); max-width:280px; line-height:1.6; margin-bottom:28px;}
+
+  .btn-row{display:flex; flex-direction:column; gap:10px; width:100%; max-width:320px;}
+  .btn-danger{background:var(--danger); color:#1a0a0a; font-weight:700; font-size:14px; padding:14px; border-radius:12px;}
+  .btn-danger:active{filter:brightness(0.92);}
+  .btn-ghost{background:var(--panel); border:1px solid var(--line); color:var(--text); font-weight:600; font-size:14px; padding:14px; border-radius:12px;}
+
+  .confirmed{display:none; flex-direction:column; align-items:center;}
+  .confirmed.show{display:flex;}
+  .confirmed .logout-icon{background:rgba(180,255,57,0.1); color:var(--lime);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <button class="icon-btn" onclick="window.location.href='index.html'" aria-label="Back">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
+  <div class="topbar-title">Log Out</div>
+</header>
+
+<div class="wrap">
+  <div id="confirmView">
+    <div class="logout-icon">🚪</div>
+    <div class="logout-title">Log out of Betawin?</div>
+    <div class="logout-sub">You'll need to sign back in with your phone number or email to place bets and manage your wallet.</div>
+    <div class="btn-row">
+      <button class="btn-danger" id="confirmBtn">Yes, log me out</button>
+      <button class="btn-ghost" onclick="window.location.href='index.html'">Cancel</button>
+    </div>
+  </div>
+
+  <div class="confirmed" id="confirmedView">
+    <div class="logout-icon">✓</div>
+    <div class="logout-title">You've been logged out</div>
+    <div class="logout-sub">Redirecting to login…</div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('confirmBtn').addEventListener('click', () => {
+    // Clear session data
+    localStorage.removeItem('betawin_token');
+    localStorage.removeItem('betawin_user');
+    localStorage.removeItem('betawin_settings');
+
+    document.getElementById('confirmView').style.display = 'none';
+    document.getElementById('confirmedView').classList.add('show');
+
+    setTimeout(async () => {
+      try{
+        const res = await fetch('login.html', { method: 'HEAD' });
+        window.location.href = res.ok ? 'login.html' : 'index.html';
+      } catch(e){
+        window.location.href = 'index.html';
+      }
+    }, 1400);
+  });
+</script>
+
+</body>
+</html>
+
