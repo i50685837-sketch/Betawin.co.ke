@@ -1659,4 +1659,179 @@ async function loadUser(){
     }catch(cacheError){
 
       console.error(
+  "CACHE ERROR:",
+  cacheError
+);
+
+    }
+
+  }
+
+}
+
+
+/* =========================================
+   START
+========================================= */
+
+loadUser();
+loadBalance();
+checkHealth();
+
+
+/* =========================================
+   TOPBAR NAVIGATION
+========================================= */
+
+document
+  .getElementById("balanceChip")
+  .addEventListener("click", () => {
+
+    window.location.href =
+      "wallet.html";
+
+  });
+
+
+document
+  .getElementById("notifBtn")
+  .addEventListener("click", () => {
+
+    window.location.href =
+      "notifications.html";
+
+  });
+
+
+document
+  .getElementById("profileBtn")
+  .addEventListener("click", () => {
+
+    window.location.href =
+      "profile.html";
+
+  });
+
+
+/* =========================================
+   DRAWER NAVIGATION
+========================================= */
+
+document
+  .querySelectorAll(".drawer-item[data-page]")
+  .forEach(item => {
+
+    item.addEventListener("click", event => {
+
+      event.preventDefault();
+
+      const page =
+        item.getAttribute("data-page");
+
+      closeDrawer();
+
+      if(
+        page &&
+        page !== "index.html"
+      ){
+
+        window.location.href =
+          page;
+
+      }
+
+    });
+
+  });
+
+
+/* =========================================
+   LOGOUT
+========================================= */
+
+document
+  .getElementById("logoutBtn")
+  .addEventListener("click", () => {
+
+    localStorage.removeItem(
+      "betawin_token"
+    );
+
+    localStorage.removeItem(
+      "betawin_user"
+    );
+
+    closeDrawer();
+
+    window.location.replace(
+      "login.html"
+    );
+
+  });
+
+
+/* =========================================
+   KEYBOARD / BACK BUTTON
+========================================= */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if(
+      event.key === "Escape"
+    ){
+
+      closeDrawer();
+
+    }
+
+  }
+);
+
+
+/* =========================================
+   CONNECTION REFRESH
+========================================= */
+
+window.addEventListener(
+  "online",
+  checkHealth
+);
+
+window.addEventListener(
+  "offline",
+  () => {
+
+    connDot.className =
+      "conn-dot offline";
+
+    connText.textContent =
+      "Offline";
+
+  }
+);
+
+
+/* =========================================
+   BALANCE REFRESH
+========================================= */
+
+setInterval(
+  loadBalance,
+  15000
+);
+
+
+/* =========================================
+   PROTECT DASHBOARD
+========================================= */
+
+if(!token){
+
+  window.location.replace(
+    "login.html"
+  );
+
+}
   
