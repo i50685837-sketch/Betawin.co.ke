@@ -1,0 +1,56 @@
+# ==============================
+# SERVER
+# ==============================
+PORT=3000
+NODE_ENV=production
+
+# ==============================
+# MONGODB
+# ==============================
+MONGO_URI=mongodb+srv://USERNAME:PASSWORD@CLUSTER.mongodb.net/DATABASE?retryWrites=true&w=majority
+
+# ==============================
+# AUTH / JWT
+# ==============================
+JWT_SECRET=CHANGE_THIS_TO_A_LONG_RANDOM_SECRET
+JWT_EXPIRES_IN=7d
+
+# ==============================
+# SPORTS API
+# API-Football / API-Sports
+# ==============================
+SPORTS_API_URL=https://v3.football.api-sports.io
+SPORTS_API_KEY=YOUR_SPORTS_API_KEY
+
+# ==============================
+# CRASH GAME API
+# ==============================
+CRASH_API_URL=https://YOUR-CRASH-API.example.com
+CRASH_API_KEY=YOUR_CRASH_API_KEY
+CRASH_API_SECRET=YOUR_CRASH_API_SECRET
+
+# ==============================
+# M-PESA DARAJA
+# ==============================
+MPESA_ENV=sandbox
+MPESA_CONSUMER_KEY=YOUR_CONSUMER_KEY
+MPESA_CONSUMER_SECRET=YOUR_CONSUMER_SECRET
+
+MPESA_SHORTCODE=YOUR_SHORTCODE
+MPESA_PASSKEY=YOUR_PASSKEY
+
+MPESA_CALLBACK_URL=https://YOUR-DOMAIN.com/api/payments/mpesa/callback
+
+# ==============================
+# CASINO API
+# ==============================
+CASINO_API_URL=https://YOUR-CASINO-API.example.com
+CASINO_API_KEY=YOUR_CASINO_API_KEY
+CASINO_API_SECRET=YOUR_CASINO_API_SECRET
+
+# ==============================
+# OPTIONAL CASINO PROVIDER
+# ==============================
+CASINO_PROVIDER=YOUR_PROVIDER_NAME
+CASINO_OPERATOR_ID=YOUR_OPERATOR_ID
+CASINO_API_TOKEN=YOUR_CASINO_API_TOKEN
