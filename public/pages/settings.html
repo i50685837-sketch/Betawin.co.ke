@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Betawin — Settings</title>
+<style>
+  :root{
+    --bg:#0A0E12; --panel:#141C26; --line:#223040; --lime:#B4FF39; --lime-dim:#8FDB1E;
+    --text:#EDF2F7; --muted:#7C8998; --muted-2:#4E5B6B; --danger:#FF6B6B;
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+  html,body{background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,sans-serif; height:100%;}
+  button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit;}
+  a{color:inherit; text-decoration:none;}
+
+  .topbar{position:sticky; top:0; z-index:20; display:flex; align-items:center; gap:12px; padding:14px 16px; background:rgba(10,14,18,0.92); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+  .icon-btn{width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:var(--panel); border:1px solid var(--line);}
+  .icon-btn svg{width:19px; height:19px; stroke:var(--text);}
+  .topbar-title{font-weight:700; font-size:16px;}
+
+  .main{padding:18px 16px 90px; max-width:520px; margin:0 auto;}
+  .section-label{font-size:11px; color:var(--muted-2); text-transform:uppercase; letter-spacing:1.2px; margin:20px 0 10px; padding:0 4px;}
+  .section-label:first-child{margin-top:0;}
+
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden;}
+  .row{display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-top:1px solid var(--line);}
+  .row:first-child{border-top:none;}
+  .row-left{display:flex; align-items:center; gap:12px;}
+  .row-icon{width:34px; height:34px; border-radius:9px; background:rgba(180,255,57,0.08); display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0;}
+  .row-title{font-size:13.5px; font-weight:600;}
+  .row-sub{font-size:11px; color:var(--muted); margin-top:1px;}
+  .row-arrow{color:var(--muted-2); font-size:14px;}
+
+  .toggle{width:44px; height:26px; border-radius:20px; background:var(--line); position:relative; flex-shrink:0; transition:background .15s;}
+  .toggle::after{content:""; position:absolute; top:3px; left:3px; width:20px; height:20px; border-radius:50%; background:var(--muted); transition:transform .18s, background .18s;}
+  .toggle.on{background:rgba(180,255,57,0.25);}
+  .toggle.on::after{transform:translateX(18px); background:var(--lime);}
+
+  .limit-row{padding:14px 16px; border-top:1px solid var(--line);}
+  .limit-row:first-child{border-top:none;}
+  .limit-top{display:flex; justify-content:space-between; margin-bottom:8px;}
+  .limit-input{width:90px; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:7px 10px; color:var(--text); font-size:13px; text-align:right;}
+  .limit-input:focus{outline:none; border-color:var(--lime);}
+
+  .danger-btn{width:100%; text-align:center; padding:13px; color:var(--danger); font-weight:600; font-size:13.5px;}
+
+  .status-note{display:flex; align-items:center; gap:6px; justify-content:center; margin-top:20px; font-size:11px; color:var(--muted-2);}
+  .status-dot{width:6px; height:6px; border-radius:50%; background:var(--muted-2);}
+  .status-dot.online{background:var(--lime);}
+  .status-dot.offline{background:var(--danger);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <button class="icon-btn" onclick="window.location.href='index.html'" aria-label="Back">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
+  <div class="topbar-title">Settings</div>
+</header>
+
+<main class="main">
+
+  <div class="section-label">Notifications</div>
+  <div class="card">
+    <div class="row">
+      <div class="row-left">
+        <div class="row-icon">🔔</div>
+        <div>
+          <div class="row-title">Push notifications</div>
+          <div class="row-sub">Bet results, promos, alerts</div>
+        </div>
+      </div>
+      <div class="toggle on" data-key="notif_push"></div>
+    </div>
+    <div class="row">
+      <div class="row-left">
+        <div class="row-icon">📧</div>
+        <div>
+          <div class="row-title">Email updates</div>
+          <div class="row-sub">Statements &amp; offers</div>
+        </div>
+      </div>
+      <div class="toggle" data-key="notif_email"></div>
+    </div>
+  </div>
+
+  <div class="section-label">Security</div>
+  <div class="card">
+    <a class="row" data-page="change-password.html">
+      <div class="row-left">
+        <div class="row-icon">🔒</div>
+        <div>
+          <div class="row-title">Change password</div>
+        </div>
+      </div>
+      <div class="row-arrow">→</div>
+    </a>
+    <div class="row">
+      <div class="row-left">
+        <div class="row-icon">🛡️</div>
+        <div>
+          <div class="row-title">Two-factor authentication</div>
+          <div class="row-sub">Extra login security</div>
+        </div>
+      </div>
+      <div class="toggle" data-key="two_factor"></div>
+    </div>
+  </div>
+
+  <div class="section-label">Responsible play</div>
+  <div class="card">
+    <div class="limit-row">
+      <div class="limit-top">
+        <span class="row-title">Daily deposit limit</span>
+        <input class="limit-input" id="limitDeposit" placeholder="KES" />
+      </div>
+      <div class="row-sub">Leave blank for no limit</div>
+    </div>
+    <div class="limit-row">
+      <div class="limit-top">
+        <span class="row-title">Session reminder</span>
+      </div>
+      <div class="row-sub" style="margin-bottom:8px;">Get reminded after time spent playing</div>
+      <div class="toggle" data-key="session_reminder"></div>
+    </div>
+    <a class="row" data-page="self-exclusion.html">
+      <div class="row-title">Self-exclusion</div>
+      <div class="row-arrow">→</div>
+    </a>
+  </div>
+
+  <div class="section-label">Preferences</div>
+  <div class="card">
+    <div class="row">
+      <div class="row-left">
+        <div class="row-icon">🌐</div>
+        <div class="row-title">Language</div>
+      </div>
+      <div class="row-sub">English</div>
+    </div>
+    <div class="row">
+      <div class="row-left">
+        <div class="row-icon">💱</div>
+        <div class="row-title">Currency</div>
+      </div>
+      <div class="row-sub">KES</div>
+    </div>
+  </div>
+
+  <div class="section-label">Account</div>
+  <div class="card">
+    <button class="danger-btn" data-page="logout.html">Log out</button>
+  </div>
+
+  <div class="status-note">
+    <span class="status-dot" id="connDot"></span>
+    <span id="connText">Checking connection…</span>
+  </div>
+</main>
+
+<script>
+  const API_BASE = window.BETAWIN_API_BASE || 'http://localhost:5000';
+  const token = localStorage.getItem('betawin_token');
+  function authHeaders(){ return token ? { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' }; }
+
+  // Toggles persisted locally, synced to backend when available
+  function getSettings(){
+    try{ return JSON.parse(localStorage.getItem('betawin_settings') || '{}'); }catch(e){ return {}; }
+  }
+  function saveSettings(s){ localStorage.setItem('betawin_settings', JSON.stringify(s)); }
+
+  const settings = getSettings();
+  document.querySelectorAll('.toggle').forEach(t => {
+    const key = t.dataset.key;
+    if(settings[key]) t.classList.add('on');
+    t.addEventListener('click', async () => {
+      t.classList.toggle('on');
+      settings[key] = t.classList.contains('on');
+      saveSettings(settings);
+      try{
+        await fetch(API_BASE + '/api/settings', { method:'PUT', headers: authHeaders(), body: JSON.stringify(settings) });
+      } catch(e){ /* stays saved locally until backend is connected */ }
+    });
+  });
+
+  document.getElementById('limitDeposit').addEventListener('change', (e) => {
+    settings.deposit_limit = e.target.value;
+    saveSettings(settings);
+  });
+  if(settings.deposit_limit) document.getElementById('limitDeposit').value = settings.deposit_limit;
+
+  document.querySelectorAll('[data-page]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = el.dataset.page;
+      fetch(target, { method:'HEAD' }).then(res => {
+        if(res.ok) window.location.href = target;
+      }).catch(()=>{});
+    });
+  });
+
+  async function pollHealth(){
+    const dot = document.getElementById('connDot'), txt = document.getElementById('connText');
+    try{
+      const res = await fetch(API_BASE + '/health', { headers: authHeaders() });
+      if(!res.ok) throw new Error();
+      dot.className = 'status-dot online'; txt.textContent = 'Connected';
+    } catch(e){ dot.className = 'status-dot offline'; txt.textContent = 'Offline — retrying…'; }
+  }
+  pollHealth(); setInterval(pollHealth, 15000);
+</script>
+
+</body>
+</html>
+
