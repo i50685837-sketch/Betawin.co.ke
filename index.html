@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Betawin</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      color: #fff;
+      background:
+        radial-gradient(circle at top right, #173c75, transparent 35%),
+        radial-gradient(circle at bottom left, #72114b, transparent 35%),
+        #050711;
+    }
+
+    header {
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 25px;
+      background: rgba(5, 7, 17, .95);
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+
+    .logo {
+      font-size: 27px;
+      font-weight: 800;
+      color: #ff4da6;
+    }
+
+    .logo span {
+      color: #3daeff;
+    }
+
+    .top-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .top-buttons a {
+      text-decoration: none;
+      color: white;
+      padding: 10px 17px;
+      border-radius: 9px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .login {
+      border: 1px solid #3daeff;
+      background: rgba(61,174,255,.08);
+    }
+
+    .register {
+      background: linear-gradient(90deg, #ff3f9f, #287cff);
+    }
+
+    .hero {
+      min-height: calc(100vh - 70px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 30px 20px;
+    }
+
+    .hero-content {
+      max-width: 850px;
+      width: 100%;
+    }
+
+    .hero h1 {
+      font-size: clamp(45px, 9vw, 80px);
+      line-height: 1;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(90deg, #ff43a5, #43b5ff);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      color: #aeb6c8;
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+
+    .main-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .main-buttons a {
+      text-decoration: none;
+      color: white;
+      padding: 15px 30px;
+      border-radius: 13px;
+      font-weight: bold;
+      font-size: 16px;
+      transition: .25s;
+    }
+
+    .main-buttons a:hover {
+      transform: translateY(-3px);
+    }
+
+    .register-main {
+      border: 1px solid #ff4da6;
+      background: rgba(255,77,166,.08);
+    }
+
+    .login-main {
+      border: 1px solid #3daeff;
+      background: rgba(61,174,255,.08);
+    }
+
+    .features {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 20px 50px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+    }
+
+    .feature {
+      padding: 20px;
+      text-align: center;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 15px;
+    }
+
+    .feature .icon {
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+
+    .feature h3 {
+      font-size: 16px;
+    }
+
+    .feature p {
+      color: #9099ad;
+      font-size: 13px;
+      margin-top: 7px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      color: #70788a;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+
+    @media (max-width: 600px) {
+      header {
+        padding: 0 15px;
+      }
+
+      .logo {
+        font-size: 23px;
+      }
+
+      .top-buttons a {
+        padding: 8px 11px;
+        font-size: 12px;
+      }
+
+      .hero h1 {
+        font-size: 48px;
+      }
+
+      .hero p {
+        font-size: 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+
+    <div class="logo">
+      Beta<span>win</span>
+    </div>
+
+    <div class="top-buttons">
+      <a href="login.html" class="login">
+        Login
+      </a>
+
+      <a href="register.html" class="register">
+        Register
+      </a>
+    </div>
+
+  </header>
+
+  <main>
+
+    <section class="hero">
+
+      <div class="hero-content">
+
+        <h1>
+          Welcome to <span>Betawin</span>
+        </h1>
+
+        <p>
+          Sports, live scores and games in one modern platform.
+        </p>
+
+        <div class="main-buttons">
+
+          <a href="register.html" class="register-main">
+            📝 Register
+          </a>
+
+          <a href="login.html" class="login-main">
+            🔐 Login
+          </a>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <section class="features">
+
+      <div class="feature">
+        <div class="icon">⚽</div>
+        <h3>Sports</h3>
+        <p>Sports and match information</p>
+      </div>
+
+      <div class="feature">
+        <div class="icon">🔴</div>
+        <h3>Live Games</h3>
+        <p>Live score interface</p>
+      </div>
+
+      <div class="feature">
+        <div class="icon">🎰</div>
+        <h3>Games</h3>
+        <p>Explore available games</p>
+      </div>
+
+      <div class="feature">
+        <div class="icon">📱</div>
+        <h3>Mobile Ready</h3>
+        <p>Works smoothly on mobile devices</p>
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer>
+    © 2026 Betawin
+  </footer>
+
+</body>
+</html>
