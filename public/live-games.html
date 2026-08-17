@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Betawin — Live Scores</title>
+
+<style>
+:root{
+  --bg:#080b10;
+  --panel:#111720;
+  --panel2:#151d28;
+  --line:#24303d;
+  --lime:#b4ff39;
+  --text:#f2f5f7;
+  --muted:#84909e;
+  --red:#ff5f6d;
+  --blue:#4da3ff;
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  -webkit-tap-highlight-color:transparent;
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
+  min-height:100vh;
+}
+
+button{
+  font:inherit;
+  border:0;
+  cursor:pointer;
+  color:inherit;
+}
+
+a{
+  text-decoration:none;
+  color:inherit;
+}
+
+/* =========================
+   TOPBAR
+========================= */
+
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:50;
+
+  height:64px;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding:0 15px;
+
+  background:rgba(8,11,16,.94);
+  backdrop-filter:blur(14px);
+
+  border-bottom:1px solid var(--line);
+}
+
+.top-left{
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+
+.back-btn{
+  width:38px;
+  height:38px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:10px;
+
+  background:var(--panel);
+  border:1px solid var(--line);
+
+  font-size:21px;
+}
+
+.brand{
+  font-size:16px;
+  font-weight:800;
+  letter-spacing:.5px;
+}
+
+.brand span{
+  color:var(--lime);
+}
+
+.refresh-btn{
+  width:38px;
+  height:38px;
+
+  border-radius:10px;
+
+  background:var(--panel);
+  border:1px solid var(--line);
+
+  font-size:19px;
+
+  transition:.2s;
+}
+
+.refresh-btn.loading{
+  animation:spin .8s linear infinite;
+}
+
+@keyframes spin{
+  to{
+    transform:rotate(360deg);
+  }
+}
+
+/* =========================
+   PAGE
+========================= */
+
+.container{
+  width:100%;
+  max-width:720px;
+  margin:auto;
+
+  padding:18px 14px 90px;
+}
+
+.title-row{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+
+  margin-bottom:15px;
+}
+
+.title{
+  font-size:22px;
+  font-weight:800;
+}
+
+.subtitle{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:4px;
+}
+
+/* =========================
+   LIVE STATUS
+========================= */
+
+.status-bar{
+  display:flex;
+  align-items:center;
+  gap:7px;
+
+  width:max-content;
+
+  padding:6px 10px;
+
+  border-radius:20px;
+
+  background:rgba(180,255,57,.08);
+  border:1px solid rgba(180,255,57,.18);
+
+  color:var(--lime);
+  font-size:11px;
+  font-weight:700;
+}
+
+.status-dot{
+  width:7px;
+  height:7px;
+
+  border-radius:50%;
+
+  background:var(--lime);
+
+  box-shadow:0 0 8px var(--lime);
+
+  animation:pulse 1.2s infinite;
+}
+
+@keyframes pulse{
+  50%{
+    opacity:.35;
+  }
+}
+
+/* =========================
+   FILTERS
+========================= */
+
+.filters{
+  display:flex;
+  gap:8px;
+
+  overflow-x:auto;
+
+  padding-bottom:5px;
+  margin-bottom:17px;
+
+  scrollbar-width:none;
+}
+
+.filters::-webkit-scrollbar{
+  display:none;
+}
+
+.filter{
+  flex:0 0 auto;
+
+  padding:9px 14px;
+
+  border-radius:20px;
+
+  background:var(--panel);
+
+  border:1px solid var(--line);
+
+  color:var(--muted);
+
+  font-size:12px;
+  font-weight:600;
+}
+
+.filter.active{
+  background:var(--lime);
+  color:#080b10;
+  border-color:var(--lime);
+}
+
+/* =========================
+   SECTION
+========================= */
+
+.section{
+  margin-bottom:22px;
+}
+
+.section-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  margin-bottom:9px;
+
+  font-size:13px;
+  font-weight:800;
+}
+
+.section-title small{
+  color:var(--muted);
+  font-size:10px;
+  font-weight:500;
+}
+
+/* =========================
+   MATCH CARD
+========================= */
+
+.match-card{
+  background:var(--panel);
+
+  border:1px solid var(--line);
+
+  border-radius:14px;
+
+  margin-bottom:9px;
+
+  overflow:hidden;
+}
+
+.match-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding:10px 12px;
+
+  background:rgba(255,255,255,.015);
+
+  border-bottom:1px solid var(--line);
+}
+
+.competition{
+  color:var(--muted);
+  font-size:10px;
+  font-weight:600;
+}
+
+.live-label{
+  display:flex;
+  align-items:center;
+  gap:5px;
+
+  color:var(--red);
+
+  font-size:10px;
+  font-weight:800;
+}
+
+.live-label span{
+  width:6px;
+  height:6px;
+
+  background:var(--red);
+
+  border-radius:50%;
+
+  animation:pulse 1s infinite;
+}
+
+.match-body{
+  padding:14px 13px;
+}
+
+.teams{
+  display:grid;
+  grid-template-columns:1fr 65px 1fr;
+
+  align-items:center;
+
+  gap:8px;
+}
+
+.team{
+  font-size:13px;
+  font-weight:700;
+}
+
+.team.home{
+  text-align:right;
+}
+
+.team.away{
+  text-align:left;
+}
+
+.score{
+  text-align:center;
+
+  font-size:21px;
+  font-weight:900;
+
+  letter-spacing:1px;
+}
+
+.time{
+  text-align:center;
+
+  margin-top:4px;
+
+  color:var(--red);
+
+  font-size:9px;
+  font-weight:800;
+}
+
+/* =========================
+   UPCOMING
+========================= */
+
+.upcoming-time{
+  text-align:center;
+
+  font-size:10px;
+  color:var(--muted);
+
+  margin-top:5px;
+}
+
+/* =========================
+   COMPLETED
+========================= */
+
+.finished{
+  color:var(--muted);
+}
+
+.finished .score{
+  color:var(--text);
+}
+
+/* =========================
+   EMPTY
+========================= */
+
+.empty{
+  padding:35px 20px;
+
+  text-align:center;
+
+  background:var(--panel);
+
+  border:1px dashed var(--line);
+
+  border-radius:14px;
+}
+
+.empty-icon{
+  font-size:28px;
+  margin-bottom:9px;
+}
+
+.empty-title{
+  font-weight:800;
+  font-size:14px;
+}
+
+.empty-text{
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.5;
+
+  margin-top:5px;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer{
+  text-align:center;
+
+  color:var(--muted);
+
+  font-size:10px;
+
+  margin-top:25px;
+}
+
+@media(max-width:430px){
+
+  .teams{
+    grid-template-columns:1fr 58px 1fr;
+  }
+
+  .team{
+    font-size:12px;
+  }
+
+  .score{
+    font-size:19px;
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+
+  <div class="top-left">
+
+    <button
+      class="back-btn"
+      id="backBtn"
+      aria-label="Back">
+      ‹
+    </button>
+
+    <div class="brand">
+      BET<span>AWIN</span>
+    </div>
+
+  </div>
+
+  <button
+    class="refresh-btn"
+    id="refreshBtn"
+    aria-label="Refresh scores">
+    ↻
+  </button>
+
+</header>
+
+
+<main class="container">
+
+  <div class="title-row">
+
+    <div>
+      <div class="title">
+        Live Scores
+      </div>
+
+      <div class="subtitle">
+        Follow matches and results in real time
+      </div>
+    </div>
+
+    <div class="status-bar">
+      <span class="status-dot"></span>
+      LIVE
+    </div>
+
+  </div>
+
+
+  <!-- SPORT FILTERS -->
+
+  <div class="filters">
+
+    <button
+      class="filter active"
+      data-sport="all">
+      All
+    </button>
+
+    <button
+      class="filter"
+      data-sport="football">
+      ⚽ Football
+    </button>
+
+    <button
+      class="filter"
+      data-sport="rugby">
+      🏉 Rugby
+    </button>
+
+    <button
+      class="filter"
+      data-sport="basketball">
+      🏀 Basketball
+    </button>
+
+    <button
+      class="filter"
+      data-sport="tennis">
+      🎾 Tennis
+    </button>
+
+  </div>
+
+
+  <!-- LIVE MATCHES -->
+
+  <section class="section">
+
+    <div class="section-title">
+      <span>🔴 Live Now</span>
+      <small id="liveCount">
+        0 matches
+      </small>
+    </div>
+
+    <div id="liveMatches"></div>
+
+  </section>
+
+
+  <!-- UPCOMING -->
+
+  <section class="section">
+
+    <div class="section-title">
+      <span>🕐 Upcoming</span>
+    </div>
+
+    <div id="upcomingMatches"></div>
+
+  </section>
+
+
+  <!-- FINISHED -->
+
+  <section class="section">
+
+    <div class="section-title">
+      <span>✓ Results</span>
+    </div>
+
+    <div id="finishedMatches"></div>
+
+  </section>
+
+
+  <div class="footer">
+    Scores are supplied by the configured sports-data service.
+  </div>
+
+</main>
+
+
+<script>
+
+/* =========================================
+   CONFIGURATION
+========================================= */
+
+/*
+  Change this when your backend is ready.
+
+  Example:
+
+  window.BETAWIN_API_BASE =
+      "https://your-backend.onrender.com";
+
+  Expected endpoint:
+
+  GET /api/live-games
+*/
+
+const API_BASE =
+  window.BETAWIN_API_BASE ||
+  "http://localhost:5000";
+
+
+/* =========================================
+   ELEMENTS
+========================================= */
+
+const liveMatches =
+  document.getElementById("liveMatches");
+
+const upcomingMatches =
+  document.getElementById("upcomingMatches");
+
+const finishedMatches =
+  document.getElementById("finishedMatches");
+
+const liveCount =
+  document.getElementById("liveCount");
+
+const refreshBtn =
+  document.getElementById("refreshBtn");
+
+
+/* =========================================
+   CURRENT FILTER
+========================================= */
+
+let currentSport = "all";
+
+let allMatches = [];
+
+
+/* =========================================
+   DEMO-FREE EMPTY STATE
+========================================= */
+
+/*
+  We intentionally don't invent live scores.
+
+  Until your backend/API returns actual
+  matches, the page shows an empty state.
+*/
+
+const emptyMessage = `
+  <div class="empty">
+
+    <div class="empty-icon">
+      📡
+    </div>
+
+    <div class="empty-title">
+      No live matches available
+    </div>
+
+    <div class="empty-text">
+      Live results will appear here when
+      the configured sports-data API
+      provides match information.
+    </div>
+
+  </div>
+`;
+
+
+/* =========================================
+   AUTH
+========================================= */
+
+function authHeaders(){
+
+  const token =
+    localStorage.getItem(
+      "betawin_token"
+    );
+
+  if(!token){
+    return {};
+  }
+
+  return {
+    "Authorization":
+      "Bearer " + token
+  };
+
+}
+
+
+/* =========================================
+   LOAD LIVE DATA
+========================================= */
+
+async function loadMatches(){
+
+  refreshBtn.classList.add("loading");
+
+  try{
+
+    const response =
+      await fetch(
+        API_BASE + "/api/live-games",
+        {
+          method:"GET",
+          headers:{
+            ...authHeaders(),
+            "Accept":"application/json"
+          }
+        }
+      );
+
+
+    if(!response.ok){
+
+      throw new Error(
+        "Live games request failed"
+      );
+
+    }
+
+
+    const data =
+      await response.json();
+
+
+    /*
+      Supported response formats:
+
+      {
+        matches: [...]
+      }
+
+      OR
+
+      [...]
+    */
+
+    if(Array.isArray(data)){
+
+      allMatches = data;
+
+    }else{
+
+      allMatches =
+        Array.isArray(data.matches)
+          ? data.matches
+          : [];
+
+    }
+
+
+    renderMatches();
+
+
+  }catch(error){
+
+    console.error(
+      "LIVE SCORES ERROR:",
+      error
+    );
+
+
+    allMatches = [];
+
+    renderEmptyStates();
+
+  }finally{
+
+    refreshBtn.classList.remove(
+      "loading"
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   FILTER
+========================================= */
+
+document
+  .querySelectorAll(".filter")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        document
+          .querySelectorAll(".filter")
+          .forEach(btn =>
+            btn.classList.remove(
+              "active"
+            )
+          );
+
+        button.classList.add(
+          "active"
+        );
+
+        currentSport =
+          button.dataset.sport;
+
+        renderMatches();
+
+      }
+    );
+
+  });
+
+
+/* =========================================
+   NORMALIZE SPORT
+========================================= */
+
+function getSport(match){
+
+  return String(
+    match.sport ||
+    match.leagueSport ||
+    ""
+  ).toLowerCase();
+
+}
+
+
+/* =========================================
+   FILTER MATCHES
+========================================= */
+
+function filteredMatches(){
+
+  if(currentSport === "all"){
+
+    return allMatches;
+
+  }
+
+  return allMatches.filter(
+    match =>
+      getSport(match) ===
+      currentSport
+  );
+
+}
+
+
+/* =========================================
+   MATCH TYPE
+========================================= */
+
+function matchStatus(match){
+
+  const status =
+    String(
+      match.status ||
+      match.state ||
+      ""
+    ).toLowerCase();
+
+
+  if(
+    status === "live" ||
+    status === "inplay" ||
+    status === "in-play"
+  ){
+
+    return "live";
+
+  }
+
+
+  if(
+    status === "finished" ||
+    status === "completed" ||
+    status === "ft"
+  ){
+
+    return "finished";
+
+  }
+
+
+  return "upcoming";
+
+}
+
+
+/* =========================================
+   ESCAPE HTML
+========================================= */
+
+function escapeHTML(value){
+
+  return String(
+    value ?? ""
+  )
+  .replace(/&/g,"&amp;")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;")
+  .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================
+   MATCH CARD
+========================================= */
+
+function createMatchCard(match){
+
+  const status =
+    matchStatus(match);
+
+
+  const home =
+    escapeHTML(
+      match.homeTeam ||
+      match.home ||
+      "Home"
+    );
+
+
+  const away =
+    escapeHTML(
+      match.awayTeam ||
+      match.away ||
+      "Away"
+    );
+
+
+  const homeScore =
+    escapeHTML(
+      match.homeScore ??
+      match.scoreHome ??
+      "-"
+    );
+
+
+  const awayScore =
+    escapeHTML(
+      match.awayScore ??
+      match.scoreAway ??
+      "-"
+    );
+
+
+  const competition =
+    escapeHTML(
+      match.competition ||
+      match.league ||
+      "Match"
+    );
+
+
+  const minute =
+    escapeHTML(
+      match.minute ||
+      match.clock ||
+      ""
+    );
+
+
+  const kickoff =
+    escapeHTML(
+      match.startTime ||
+      match.time ||
+      ""
+    );
+
+
+  const isLive =
+    status === "live";
+
+
+  const isFinished =
+    status === "finished";
+
+
+  return `
+
+    <article
+      class="match-card ${
+        isFinished
+          ? "finished"
+          : ""
+      }">
+
+      <div class="match-head">
+
+        <div class="competition">
+          ${competition}
+        </div>
+
+        ${
+          isLive
+
+          ? `
+
+            <div class="live-label">
+              <span></span>
+              LIVE
+            </div>
+
+          `
+
+          : isFinished
+
+          ? `
+
+            <div class="competition">
+              FT
+            </div>
+
+          `
+
+          : `
+
+            <div class="competition">
+              UPCOMING
+            </div>
+
+          `
+        }
+
+      </div>
+
+
+      <div class="match-body">
+
+        <div class="teams">
+
+          <div class="team home">
+            ${home}
+          </div>
+
+
+          <div>
+
+            <div class="score">
+              ${homeScore}
+              :
+              ${awayScore}
+            </div>
+
+
+            ${
+              isLive
+
+              ? `
+
+                <div class="time">
+                  ${minute}
+                </div>
+
+              `
+
+              : !isFinished
+
+              ? `
+
+                <div class="upcoming-time">
+                  ${kickoff}
+                </div>
+
+              `
+
+              : ""
+
+            }
+
+          </div>
+
+
+          <div class="team away">
+            ${away}
+          </div>
+
+        </div>
+
+      </div>
+
+    </article>
+
+  `;
+
+}
+
+
+/* =========================================
+   RENDER
+========================================= */
+
+function renderMatches(){
+
+  const matches =
+    filteredMatches();
+
+
+  const live =
+    matches.filter(
+      m =>
+        matchStatus(m) ===
+        "live"
+    );
+
+
+  const upcoming =
+    matches.filter(
+      m =>
+        matchStatus(m) ===
+        "upcoming"
+    );
+
+
+  const finished =
+    matches.filter(
+      m =>
+        matchStatus(m) ===
+        "finished"
+    );
+
+
+  liveCount.textContent =
+    `${live.length} ${
+      live.length === 1
+        ? "match"
+        : "matches"
+    }`;
+
+
+  liveMatches.innerHTML =
+    live.length
+      ? live.map(
+          createMatchCard
+        ).join("")
+      : emptyMessage;
+
+
+  upcomingMatches.innerHTML =
+    upcoming.length
+      ? upcoming.map(
+          createMatchCard
+        ).join("")
+      : emptyMessage;
+
+
+  finishedMatches.innerHTML =
+    finished.length
+      ? finished.map(
+          createMatchCard
+        ).join("")
+      : emptyMessage;
+
+}
+
+
+/* =========================================
+   EMPTY STATES
+========================================= */
+
+function renderEmptyStates(){
+
+  liveCount.textContent =
+    "0 matches";
+
+  liveMatches.innerHTML =
+    emptyMessage;
+
+  upcomingMatches.innerHTML =
+    emptyMessage;
+
+  finishedMatches.innerHTML =
+    emptyMessage;
+
+}
+
+
+/* =========================================
+   REFRESH
+========================================= */
+
+refreshBtn.addEventListener(
+  "click",
+  loadMatches
+);
+
+
+/*
+  Refresh every 30 seconds.
+
+  This only fetches data; it does not
+  create fake scores.
+*/
+
+setInterval(
+  loadMatches,
+  30000
+);
+
+
+/* =========================================
+   BACK BUTTON
+========================================= */
+
+document
+  .getElementById("backBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      if(
+        window.history.length > 1
+      ){
+
+        window.history.back();
+
+      }else{
+
+        window.location.href =
+          "index.html";
+
+      }
+
+    }
+  );
+
+
+/* =========================================
+   INITIAL LOAD
+========================================= */
+
+loadMatches();
+
+</script>
+
+</body>
+      </html>
