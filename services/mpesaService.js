@@ -4,7 +4,7 @@ class MpesaService {
   constructor() {
     this.consumerKey = process.env.MPESA_CONSUMER_KEY;
     this.consumerSecret = process.env.MPESA_CONSUMER_SECRET;
-    this.shortCode = process.env.MPESA_SHORTCODE || '174379'; // Default Sandbox Till
+    this.shortCode = process.env.MPESA_SHORTCODE || '1125187'; // Default Sandbox Till
     this.passkey = process.env.MPESA_PASSKEY || 'bfb272756020a96b4da30a3b953707407547a1552d33d84a2485c53554d65c6d';
     this.callbackUrl = process.env.MPESA_CALLBACK_URL;
     this.baseUrl = process.env.MPESA_ENV === 'production' 
