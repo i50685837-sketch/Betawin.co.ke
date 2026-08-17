@@ -7,7 +7,8 @@ NODE_ENV=production
 # ==============================
 # MONGODB
 # ==============================
-MONGO_URI=mongodb+srv://USERNAME:PASSWORD@CLUSTER.mongodb.net/DATABASE?retryWrites=true&w=majority
+MONGO_URI=mongodb+srv://Mordeall:innocentslomo@cluster0.yyiaggb.mongodb.net/?appName=Cluster0
+
 
 # ==============================
 # AUTH / JWT
