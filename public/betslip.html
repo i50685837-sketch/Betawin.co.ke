@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Betawin — Betslip</title>
+
+<style>
+:root{
+  --bg:#0A0E12;
+  --panel:#141C26;
+  --panel2:#0E141C;
+  --line:#223040;
+  --lime:#B4FF39;
+  --text:#EDF2F7;
+  --muted:#7C8998;
+  --danger:#FF6B6B;
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  min-height:100vh;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+
+.topbar{
+  height:64px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 16px;
+  background:var(--panel2);
+  border-bottom:1px solid var(--line);
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+.left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.back{
+  width:40px;
+  height:40px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:var(--panel);
+  color:var(--text);
+  font-size:20px;
+  cursor:pointer;
+}
+
+.brand{
+  font-weight:800;
+  letter-spacing:.5px;
+}
+
+.badge{
+  min-width:24px;
+  height:24px;
+  padding:0 7px;
+  border-radius:20px;
+  background:var(--lime);
+  color:#0A0E12;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:12px;
+  font-weight:800;
+}
+
+main{
+  width:min(100%,620px);
+  margin:auto;
+  padding:20px 16px 100px;
+}
+
+.title{
+  font-size:22px;
+  font-weight:800;
+  margin-bottom:5px;
+}
+
+.subtitle{
+  color:var(--muted);
+  font-size:13px;
+  margin-bottom:20px;
+}
+
+.notice{
+  padding:14px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--panel);
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.5;
+  margin-bottom:16px;
+}
+
+.slip{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:16px;
+  overflow:hidden;
+}
+
+.slip-head{
+  padding:14px 16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid var(--line);
+}
+
+.slip-title{
+  font-weight:700;
+}
+
+.clear{
+  color:var(--danger);
+  font-size:12px;
+  cursor:pointer;
+}
+
+.selection{
+  padding:16px;
+  border-bottom:1px solid var(--line);
+}
+
+.selection:last-child{
+  border-bottom:none;
+}
+
+.event{
+  font-size:13px;
+  font-weight:700;
+  margin-bottom:7px;
+}
+
+.meta{
+  color:var(--muted);
+  font-size:11px;
+  margin-bottom:12px;
+}
+
+.pick{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:11px;
+  border-radius:9px;
+  background:var(--panel2);
+  border:1px solid var(--line);
+}
+
+.pick-name{
+  font-size:12px;
+}
+
+.pick-value{
+  color:var(--lime);
+  font-weight:800;
+  font-size:13px;
+}
+
+.remove{
+  margin-top:10px;
+  color:var(--muted);
+  font-size:11px;
+  cursor:pointer;
+}
+
+.empty{
+  text-align:center;
+  padding:55px 20px;
+}
+
+.empty-icon{
+  font-size:42px;
+  margin-bottom:14px;
+}
+
+.empty h2{
+  font-size:17px;
+  margin-bottom:7px;
+}
+
+.empty p{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.5;
+}
+
+.sports-btn{
+  display:inline-block;
+  margin-top:18px;
+  padding:11px 18px;
+  border-radius:10px;
+  background:var(--lime);
+  color:#0A0E12;
+  font-weight:800;
+  font-size:13px;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+
+  <div class="left">
+    <button class="back" id="backBtn">‹</button>
+    <div class="brand">BETAWIN</div>
+  </div>
+
+  <div class="badge" id="count">0</div>
+
+</header>
+
+<main>
+
+  <h1 class="title">Betslip</h1>
+
+  <p class="subtitle">
+    Your selected sports items
+  </p>
+
+  <div class="notice">
+    This page is a selection preview only. No wager, payment,
+    deposit, withdrawal, or stake can be submitted from this page.
+  </div>
+
+  <section class="slip">
+
+    <div class="slip-head">
+      <span class="slip-title">Selections</span>
+      <span class="clear" id="clearBtn">Clear</span>
+    </div>
+
+    <div id="content"></div>
+
+  </section>
+
+</main>
+
+<script>
+
+const content = document.getElementById("content");
+const count = document.getElementById("count");
+const clearBtn = document.getElementById("clearBtn");
+
+function getSelections(){
+
+  try{
+
+    return JSON.parse(
+      localStorage.getItem("betawin_betslip") || "[]"
+    );
+
+  }catch(error){
+
+    console.error("BETSLIP LOAD ERROR:",error);
+
+    return [];
+
+  }
+
+}
+
+function saveSelections(items){
+
+  localStorage.setItem(
+    "betawin_betslip",
+    JSON.stringify(items)
+  );
+
+}
+
+function render(){
+
+  const selections = getSelections();
+
+  count.textContent = selections.length;
+
+  if(!selections.length){
+
+    content.innerHTML = `
+      <div class="empty">
+
+        <div class="empty-icon">🧾</div>
+
+        <h2>Your betslip is empty</h2>
+
+        <p>
+          Select sports events from the sports page
+          and they will appear here.
+        </p>
+
+        <button
+          class="sports-btn"
+          onclick="window.location.href='sports.html'">
+          View Sports
+        </button>
+
+      </div>
+    `;
+
+    return;
+
+  }
+
+  content.innerHTML = selections.map((item,index)=>`
+
+    <article class="selection">
+
+      <div class="event">
+        ${escapeHTML(item.event || "Sports event")}
+      </div>
+
+      <div class="meta">
+        ${escapeHTML(item.league || "Sports")}
+        ${item.time ? " • " + escapeHTML(item.time) : ""}
+      </div>
+
+      <div class="pick">
+
+        <span class="pick-name">
+          ${escapeHTML(item.selection || item.name || "Selection")}
+        </span>
+
+        <span class="pick-value">
+          ${item.odds ? escapeHTML(String(item.odds)) : "Selected"}
+        </span>
+
+      </div>
+
+      <div
+        class="remove"
+        onclick="removeSelection(${index})">
+        Remove
+      </div>
+
+    </article>
+
+  `).join("");
+
+}
+
+function removeSelection(index){
+
+  const selections = getSelections();
+
+  selections.splice(index,1);
+
+  saveSelections(selections);
+
+  render();
+
+}
+
+clearBtn.addEventListener("click",()=>{
+
+  localStorage.removeItem("betawin_betslip");
+
+  render();
+
+});
+
+document
+  .getElementById("backBtn")
+  .addEventListener("click",()=>{
+
+    window.location.href="index.html";
+
+  });
+
+function escapeHTML(value){
+
+  return String(value)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+render();
+
+</script>
+
+</body>
+</html>
