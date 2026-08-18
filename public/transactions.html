@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transactions</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #080c12;
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    header {
+      height: 65px;
+      display: flex;
+      align-items: center;
+      padding: 0 18px;
+      background: #101721;
+      border-bottom: 1px solid #263342;
+    }
+
+    .back {
+      color: #b4ff39;
+      text-decoration: none;
+      font-size: 24px;
+      margin-right: 15px;
+    }
+
+    header h1 {
+      font-size: 20px;
+    }
+
+    .container {
+      padding: 20px 15px;
+      max-width: 700px;
+      margin: auto;
+    }
+
+    .balance {
+      background: linear-gradient(135deg, #15202c, #10161e);
+      border: 1px solid #263442;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .balance small {
+      color: #8996a5;
+    }
+
+    .balance h2 {
+      margin-top: 8px;
+      color: #b4ff39;
+      font-size: 28px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      margin-bottom: 18px;
+    }
+
+    .filter {
+      border: 1px solid #293746;
+      background: #111923;
+      color: #aeb8c4;
+      padding: 9px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .filter.active {
+      background: #b4ff39;
+      color: #071008;
+      border-color: #b4ff39;
+      font-weight: bold;
+    }
+
+    .transaction {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: #111923;
+      border: 1px solid #23313f;
+      border-radius: 14px;
+      padding: 15px;
+      margin-bottom: 10px;
+    }
+
+    .left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 19px;
+      background: #1c2935;
+    }
+
+    .deposit .icon {
+      color: #b4ff39;
+    }
+
+    .withdraw .icon {
+      color: #ff637d;
+    }
+
+    .bet .icon {
+      color: #ffca55;
+    }
+
+    .info strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+
+    .info small {
+      color: #7e8b99;
+      font-size: 11px;
+    }
+
+    .amount {
+      text-align: right;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .amount.positive {
+      color: #b4ff39;
+    }
+
+    .amount.negative {
+      color: #ff637d;
+    }
+
+    .status {
+      display: block;
+      font-size: 10px;
+      margin-top: 5px;
+      color: #8c98a5;
+      text-transform: uppercase;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 50px 20px;
+      color: #74808d;
+      display: none;
+    }
+
+    .loading {
+      text-align: center;
+      color: #8b98a6;
+      padding: 30px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <a href="index.html" class="back">‹</a>
+  <h1>Transactions</h1>
+</header>
+
+<div class="container">
+
+  <div class="balance">
+    <small>Available Balance</small>
+    <h2 id="balance">KES 0.00</h2>
+  </div>
+
+  <div class="filters">
+    <button class="filter active" data-filter="all">All</button>
+    <button class="filter" data-filter="deposit">Deposits</button>
+    <button class="filter" data-filter="withdraw">Withdrawals</button>
+    <button class="filter" data-filter="bet">Bets</button>
+  </div>
+
+  <div id="transactionList">
+    <div class="loading">Loading transactions...</div>
+  </div>
+
+  <div class="empty" id="empty">
+    No transactions found.
+  </div>
+
+</div>
+
+<script>
+  let transactions = [];
+
+  const token =
+    localStorage.getItem("token") ||
+    localStorage.getItem("jwt");
+
+  async function loadTransactions() {
+    try {
+      const response = await fetch("/api/transactions", {
+        headers: token
+          ? {
+              "Authorization": "Bearer " + token
+            }
+          : {}
+      });
+
+      if (!response.ok) {
+        throw new Error("Unable to load transactions");
+      }
+
+      const data = await response.json();
+
+      transactions = Array.isArray(data)
+        ? data
+        : data.transactions || [];
+
+      if (data.balance !== undefined) {
+        document.getElementById("balance").textContent =
+          "KES " + Number(data.balance).toLocaleString(
+            "en-KE",
+            {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            }
+          );
+      }
+
+      renderTransactions("all");
+
+    } catch (error) {
+      console.error(error);
+
+      /*
+       * Temporary fallback.
+       * Remove this section when your backend
+       * /api/transactions endpoint is ready.
+       */
+      transactions = [];
+
+      renderTransactions("all");
+    }
+  }
+
+  function renderTransactions(filter) {
+    const list = document.getElementById("transactionList");
+    const empty = document.getElementById("empty");
+
+    list.innerHTML = "";
+
+    const filtered =
+      filter === "all"
+        ? transactions
+        : transactions.filter(tx => {
+            return normalizeType(tx.type) === filter;
+          });
+
+    if (!filtered.length) {
+      empty.style.display = "block";
+      return;
+    }
+
+    empty.style.display = "none";
+
+    filtered.forEach(tx => {
+
+      const type = normalizeType(tx.type);
+
+      let icon = "💳";
+
+      if (type === "deposit") icon = "↓";
+      if (type === "withdraw") icon = "↑";
+      if (type === "bet") icon = "⚽";
+
+      const amount = Number(tx.amount || 0);
+
+      const positive =
+        type === "deposit" ||
+        type === "win";
+
+      const div = document.createElement("div");
+
+      div.className =
+        "transaction " + type;
+
+      div.innerHTML = `
+        <div class="left">
+
+          <div class="icon">
+            ${icon}
+          </div>
+
+          <div class="info">
+            <strong>
+              ${escapeHTML(tx.description || capitalize(type))}
+            </strong>
+
+            <small>
+              ${formatDate(tx.createdAt || tx.date)}
+            </small>
+          </div>
+
+        </div>
+
+        <div class="amount ${positive ? "positive" : "negative"}">
+
+          ${positive ? "+" : "-"}
+          KES ${Math.abs(amount).toLocaleString("en-KE", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          })}
+
+          <span class="status">
+            ${escapeHTML(tx.status || "Completed")}
+          </span>
+
+        </div>
+      `;
+
+      list.appendChild(div);
+    });
+  }
+
+  function normalizeType(type) {
+    type = String(type || "").toLowerCase();
+
+    if (
+      type.includes("deposit") ||
+      type.includes("credit")
+    ) {
+      return "deposit";
+    }
+
+    if (
+      type.includes("withdraw") ||
+      type.includes("withdrawal")
+    ) {
+      return "withdraw";
+    }
+
+    if (
+      type.includes("bet") ||
+      type.includes("stake")
+    ) {
+      return "bet";
+    }
+
+    return type || "other";
+  }
+
+  function capitalize(text) {
+    return String(text || "")
+      .charAt(0)
+      .toUpperCase() +
+      String(text || "").slice(1);
+  }
+
+  function formatDate(date) {
+    if (!date) return "Date unavailable";
+
+    const d = new Date(date);
+
+    if (isNaN(d.getTime())) {
+      return String(date);
+    }
+
+    return d.toLocaleString("en-KE", {
+      dateStyle: "medium",
+      timeStyle: "short"
+    });
+  }
+
+  function escapeHTML(value) {
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  document.querySelectorAll(".filter")
+    .forEach(button => {
+
+      button.addEventListener("click", () => {
+
+        document.querySelectorAll(".filter")
+          .forEach(btn =>
+            btn.classList.remove("active")
+          );
+
+        button.classList.add("active");
+
+        renderTransactions(
+          button.dataset.filter
+        );
+      });
+
+    });
+
+  loadTransactions();
+</script>
+
+</body>
+</html>
