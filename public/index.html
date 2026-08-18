@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Betawin.com — Play Casino &amp; Sports</title>
+<style>
+  :root{
+    --bg:#0A0E12; --panel:#141C26; --line:#223040; --lime:#B4FF39; --lime-dim:#8FDB1E;
+    --text:#EDF2F7; --muted:#7C8998; --muted-2:#4E5B6B; --teal:#2DD4BF;
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+  html,body{background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,sans-serif; height:100%; overflow-x:hidden;}
+  button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit;}
+  a{color:inherit; text-decoration:none;}
+
+  body{
+    position:relative;
+    background:
+      radial-gradient(55% 45% at 20% 0%, rgba(180,255,57,0.14), transparent 60%),
+      radial-gradient(50% 40% at 100% 30%, rgba(45,212,191,0.10), transparent 60%),
+      radial-gradient(60% 45% at 50% 100%, rgba(180,255,57,0.06), transparent 60%),
+      var(--bg);
+  }
+
+  /* Floating background glyphs */
+  .bg-glyph{
+    position:absolute; font-size:38px; opacity:0.08; pointer-events:none;
+    animation:drift 8s ease-in-out infinite;
+  }
+  @keyframes drift{0%,100%{transform:translateY(0) rotate(0deg);} 50%{transform:translateY(-18px) rotate(6deg);}}
+
+  .wrap{
+    position:relative; z-index:1;
+    min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:40px 24px; max-width:420px; margin:0 auto; text-align:center;
+  }
+
+  .brand-mark{
+    width:76px; height:76px; border-radius:22px; margin-bottom:22px;
+    background:linear-gradient(150deg, var(--lime), var(--lime-dim));
+    display:flex; align-items:center; justify-content:center;
+    font-weight:800; font-size:32px; color:#0A0E12;
+    box-shadow:0 0 40px rgba(180,255,57,0.3);
+    animation:fadeUp .6s ease both, float 3.4s ease-in-out infinite .6s;
+  }
+  @keyframes float{0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);}}
+
+  .brand-name{
+    font-size:30px; font-weight:800; letter-spacing:.5px; margin-bottom:8px;
+    animation:fadeUp .6s ease .08s both;
+  }
+  .brand-name span{color:var(--lime);}
+
+  .tagline{
+    font-size:15px; color:var(--muted); margin-bottom:6px;
+    animation:fadeUp .6s ease .14s both;
+  }
+  .tagline-badges{
+    display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:36px;
+    animation:fadeUp .6s ease .2s both;
+  }
+  .badge{
+    display:flex; align-items:center; gap:6px;
+    background:var(--panel); border:1px solid var(--line); border-radius:20px;
+    padding:7px 14px; font-size:12.5px; font-weight:600; color:var(--text);
+  }
+  .badge.casino{border-color:rgba(244,197,66,0.3);}
+  .badge.sport{border-color:rgba(180,255,57,0.3);}
+
+  .cta-row{width:100%; display:flex; flex-direction:column; gap:12px; margin-bottom:26px;}
+  .btn-primary{
+    background:var(--lime); color:#0A0E12; font-weight:700; font-size:15px;
+    padding:16px; border-radius:14px; text-align:center;
+    animation:fadeUp .6s ease .26s both;
+    box-shadow:0 8px 24px rgba(180,255,57,0.15);
+  }
+  .btn-primary:active{background:var(--lime-dim); transform:scale(0.98);}
+  .btn-secondary{
+    background:var(--panel); border:1px solid var(--line); color:var(--text);
+    font-weight:700; font-size:15px; padding:16px; border-radius:14px; text-align:center;
+    animation:fadeUp .6s ease .32s both;
+  }
+  .btn-secondary:active{background:#1a2431; transform:scale(0.98);}
+
+  .stats-row{
+    display:flex; gap:22px; margin-bottom:30px;
+    animation:fadeUp .6s ease .38s both;
+  }
+  .stat{display:flex; flex-direction:column; align-items:center;}
+  .stat-num{font-size:17px; font-weight:800; color:var(--lime);}
+  .stat-label{font-size:10.5px; color:var(--muted-2); text-transform:uppercase; letter-spacing:.8px; margin-top:2px;}
+  .stat-divider{width:1px; background:var(--line);}
+
+  .disclaimer{
+    font-size:11px; color:var(--muted-2); line-height:1.7; max-width:320px;
+    animation:fadeUp .6s ease .44s both;
+  }
+  .disclaimer b{color:var(--muted);}
+
+  @keyframes fadeUp{from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);}}
+</style>
+</head>
+<body>
+
+<div class="bg-glyph" style="top:10%; left:8%;">⚽</div>
+<div class="bg-glyph" style="top:18%; right:10%; animation-delay:1.2s;">🎰</div>
+<div class="bg-glyph" style="bottom:22%; left:12%; animation-delay:2.4s;">🏀</div>
+<div class="bg-glyph" style="bottom:14%; right:8%; animation-delay:3.1s;">🎲</div>
+
+<div class="wrap">
+  <div class="brand-mark">B</div>
+  <div class="brand-name">BETA<span>WIN</span>.COM</div>
+  <div class="tagline">Play casino &amp; sports in one place</div>
+
+  <div class="tagline-badges">
+    <div class="badge casino">🎰 Casino</div>
+    <div class="badge sport">⚽ Sports</div>
+  </div>
+
+  <div class="cta-row">
+    <a class="btn-primary" href="register.html">Create Account</a>
+    <a class="btn-secondary" href="login.html">Log In</a>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat"><div class="stat-num">24/7</div><div class="stat-label">Live Betting</div></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><div class="stat-num">M-Pesa</div><div class="stat-label">Instant Deposit</div></div>
+    <div class="stat-divider"></div>
+    <div class="stat"><div class="stat-num">100+</div><div class="stat-label">Games</div></div>
+  </div>
+
+  <div class="disclaimer">
+    You must be <b>18 years or older</b> to use Betawin. Please play responsibly — gambling can be addictive.
+  </div>
+</div>
+
+</body>
+    </html>
+
