@@ -700,7 +700,7 @@ app.get("/api/payments/mpesa/status/:checkoutRequestId", authenticate, async (re
 // gambling product, which needs to be licensed with Kenya's Betting
 // Control and Licensing Board — it's not something to generate as
 // boilerplate. Once you have that sorted (in-house provably-fair engine,
-# or a licensed game provider/aggregator), plug the result determination
+// or a licensed game provider/aggregator), plug the result determination
 // into the TODOs below. The betting/ledger plumbing around it is ready.
 //
 
