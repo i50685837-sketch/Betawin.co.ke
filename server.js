@@ -14,6 +14,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI;
 const JWT_SECRET = process.env.JWT_SECRET || "change-this-secret";
+const sportsRoutes = require("./routes/sports");
+
+app.use("/api/sports", sportsRoutes);
 
 // =====================================================
 // MIDDLEWARE
