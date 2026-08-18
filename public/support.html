@@ -1,0 +1,298 @@
+<!-- public/support.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Betawin Support</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:Arial,sans-serif;
+  background:#080c12;
+  color:#fff;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+header{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:16px;
+  background:#111923;
+  border-bottom:1px solid #273544;
+}
+
+.back{
+  color:#fff;
+  text-decoration:none;
+  font-size:30px;
+}
+
+.bot{
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  background:#b4ff39;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:23px;
+}
+
+.header-info h2{
+  font-size:18px;
+}
+
+.header-info p{
+  color:#8fa0ae;
+  font-size:12px;
+  margin-top:4px;
+}
+
+.chat{
+  flex:1;
+  padding:20px 15px;
+  overflow-y:auto;
+}
+
+.message{
+  max-width:86%;
+  padding:14px 16px;
+  border-radius:16px;
+  margin-bottom:14px;
+  line-height:1.5;
+  font-size:14px;
+}
+
+.bot-message{
+  background:#17222e;
+  border:1px solid #293949;
+  border-top-left-radius:5px;
+}
+
+.user-message{
+  margin-left:auto;
+  background:#b4ff39;
+  color:#071008;
+  border-top-right-radius:5px;
+}
+
+.actions{
+  padding:10px 15px 15px;
+  background:#111923;
+  border-top:1px solid #273544;
+}
+
+.actions button{
+  width:100%;
+  border:0;
+  padding:14px;
+  border-radius:12px;
+  background:#b4ff39;
+  color:#071008;
+  font-weight:bold;
+  font-size:15px;
+  cursor:pointer;
+  margin-bottom:10px;
+}
+
+.actions button.secondary{
+  background:#1b2835;
+  color:#fff;
+  border:1px solid #344656;
+}
+
+.input{
+  display:flex;
+  gap:8px;
+}
+
+.input input{
+  flex:1;
+  padding:14px;
+  border-radius:12px;
+  border:1px solid #334454;
+  background:#0b1118;
+  color:#fff;
+  outline:none;
+}
+
+.send{
+  width:52px;
+  border:0;
+  border-radius:12px;
+  background:#b4ff39;
+  font-size:20px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <a href="/home.html" class="back">‹</a>
+
+  <div class="bot">🤖</div>
+
+  <div class="header-info">
+    <h2>Support Assistant</h2>
+    <p>Online support</p>
+  </div>
+</header>
+
+<div class="chat" id="chat">
+
+  <div class="message bot-message">
+    👋 Hello! I'm the support assistant.<br><br>
+    Tell me what problem you're experiencing and I'll try to help.
+  </div>
+
+</div>
+
+<div class="actions">
+
+  <button onclick="showOwnerOption()">
+    🆘 Issue still persists
+  </button>
+
+  <button class="secondary" onclick="clearChat()">
+    Clear Chat
+  </button>
+
+  <div class="input">
+    <input
+      id="message"
+      type="text"
+      placeholder="Describe your issue..."
+      autocomplete="off"
+    >
+
+    <button class="send" onclick="sendMessage()">➤</button>
+  </div>
+
+</div>
+
+<script>
+
+const chat = document.getElementById("chat");
+const input = document.getElementById("message");
+
+function addMessage(text,type){
+
+  const message = document.createElement("div");
+
+  message.className =
+    "message " +
+    (type === "user"
+      ? "user-message"
+      : "bot-message");
+
+  message.textContent = text;
+
+  chat.appendChild(message);
+
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function sendMessage(){
+
+  const text = input.value.trim();
+
+  if(!text) return;
+
+  addMessage(text,"user");
+
+  input.value = "";
+
+  setTimeout(function(){
+
+    const q = text.toLowerCase();
+
+    let reply =
+      "Thanks for explaining the issue. Please check your details and try again. If the issue persists, you can request help from the support team.";
+
+    if(q.includes("login") || q.includes("sign in")){
+      reply =
+        "Please check that your login details are entered correctly. If you still cannot access your account, request support from the support team.";
+    }
+
+    else if(q.includes("password")){
+      reply =
+        "Please use the Forgot Password option on the login page to recover access to your account.";
+    }
+
+    else if(q.includes("error") || q.includes("not working")){
+      reply =
+        "Sorry you're experiencing a problem. Please describe the error message you're seeing so support can investigate it.";
+    }
+
+    addMessage(reply,"bot");
+
+  },600);
+}
+
+function showOwnerOption(){
+
+  addMessage(
+    "If the issue persists, I'll connect you to the owners' support team. Are you ready?",
+    "bot"
+  );
+
+  setTimeout(function(){
+
+    const button = document.createElement("button");
+
+    button.textContent = "Connect to Support";
+
+    button.style.width = "100%";
+    button.style.padding = "14px";
+    button.style.border = "0";
+    button.style.borderRadius = "12px";
+    button.style.background = "#25D366";
+    button.style.color = "#fff";
+    button.style.fontWeight = "bold";
+    button.style.cursor = "pointer";
+
+    button.onclick = function(){
+
+      alert(
+        "Support contact is not configured yet. Add your official support contact in the backend."
+      );
+
+    };
+
+    chat.appendChild(button);
+    chat.scrollTop = chat.scrollHeight;
+
+  },300);
+}
+
+function clearChat(){
+  chat.innerHTML = `
+    <div class="message bot-message">
+      👋 Chat cleared. How can I help you?
+    </div>
+  `;
+}
+
+input.addEventListener("keydown",function(e){
+
+  if(e.key === "Enter"){
+    sendMessage();
+  }
+
+});
+
+</script>
+
+</body>
+</html>
