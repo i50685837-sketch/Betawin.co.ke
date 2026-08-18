@@ -751,4 +751,100 @@ app.post("/api/games/casino/bet", authenticate, async (req, res) => {
     // then settle the bet against the real payout table for that game.
     return res.status(501).json({
       success: false,
+      message: `Casino game engine (${game || "unspecified"}) not implemented — requires a licensed RNG/payout provider.`
+    });
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Could not place bet" });
+  }
+});
+
+// =====================================================
+// SPORTS API
+// =====================================================
+//
+// Put your permitted sports API URL and key in .env:
+//
+// SPORTS_API_URL=...
+// SPORTS_API_KEY=...
+//
+
+app.get("/api/sports", async (req, res) => {
+  try {
+    if (!process.env.SPORTS_API_URL) {
+      return res.status(503).json({
+        success: false,
+        message: "Sports API is not configured"
+      });
+    }
+
+    const response = await axios.get(
+      process.env.SPORTS_API_URL,
+      {
+        headers: process.env.SPORTS_API_KEY
+          ? {
+              "x-api-key": process.env.SPORTS_API_KEY
+            }
+          : {},
+        timeout: 10000
+      }
+    );
+
+    res.json({
+      success: true,
+      data: response.data
+    });
+
+  } catch (error) {
+    console.error(
+      "Sports API error:",
+      error.response?.data || error.message
+    );
+
+    res.status(502).json({
+      success: false,
+      message: "Unable to retrieve sports information"
+    });
+  }
+});
+
+// =====================================================
+// 404
+// =====================================================
+
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "Endpoint not found"
+  });
+});
+
+// =====================================================
+// ERROR HANDLER
+// =====================================================
+
+app.use((err, req, res, next) => {
+  console.error("Server error:", err);
+
+  res.status(500).json({
+    success: false,
+    message: "Internal server error"
+  });
+});
+
+// =====================================================
+// START
+// =====================================================
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log("----------------------------------------");
+  console.log("🚀 Server started");
+  console.log(`🌐 Port: ${PORT}`);
+  console.log(`📁 Public: ${path.join(__dirname, "public")}`);
+  console.log(`💬 Support: /api/support/chat`);
+  console.log(`💳 M-Pesa STK: /api/payments/mpesa/stkpush`);
+  console.log(`🏟️ Sports: /api/sports`);
+  console.log(`❤️ Health: /health`);
+  console.log("----------------------------------------");
+});
       
