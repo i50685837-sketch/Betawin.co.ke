@@ -1,0 +1,56 @@
+<!-- Main Match Container -->
+<div class="section-title">
+  <span class="live-dot"></span> Live & Upcoming Matches
+</div>
+<div id="matchesContainer">
+  <p style="color: #94a3b8;">Loading live matches from API...</p>
+</div>
+
+<script>
+  // Fetch real matches from Express backend
+  async function loadMatches() {
+    const container = document.getElementById('matchesContainer');
+    try {
+      const response = await fetch('/api/matches');
+      const data = await response.json();
+
+      if (!data.success || !data.matches.length) {
+        container.innerHTML = '<p style="color: #ef4444;">No live matches available right now.</p>';
+        return;
+      }
+
+      container.innerHTML = data.matches.map(match => `
+        <div class="match-card">
+          <div class="match-header">
+            <span>${match.league}</span>
+            <span style="color: #10b981;">${match.status} (${match.time})</span>
+          </div>
+          <div class="match-teams">
+            <span>${match.homeTeam}</span>
+            <span>${match.homeScore} - ${match.awayScore}</span>
+            <span>${match.awayTeam}</span>
+          </div>
+          <div class="odds-group">
+            <button class="odd-btn" onclick="selectOdd('${match.homeTeam}', ${match.odds.home})">
+              <span>1</span>
+              <span>${match.odds.home}</span>
+            </button>
+            <button class="odd-btn" onclick="selectOdd('Draw', ${match.odds.draw})">
+              <span>X</span>
+              <span>${match.odds.draw}</span>
+            </button>
+            <button class="odd-btn" onclick="selectOdd('${match.awayTeam}', ${match.odds.away})">
+              <span>2</span>
+              <span>${match.odds.away}</span>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    } catch (err) {
+      container.innerHTML = '<p style="color: #ef4444;">Error connecting to API backend.</p>';
+    }
+  }
+
+  // Load matches on page launch
+  document.addEventListener('DOMContentLoaded', loadMatches);
+</script>
