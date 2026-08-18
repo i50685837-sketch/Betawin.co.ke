@@ -325,7 +325,8 @@
           "Login successful. Redirecting...",
           "success"
         );
-
+        localStorage.setItem("token", data.token);
+window.location.href = "/dashboard.html";
         setTimeout(() => {
           window.location.href = "/dashboard.html";
         }, 700);
