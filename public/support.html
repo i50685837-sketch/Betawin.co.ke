@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a0f16">
+
+  <title>Betawin — AI Support</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Inter, Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(0, 255, 170, .08), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(0, 140, 255, .08), transparent 35%),
+        #070b10;
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    .app {
+      max-width: 900px;
+      margin: auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* HEADER */
+    header {
+      height: 70px;
+      padding: 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #1c2936;
+      background: rgba(7, 11, 16, .92);
+      backdrop-filter: blur(15px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back {
+      width: 42px;
+      height: 42px;
+      border: 1px solid #263746;
+      background: #101821;
+      color: white;
+      border-radius: 12px;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .back:hover {
+      background: #17232e;
+    }
+
+    .brand {
+      font-size: 19px;
+      font-weight: 800;
+    }
+
+    .brand span {
+      color: #a8ff38;
+    }
+
+    .online {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      color: #8e9aa7;
+      font-size: 12px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #35e879;
+      box-shadow: 0 0 10px #35e879;
+    }
+
+    /* CHAT */
+    .chat {
+      flex: 1;
+      padding: 25px 17px 125px;
+      overflow-y: auto;
+    }
+
+    .welcome {
+      text-align: center;
+      padding: 20px 10px 25px;
+    }
+
+    .ai-icon {
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 15px;
+      border-radius: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      background: linear-gradient(135deg, #a8ff38, #28e879);
+      color: #07100a;
+      box-shadow: 0 0 35px rgba(168, 255, 56, .18);
+    }
+
+    .welcome h1 {
+      font-size: 25px;
+      margin-bottom: 8px;
+    }
+
+    .welcome p {
+      color: #8995a1;
+      font-size: 14px;
+      line-height: 1.6;
+      max-width: 500px;
+      margin: auto;
+    }
+
+    /* SUGGESTIONS */
+    .suggestions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      max-width: 650px;
+      margin: 0 auto 25px;
+    }
+
+    .suggestion {
+      text-align: left;
+      padding: 14px;
+      border-radius: 15px;
+      border: 1px solid #21303e;
+      background: #0e151d;
+      color: #dbe3eb;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .suggestion:hover {
+      border-color: #8bd82d;
+      transform: translateY(-1px);
+    }
+
+    .suggestion strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+
+    .suggestion small {
+      color: #77838e;
+      font-size: 11px;
+    }
+
+    /* MESSAGES */
+    .messages {
+      max-width: 700px;
+      margin: auto;
+    }
+
+    .message {
+      display: flex;
+      margin: 14px 0;
+      animation: appear .2s ease;
+    }
+
+    @keyframes appear {
+      from {
+        opacity: 0;
+        transform: translateY(5px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message.user {
+      justify-content: flex-end;
+    }
+
+    .bubble {
+      max-width: 82%;
+      padding: 13px 15px;
+      border-radius: 17px;
+      line-height: 1.55;
+      font-size: 14px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .assistant .bubble {
+      background: #111a23;
+      border: 1px solid #21303d;
+      border-bottom-left-radius: 5px;
+      color: #dce5ed;
+    }
+
+    .user .bubble {
+      background: #a8ff38;
+      color: #081006;
+      border-bottom-right-radius: 5px;
+      font-weight: 500;
+    }
+
+    .time {
+      font-size: 9px;
+      color: #697580;
+      margin: 5px 4px;
+    }
+
+    .user .time {
+      text-align: right;
+    }
+
+    /* TYPING */
+    .typing {
+      display: none;
+      margin: 12px 0;
+    }
+
+    .typing .bubble {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      width: 65px;
+    }
+
+    .typing i {
+      width: 6px;
+      height: 6px;
+      background: #8d9aa6;
+      border-radius: 50%;
+      animation: bounce 1s infinite;
+    }
+
+    .typing i:nth-child(2) {
+      animation-delay: .15s;
+    }
+
+    .typing i:nth-child(3) {
+      animation-delay: .3s;
+    }
+
+    @keyframes bounce {
+      0%, 60%, 100% {
+        transform: translateY(0);
+      }
+      30% {
+        transform: translateY(-5px);
+      }
+    }
+
+    /* INPUT */
+    .composer-wrap {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 12px 15px 15px;
+      background: linear-gradient(
+        transparent,
+        rgba(7, 11, 16, .96) 25%
+      );
+      z-index: 20;
+    }
+
+    .composer {
+      max-width: 700px;
+      margin: auto;
+      display: flex;
+      gap: 8px;
+      padding: 7px;
+      background: #101821;
+      border: 1px solid #263745;
+      border-radius: 18px;
+      box-shadow: 0 -5px 30px rgba(0,0,0,.25);
+    }
+
+    textarea {
+      flex: 1;
+      resize: none;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: white;
+      padding: 11px;
+      min-height: 43px;
+      max-height: 110px;
+      font-family: inherit;
+      font-size: 14px;
+    }
+
+    textarea::placeholder {
+      color: #64717c;
+    }
+
+    .send {
+      width: 45px;
+      height: 45px;
+      border: 0;
+      border-radius: 13px;
+      background: #a8ff38;
+      color: #071006;
+      font-size: 19px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .send:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+
+    .clear {
+      display: block;
+      margin: 7px auto 0;
+      border: 0;
+      background: transparent;
+      color: #687682;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .clear:hover {
+      color: #a8ff38;
+    }
+
+    @media (max-width: 600px) {
+      .suggestions {
+        grid-template-columns: 1fr;
+      }
+
+      .welcome h1 {
+        font-size: 22px;
+      }
+
+      .bubble {
+        max-width: 88%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <header>
+    <div class="header-left">
+      <button class="back" onclick="goHome()" aria-label="Back">‹</button>
+
+      <div>
+        <div class="brand">Betawin <span>AI Support</span></div>
+        <div class="online">
+          <span class="dot"></span>
+          Support assistant
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+  <main class="chat" id="chat">
+
+    <section class="welcome" id="welcome">
+      <div class="ai-icon">✦</div>
+
+      <h1>How can I help you?</h1>
+
+      <p>
+        Ask me a question about your account, login,
+        deposits, withdrawals, transactions or using the platform.
+      </p>
+    </section>
+
+
+    <section class="suggestions" id="suggestions">
+
+      <button class="suggestion" onclick="askSuggestion('How do I create an account?')">
+        <strong>👤 Create an account</strong>
+        <small>Learn how registration works</small>
+      </button>
+
+      <button class="suggestion" onclick="askSuggestion('I cannot log in to my account')">
+        <strong>🔐 Login problem</strong>
+        <small>Get help with signing in</small>
+      </button>
+
+      <button class="suggestion" onclick="askSuggestion('How do I make a deposit?')">
+        <strong>💳 Deposit</strong>
+        <small>Learn about adding funds</small>
+      </button>
+
+      <button class="suggestion" onclick="askSuggestion('How can I contact support?')">
+        <strong>💬 Contact support</strong>
+        <small>Get additional assistance</small>
+      </button>
+
+    </section>
+
+
+    <section class="messages" id="messages"></section>
+
+    <div class="typing" id="typing">
+      <div class="bubble">
+        <i></i>
+        <i></i>
+        <i></i>
+      </div>
+    </div>
+
+  </main>
+
+
+  <div class="composer-wrap">
+
+    <form class="composer" id="chatForm">
+
+      <textarea
+        id="messageInput"
+        rows="1"
+        maxlength="2000"
+        placeholder="Ask AI Support anything..."
+        autocomplete="off"
+      ></textarea>
+
+      <button class="send" id="sendButton" type="submit">
+        ➤
+      </button>
+
+    </form>
+
+    <button class="clear" onclick="clearChat()">
+      Clear conversation
+    </button>
+
+  </div>
+
+</div>
+
+
+<script>
+
+  const API_URL = "/api/support/chat";
+
+  const messages = document.getElementById("messages");
+  const input = document.getElementById("messageInput");
+  const form = document.getElementById("chatForm");
+  const sendButton = document.getElementById("sendButton");
+  const typing = document.getElementById("typing");
+  const chat = document.getElementById("chat");
+
+  let conversation = [];
+
+  /*
+   * GO HOME
+   */
+  function goHome() {
+
+    // Change this if your home file has another name.
+    window.location.href = "/index.html";
+  }
+
+
+  /*
+   * TIME
+   */
+  function getTime() {
+
+    return new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  }
+
+
+  /*
+   * ADD MESSAGE
+   */
+  function addMessage(text, type) {
+
+    const wrapper = document.createElement("div");
+
+    wrapper.className = "message " + type;
+
+    const bubble = document.createElement("div");
+
+    bubble.className = "bubble";
+
+    // textContent prevents HTML injection.
+    bubble.textContent = text;
+
+    const time = document.createElement("div");
+
+    time.className = "time";
+    time.textContent = getTime();
+
+    const container = document.createElement("div");
+
+    container.appendChild(bubble);
+    container.appendChild(time);
+
+    wrapper.appendChild(container);
+
+    messages.appendChild(wrapper);
+
+    chat.scrollTo({
+      top: chat.scrollHeight,
+      behavior: "smooth"
+    });
+  }
+
+
+  /*
+   * SUGGESTED QUESTION
+   */
+  function askSuggestion(question) {
+
+    input.value = question;
+
+    sendMessage(question);
+  }
+
+
+  /*
+   * TYPING STATE
+   */
+  function setTyping(state) {
+
+    typing.style.display = state ? "flex" : "none";
+
+    sendButton.disabled = state;
+
+    if (state) {
+
+      chat.scrollTo({
+        top: chat.scrollHeight,
+        behavior: "smooth"
+      });
+    }
+  }
+
+
+  /*
+   * ASK AI
+   */
+  async function sendMessage(question) {
+
+    question = question.trim();
+
+    if (!question || sendButton.disabled) {
+      return;
+    }
+
+    addMessage(question, "user");
+
+    conversation.push({
+      role: "user",
+      content: question
+    });
+
+    input.value = "";
+
+    autoResize();
+
+    setTyping(true);
+
+    try {
+
+      const response = await fetch(API_URL, {
+
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+          message: question,
+          conversation: conversation
+        })
+
+      });
+
+
+      if (!response.ok) {
+        throw new Error("Support server error");
+      }
+
+
+      const data = await response.json();
+
+
+      const answer =
+        data.reply ||
+        data.message ||
+        data.answer;
+
+
+      if (!answer) {
+        throw new Error("Empty AI response");
+      }
+
+
+      addMessage(answer, "assistant");
+
+
+      conversation.push({
+        role: "assistant",
+        content: answer
+      });
+
+
+    } catch (error) {
+
+      console.error("AI Support:", error);
+
+      const fallback =
+        "I'm having trouble connecting to the support AI right now. " +
+        "Please check your connection and try again. " +
+        "If the issue persists, please contact the platform support team.";
+
+      addMessage(fallback, "assistant");
+
+    } finally {
+
+      setTyping(false);
+
+      input.focus();
+    }
+  }
+
+
+  /*
+   * FORM SUBMIT
+   */
+  form.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    sendMessage(input.value);
+  });
+
+
+  /*
+   * ENTER TO SEND
+   * SHIFT + ENTER = NEW LINE
+   */
+  input.addEventListener("keydown", function(event) {
+
+    if (
+      event.key === "Enter" &&
+      !event.shiftKey
+    ) {
+
+      event.preventDefault();
+
+      sendMessage(input.value);
+    }
+  });
+
+
+  /*
+   * AUTO RESIZE
+   */
+  input.addEventListener("input", autoResize);
+
+  function autoResize() {
+
+    input.style.height = "auto";
+
+    input.style.height =
+      Math.min(input.scrollHeight, 110) + "px";
+  }
+
+
+  /*
+   * CLEAR CHAT
+   */
+  function clearChat() {
+
+    conversation = [];
+
+    messages.innerHTML = "";
+
+    localStorage.removeItem("betawin_support_chat");
+  }
+
+
+  /*
+   * SAVE CHAT
+   */
+  function saveChat() {
+
+    localStorage.setItem(
+      "betawin_support_chat",
+      JSON.stringify(conversation)
+    );
+  }
+
+
+  /*
+   * LOAD CHAT
+   */
+  function loadChat() {
+
+    try {
+
+      const saved =
+        localStorage.getItem("betawin_support_chat");
+
+      if (!saved) {
+        return;
+      }
+
+      conversation = JSON.parse(saved);
+
+      conversation.forEach(item => {
+
+        if (
+          item.role === "user" ||
+          item.role === "assistant"
+        ) {
+
+          addMessage(
+            item.content,
+            item.role === "user"
+              ? "user"
+              : "assistant"
+          );
+        }
+      });
+
+    } catch (error) {
+
+      console.log("No previous support conversation.");
+    }
+  }
+
+
+  /*
+   * SAVE AFTER EVERY MESSAGE
+   */
+  const originalAddMessage = addMessage;
+
+  /*
+   * Initial greeting
+   */
+  setTimeout(() => {
+
+    if (messages.children.length === 0) {
+
+      addMessage(
+        "Hi 👋 I'm your Betawin AI Support Assistant. Ask me anything and I'll do my best to help.",
+        "assistant"
+      );
+    }
+
+  }, 500);
+
+
+  input.focus();
+
+</script>
+
+</body>
+</html>
