@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Betawin — Wallet</title>
+<style>
+  :root{
+    --bg:#0A0E12; --panel:#141C26; --line:#223040; --lime:#B4FF39; --lime-dim:#8FDB1E;
+    --text:#EDF2F7; --muted:#7C8998; --muted-2:#4E5B6B; --danger:#FF6B6B; --warn:#F4C542;
+  }
+  *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+  html,body{background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,sans-serif; height:100%;}
+  button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit;}
+  a{color:inherit; text-decoration:none;}
+
+  .topbar{position:sticky; top:0; z-index:20; display:flex; align-items:center; gap:12px; padding:14px 16px; background:rgba(10,14,18,0.92); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+  .icon-btn{width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:var(--panel); border:1px solid var(--line);}
+  .icon-btn svg{width:19px; height:19px; stroke:var(--text);}
+  .topbar-title{font-weight:700; font-size:16px;}
+
+  .main{padding:18px 16px 90px; max-width:520px; margin:0 auto;}
+
+  /* Balance hero */
+  .balance-card{
+    position:relative; overflow:hidden;
+    background:linear-gradient(150deg, #16341A 0%, var(--panel) 55%);
+    border:1px solid var(--line); border-radius:18px;
+    padding:24px 20px; margin-bottom:18px; text-align:center;
+  }
+  .balance-card::after{
+    content:""; position:absolute; right:-40px; top:-40px; width:180px; height:180px;
+    background:radial-gradient(circle, rgba(180,255,57,0.16), transparent 65%); border-radius:50%;
+  }
+  .balance-label{font-size:11.5px; color:var(--muted); text-transform:uppercase; letter-spacing:1.2px; margin-bottom:10px;}
+  .balance-amount{font-size:36px; font-weight:800; letter-spacing:-0.5px; margin-bottom:20px;}
+  .shimmer{display:inline-block; width:150px; height:32px; border-radius:6px; background:linear-gradient(90deg, var(--line) 25%, #2a3a4a 37%, var(--line) 63%); background-size:400% 100%; animation:shimmer 1.4s ease infinite;}
+  @keyframes shimmer{0%{background-position:100% 0;} 100%{background-position:0 0;}}
+  .balance-actions{display:flex; gap:10px;}
+  .btn-primary{flex:1; background:var(--lime); color:#0A0E12; font-weight:700; font-size:13.5px; padding:13px; border-radius:11px; text-align:center;}
+  .btn-primary:active{background:var(--lime-dim);}
+  .btn-ghost{flex:1; background:rgba(255,255,255,0.05); border:1px solid var(--line); color:var(--text); font-weight:600; font-size:13.5px; padding:13px; border-radius:11px; text-align:center;}
+
+  /* Quick stats */
+  .stats-row{display:flex; gap:10px; margin-bottom:20px;}
+  .stat-card{flex:1; background:var(--panel); border:1px solid var(--line); border-radius:13px; padding:13px 14px;}
+  .stat-label{font-size:10.5px; color:var(--muted); text-transform:uppercase; letter-spacing:.6px; margin-bottom:4px;}
+  .stat-value{font-size:15px; font-weight:700; font-family:ui-monospace, monospace;}
+  .stat-value.pos{color:var(--lime);}
+  .stat-value.neg{color:var(--danger);}
+
+  /* History */
+  .section-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;}
+  .section-title{font-weight:700; font-size:15px;}
+
+  .filter-row{display:flex; gap:8px; margin-bottom:14px; overflow-x:auto;}
+  .filter-chip{flex-shrink:0; padding:7px 14px; border-radius:20px; font-size:12px; font-weight:600; background:var(--panel); border:1px solid var(--line); color:var(--muted);}
+  .filter-chip.active{background:var(--lime); color:#0A0E12; border-color:var(--lime);}
+
+  .tx-list{display:flex; flex-direction:column; gap:10px;}
+  .tx-card{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:13px 15px; display:flex; align-items:center; gap:12px;}
+  .tx-icon{width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;}
+  .tx-icon.completed{background:rgba(180,255,57,0.1);}
+  .tx-icon.failed{background:rgba(255,107,107,0.1);}
+  .tx-icon.pending{background:rgba(244,197,66,0.1);}
+  .tx-body{flex:1; min-width:0;}
+  .tx-title{font-size:13px; font-weight:600;}
+  .tx-meta{font-size:11px; color:var(--muted); margin-top:2px; display:flex; align-items:center; gap:6px;}
+  .tx-status-pill{font-size:9.5px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; padding:2px 7px; border-radius:8px;}
+  .tx-status-pill.completed{background:rgba(180,255,57,0.12); color:var(--lime);}
+  .tx-status-pill.failed{background:rgba(255,107,107,0.12); color:var(--danger);}
+  .tx-status-pill.pending{background:rgba(244,197,66,0.12); color:var(--warn);}
+  .tx-amt{font-size:13.5px; font-weight:700; font-family:ui-monospace, monospace; flex-shrink:0;}
+  .tx-amt.pos{color:var(--lime);}
+  .tx-amt.neg{color:var(--danger);}
+
+  .empty-state{display:flex; flex-direction:column; align-items:center; text-align:center; background:var(--panel); border:1px dashed var(--line); border-radius:16px; padding:40px 22px;}
+  .empty-icon{font-size:26px; margin-bottom:10px; opacity:.8;}
+  .empty-title{font-weight:700; font-size:14px; margin-bottom:6px;}
+  .empty-sub{font-size:11.5px; color:var(--muted); max-width:260px; line-height:1.6;}
+
+  .status-note{display:flex; align-items:center; gap:6px; justify-content:center; margin-top:20px; font-size:11px; color:var(--muted-2);}
+  .status-dot{width:6px; height:6px; border-radius:50%; background:var(--muted-2);}
+  .status-dot.online{background:var(--lime);}
+  .status-dot.offline{background:var(--danger);}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <button class="icon-btn" onclick="window.location.href='home.html'" aria-label="Back">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
+  <div class="topbar-title">Wallet</div>
+</header>
+
+<main class="main">
+  <section class="balance-card">
+    <div class="balance-label">Total Balance</div>
+    <div class="balance-amount" id="balanceAmount"><span class="shimmer"></span></div>
+    <div class="balance-actions">
+      <button class="btn-primary" data-page="deposit.html">+ Deposit</button>
+      <button class="btn-ghost" data-page="withdraw.html">Withdraw</button>
+    </div>
+  </section>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Deposited</div>
+      <div class="stat-value pos" id="statDeposited">KES 0.00</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Withdrawn</div>
+      <div class="stat-value neg" id="statWithdrawn">KES 0.00</div>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <div class="section-title">Transaction History</div>
+  </div>
+
+  <div class="filter-row">
+    <div class="filter-chip active" data-filter="all">All</div>
+    <div class="filter-chip" data-filter="deposit">Deposits</div>
+    <div class="filter-chip" data-filter="withdrawal">Withdrawals</div>
+    <div class="filter-chip" data-filter="pending">Pending</div>
+  </div>
+
+  <div id="txWrap"></div>
+
+  <div class="status-note">
+    <span class="status-dot" id="connDot"></span>
+    <span id="connText">Checking connection…</span>
+  </div>
+</main>
+
+<script>
+  const API_BASE = window.BETAWIN_API_BASE || 'http://localhost:5000';
+  const token = localStorage.getItem('betawin_token');
+  function authHeaders(){ return token ? { 'Authorization': 'Bearer ' + token } : {}; }
+
+  let transactions = [];
+  let currentFilter = 'all';
+
+  // ---------- Balance ----------
+  async function loadBalance(){
+    const el = document.getElementById('balanceAmount');
+    try{
+      const res = await fetch(API_BASE + '/api/wallet/balance', { headers: authHeaders() });
+      if(!res.ok) throw new Error();
+      const data = await res.json();
+      el.textContent = 'KES ' + Number(data.balance || 0).toLocaleString('en-KE', { minimumFractionDigits: 2 });
+    } catch(e){ el.textContent = 'KES 0.00'; }
+  }
+  loadBalance();
+
+  // ---------- Transaction history ----------
+  function computeStats(){
+    const deposited = transactions.filter(t => t.type === 'deposit' && t.status === 'completed').reduce((sum,t) => sum + t.amount, 0);
+    const withdrawn = transactions.filter(t => t.type === 'withdrawal' && t.status === 'completed').reduce((sum,t) => sum + t.amount, 0);
+    document.getElementById('statDeposited').textContent = 'KES ' + deposited.toLocaleString('en-KE', {minimumFractionDigits:2});
+    document.getElementById('statWithdrawn').textContent = 'KES ' + withdrawn.toLocaleString('en-KE', {minimumFractionDigits:2});
+  }
+
+  function iconFor(type){ return type === 'deposit' ? '⬆️' : '⬇️'; }
+
+  function render(){
+    const wrap = document.getElementById('txWrap');
+    const filtered = transactions.filter(t => {
+      if(currentFilter === 'all') return true;
+      if(currentFilter === 'pending') return t.status === 'pending';
+      return t.type === currentFilter;
+    });
+
+    if(filtered.length === 0){
+      wrap.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">📭</div>
+          <div class="empty-title">No transactions yet</div>
+          <div class="empty-sub">Your deposits and withdrawals will show up here once your account is connected to the backend.</div>
+        </div>`;
+      return;
+    }
+
+    wrap.innerHTML = `<div class="tx-list">${filtered.map(t => `
+      <div class="tx-card">
+        <div class="tx-icon ${t.status}">${iconFor(t.type)}</div>
+        <div class="tx-body">
+          <div class="tx-title">${t.type === 'deposit' ? 'M-Pesa Deposit' : 'Withdrawal'}</div>
+          <div class="tx-meta">
+            <span>${new Date(t.createdAt).toLocaleString('en-KE',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</span>
+            <span class="tx-status-pill ${t.status}">${t.status}</span>
+          </div>
+        </div>
+        <div class="tx-amt ${t.type === 'deposit' ? 'pos' : 'neg'}">${t.type === 'deposit' ? '+' : '-'}KES ${t.amount.toLocaleString()}</div>
+      </div>
+    `).join('')}</div>`;
+  }
+
+  async function loadTransactions(){
+    try{
+      const res = await fetch(API_BASE + '/api/wallet/transactions', { headers: authHeaders() });
+      if(!res.ok) throw new Error();
+      const data = await res.json();
+      transactions = data.transactions || [];
+    } catch(e){
+      transactions = []; // empty until backend route exists -- no fake data
+    }
+    computeStats();
+    render();
+  }
+  loadTransactions();
+
+  document.querySelectorAll('.filter-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      currentFilter = chip.dataset.filter;
+      render();
+    });
+  });
+
+  // ---------- Router for Deposit/Withdraw buttons ----------
+  document.querySelectorAll('[data-page]').forEach(el => {
+    el.addEventListener('click', () => { window.location.href = el.dataset.page; });
+  });
+
+  // ---------- Health ----------
+  async function pollHealth(){
+    const dot = document.getElementById('connDot'), txt = document.getElementById('connText');
+    try{
+      const res = await fetch(API_BASE + '/health');
+      if(!res.ok) throw new Error();
+      dot.className = 'status-dot online'; txt.textContent = 'Connected';
+    } catch(e){ dot.className = 'status-dot offline'; txt.textContent = 'Offline — retrying…'; }
+  }
+  pollHealth(); setInterval(pollHealth, 15000);
+</script>
+
+</body>
+  </html>
+
