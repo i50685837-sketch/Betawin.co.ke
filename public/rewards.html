@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rewards</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:Arial,sans-serif;
+      background:#080c12;
+      color:#fff;
+      min-height:100vh;
+    }
+    header{
+      padding:20px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      border-bottom:1px solid #1d2733;
+      background:#0d131b;
+    }
+    header h1{font-size:22px}
+    .back{
+      color:#b4ff39;
+      text-decoration:none;
+      font-size:14px;
+    }
+    .container{
+      max-width:650px;
+      margin:auto;
+      padding:20px;
+    }
+    .balance{
+      background:linear-gradient(135deg,#17220d,#101914);
+      border:1px solid #31451d;
+      border-radius:18px;
+      padding:25px;
+      margin-bottom:20px;
+    }
+    .balance small{color:#9ba6b2}
+    .balance h2{
+      color:#b4ff39;
+      font-size:34px;
+      margin-top:8px;
+    }
+    .card{
+      background:#111821;
+      border:1px solid #202c38;
+      border-radius:16px;
+      padding:20px;
+      margin-bottom:15px;
+    }
+    .card h3{margin-bottom:8px}
+    .card p{
+      color:#9da8b4;
+      line-height:1.5;
+      font-size:14px;
+    }
+    .reward{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:15px;
+    }
+    .reward-icon{
+      width:48px;
+      height:48px;
+      border-radius:14px;
+      background:#1c2812;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:25px;
+    }
+    .reward-info{flex:1}
+    .reward-info strong{display:block;margin-bottom:5px}
+    button{
+      border:0;
+      border-radius:10px;
+      padding:10px 15px;
+      background:#b4ff39;
+      color:#081000;
+      font-weight:bold;
+      cursor:pointer;
+    }
+    button:disabled{
+      opacity:.45;
+      cursor:not-allowed;
+    }
+    .progress{
+      height:9px;
+      background:#202b35;
+      border-radius:20px;
+      overflow:hidden;
+      margin:14px 0 7px;
+    }
+    .progress span{
+      display:block;
+      width:65%;
+      height:100%;
+      background:#b4ff39;
+    }
+    .notice{
+      text-align:center;
+      color:#7f8a96;
+      font-size:12px;
+      margin-top:20px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <a href="dashboard.html" class="back">← Dashboard</a>
+  <h1>Rewards</h1>
+  <span>🎁</span>
+</header>
+
+<main class="container">
+
+  <section class="balance">
+    <small>Available Rewards</small>
+    <h2 id="rewardBalance">KES 0.00</h2>
+  </section>
+
+  <section class="card">
+    <h3>🎯 Reward Progress</h3>
+    <p>Complete eligible activities to earn rewards.</p>
+
+    <div class="progress">
+      <span id="progressBar"></span>
+    </div>
+
+    <p id="progressText">0 / 100 points</p>
+  </section>
+
+  <section class="card reward">
+    <div class="reward-icon">⭐</div>
+    <div class="reward-info">
+      <strong>Daily Check-in</strong>
+      <p>Claim your daily reward when available.</p>
+    </div>
+    <button id="dailyBtn" onclick="claimDaily()">Claim</button>
+  </section>
+
+  <section class="card reward">
+    <div class="reward-icon">🏆</div>
+    <div class="reward-info">
+      <strong>Achievement Reward</strong>
+      <p>Reach 100 reward points.</p>
+    </div>
+    <button id="achievementBtn" disabled>Locked</button>
+  </section>
+
+  <section class="card">
+    <h3>💡 How Rewards Work</h3>
+    <p>
+      Your rewards and points are stored locally on this device for this
+      demo page. Connect this page to your backend when you are ready
+      for real account-based rewards.
+    </p>
+  </section>
+
+  <p class="notice">
+    Rewards shown here are demo values until connected to your backend.
+  </p>
+
+</main>
+
+<script>
+  let points = Number(localStorage.getItem("rewardPoints") || 0);
+  let balance = Number(localStorage.getItem("rewardBalance") || 0);
+  let lastClaim = localStorage.getItem("lastRewardClaim");
+
+  function updateUI(){
+    document.getElementById("rewardBalance").textContent =
+      "KES " + balance.toFixed(2);
+
+    const percentage = Math.min(points, 100);
+
+    document.getElementById("progressBar").style.width =
+      percentage + "%";
+
+    document.getElementById("progressText").textContent =
+      points + " / 100 points";
+
+    const today = new Date().toDateString();
+
+    if(lastClaim === today){
+      document.getElementById("dailyBtn").disabled = true;
+      document.getElementById("dailyBtn").textContent = "Claimed";
+    }
+
+    if(points >= 100){
+      document.getElementById("achievementBtn").disabled = false;
+      document.getElementById("achievementBtn").textContent = "Unlocked";
+    }
+  }
+
+  function claimDaily(){
+    const today = new Date().toDateString();
+
+    if(lastClaim === today){
+      return;
+    }
+
+    points += 10;
+    balance += 10;
+    lastClaim = today;
+
+    localStorage.setItem("rewardPoints", points);
+    localStorage.setItem("rewardBalance", balance);
+    localStorage.setItem("lastRewardClaim", lastClaim);
+
+    updateUI();
+    alert("Daily reward claimed: +10 points");
+  }
+
+  updateUI();
+</script>
+
+</body>
+      </html>
