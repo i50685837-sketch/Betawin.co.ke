@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Bets — Betawin</title>
+<style>
+  :root{
+    --navy-900:#0a0e17; --navy-800:#101624; --navy-700:#161d2f; --navy-600:#1e2740;
+    --line:#232c42; --lime:#c6ff3d; --lime-dim:#8fbf2c;
+    --text:#eef1f8; --text-dim:#8891a7; --text-faint:#5a6379; --radius:14px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--navy-900); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; min-height:100vh; padding-bottom:40px;}
+  .topbar{position:sticky; top:0; z-index:20; background:rgba(10,14,23,0.92); backdrop-filter:blur(10px); border-bottom:1px solid var(--line); padding:14px 16px;}
+  .topbar-row{display:flex; align-items:center; gap:12px; max-width:720px; margin:0 auto;}
+  .back-btn{width:34px; height:34px; background:var(--navy-800); border:1px solid var(--line); border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:16px; color:var(--text); cursor:pointer; text-decoration:none;}
+  .page-title{font-size:17px; font-weight:800; display:flex; align-items:center; gap:8px;}
+
+  main{max-width:720px; margin:0 auto; padding:16px;}
+
+  .summary-card{
+    background:linear-gradient(135deg, var(--navy-700), var(--navy-800));
+    border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px; margin-bottom:20px; text-align:center;
+  }
+  .summary-label{font-size:12px; color:var(--text-dim); font-weight:600; text-transform:uppercase; letter-spacing:0.06em;}
+  .summary-value{font-size:30px; font-weight:800; color:var(--lime); margin-top:6px;}
+  .summary-sub{font-size:12px; color:var(--text-faint); margin-top:4px;}
+
+  .tabs{display:flex; gap:8px; margin-bottom:16px;}
+  .tab{
+    flex:1; text-align:center; padding:9px; border-radius:10px;
+    background:var(--navy-700); border:1px solid var(--line);
+    color:var(--text-dim); font-size:13px; font-weight:700; cursor:pointer;
+  }
+  .tab.active{background:var(--lime); color:var(--navy-900); border-color:var(--lime);}
+
+  .fb-card{
+    background:var(--navy-800); border:1px solid var(--line); border-radius:var(--radius);
+    padding:16px; margin-bottom:12px; position:relative; overflow:hidden;
+  }
+  .fb-card.expired{opacity:0.55;}
+  .fb-ribbon{
+    position:absolute; top:0; right:0;
+    font-size:10px; font-weight:800; color:var(--navy-900);
+    background:var(--lime); padding:4px 12px; border-bottom-left-radius:10px;
+  }
+  .fb-ribbon.used{background:var(--text-faint); color:var(--navy-900);}
+  .fb-ribbon.expired{background:#ff4d4d;}
+  .fb-top{display:flex; align-items:center; gap:12px; margin-bottom:10px;}
+  .fb-icon{
+    width:40px; height:40px; border-radius:10px;
+    background:var(--navy-600); border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;
+  }
+  .fb-title{font-size:14px; font-weight:700;}
+  .fb-desc{font-size:12px; color:var(--text-dim); margin-top:2px;}
+  .fb-meta{
+    display:flex; justify-content:space-between; align-items:center;
+    padding-top:10px; border-top:1px solid var(--line); margin-top:4px;
+  }
+  .fb-expiry{font-size:11px; color:var(--text-faint);}
+  .fb-use-btn{
+    background:var(--lime); color:var(--navy-900);
+    border:none; border-radius:8px; padding:8px 16px;
+    font-size:12px; font-weight:800; cursor:pointer;
+  }
+  .fb-use-btn:disabled{background:var(--navy-600); color:var(--text-faint); cursor:not-allowed;}
+
+  .empty{text-align:center; padding:60px 20px; color:var(--text-faint);}
+  .empty-icon{font-size:32px; margin-bottom:10px;}
+  .empty-title{font-size:15px; font-weight:700; color:var(--text-dim); margin-bottom:4px;}
+  .empty-sub{font-size:13px;}
+
+  .how-it-works{
+    background:var(--navy-800); border:1px solid var(--line); border-radius:var(--radius);
+    padding:16px; margin-top:22px; font-size:12px; color:var(--text-dim); line-height:1.6;
+  }
+  .how-it-works .hw-title{font-size:13px; font-weight:700; color:var(--text); margin-bottom:8px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-row">
+    <a class="back-btn" href="dashboard.html">←</a>
+    <div class="page-title">🎟️ Free Bets</div>
+  </div>
+</div>
+
+<main>
+  <div class="summary-card">
+    <div class="summary-label">Available free bets</div>
+    <div class="summary-value" id="summaryCount">0</div>
+    <div class="summary-sub" id="summaryValue">KES 0 total value</div>
+  </div>
+
+  <div class="tabs" id="fbTabs">
+    <div class="tab active" data-filter="active">Active</div>
+    <div class="tab" data-filter="used">Used</div>
+    <div class="tab" data-filter="expired">Expired</div>
+  </div>
+
+  <div id="fbRoot">
+    <div class="empty">
+      <div class="empty-icon">🎟️</div>
+      <div class="empty-title">Loading your free bets…</div>
+    </div>
+  </div>
+
+  <div class="how-it-works">
+    <div class="hw-title">How free bets work</div>
+    Free bets are credited to your account as promotions or rewards. Each one has a minimum odds requirement and an expiry date. Winnings from a free bet are usually paid as real cash, minus the stake. Terms vary by promotion — check each offer before using it.
+  </div>
+</main>
+
+<script>
+  const API_BASE = "";
+
+  function getToken(){ return localStorage.getItem("betawin_token"); }
+
+  // Demo dataset — replace with a real /api/rewards/freebets endpoint once
+  // your promotions/bonus engine exists on the backend. No real-money
+  // crediting or wagering happens on this page; "Use" just deep-links
+  // into the betslip with the free-bet reference attached.
+  const FREE_BETS = [
+    {
+      id: "fb_001",
+      title: "Welcome Free Bet",
+      desc: "Min odds 2.0 · Football only",
+      amount: 100,
+      status: "active",
+      expires: "2026-08-25"
+    },
+    {
+      id: "fb_002",
+      title: "Weekend Boost",
+      desc: "Min odds 1.5 · Any sport",
+      amount: 50,
+      status: "active",
+      expires: "2026-08-22"
+    },
+    {
+      id: "fb_003",
+      title: "Referral Reward",
+      desc: "Min odds 3.0 · Football only",
+      amount: 200,
+      status: "used",
+      expires: "2026-07-30"
+    },
+    {
+      id: "fb_004",
+      title: "Loyalty Bonus",
+      desc: "Min odds 2.0 · Any sport",
+      amount: 75,
+      status: "expired",
+      expires: "2026-06-15"
+    }
+  ];
+
+  let activeFilter = "active";
+
+  function daysUntil(dateStr){
+    const diff = new Date(dateStr) - new Date();
+    const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
+    return days;
+  }
+
+  function renderList(){
+    const root = document.getElementById("fbRoot");
+    const filtered = FREE_BETS.filter(fb => fb.status === activeFilter);
+
+    if(filtered.length === 0){
+      root.innerHTML = `
+        <div class="empty">
+          <div class="empty-icon">🎟️</div>
+          <div class="empty-title">No ${activeFilter} free bets</div>
+          <div class="empty-sub">Check back after your next promotion</div>
+        </div>`;
+      return;
+    }
+
+    root.innerHTML = "";
+    filtered.forEach(fb => {
+      const card = document.createElement("div");
+      card.className = `fb-card ${fb.status === "expired" ? "expired" : ""}`;
+
+      const ribbon = fb.status === "used" ? '<div class="fb-ribbon used">USED</div>'
+        : fb.status === "expired" ? '<div class="fb-ribbon expired">EXPIRED</div>'
+        : "";
+
+      const expiryText = fb.status === "active"
+        ? `Expires in ${daysUntil(fb.expires)} day${daysUntil(fb.expires) === 1 ? "" : "s"}`
+        : `Expired ${new Date(fb.expires).toLocaleDateString()}`;
+
+      card.innerHTML = `
+        ${ribbon}
+        <div class="fb-top">
+          <div class="fb-icon">🎟️</div>
+          <div>
+            <div class="fb-title">${fb.title} — KES ${fb.amount}</div>
+            <div class="fb-desc">${fb.desc}</div>
+          </div>
+        </div>
+        <div class="fb-meta">
+          <span class="fb-expiry">${expiryText}</span>
+          <button class="fb-use-btn" ${fb.status !== "active" ? "disabled" : ""} onclick="useFreeBet('${fb.id}')">
+            ${fb.status === "active" ? "Use now" : fb.status === "used" ? "Used" : "Expired"}
+          </button>
+        </div>
+      `;
+      root.appendChild(card);
+    });
+  }
+
+  function updateSummary(){
+    const active = FREE_BETS.filter(fb => fb.status === "active");
+    const total = active.reduce((sum, fb) => sum + fb.amount, 0);
+    document.getElementById("summaryCount").textContent = active.length;
+    document.getElementById("summaryValue").textContent = `KES ${total.toLocaleString()} total value`;
+  }
+
+  function useFreeBet(id){
+    // Hands off to the betslip with the free-bet reference; actual
+    // application of the free bet to a wager happens in your betting
+    // flow / backend, not here.
+    window.location.href = `betslip.html?freebet=${encodeURIComponent(id)}`;
+  }
+
+  document.getElementById("fbTabs").addEventListener("click", (e) => {
+    const tab = e.target.closest(".tab");
+    if(!tab) return;
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    activeFilter = tab.dataset.filter;
+    renderList();
+  });
+
+  function init(){
+    const token = getToken();
+    if(!token){
+      window.location.href = "login.html";
+      return;
+    }
+    updateSummary();
+    renderList();
+  }
+
+  init();
+</script>
+</body>
+  </html>
+  
