@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fixtures — Betawin</title>
+<style>
+  :root{
+    --navy-900:#0a0e17;
+    --navy-800:#101624;
+    --navy-700:#161d2f;
+    --navy-600:#1e2740;
+    --line:#232c42;
+    --lime:#c6ff3d;
+    --lime-dim:#8fbf2c;
+    --text:#eef1f8;
+    --text-dim:#8891a7;
+    --text-faint:#5a6379;
+    --radius:14px;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  body{
+    background:var(--navy-900);
+    color:var(--text);
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    min-height:100vh;
+    padding-bottom:40px;
+  }
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:20;
+    background:rgba(10,14,23,0.92);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+    padding:14px 16px;
+  }
+  .topbar-row{
+    display:flex; align-items:center; justify-content:space-between;
+    max-width:720px; margin:0 auto;
+  }
+  .brand{
+    font-size:18px; font-weight:800; letter-spacing:-0.02em;
+  }
+  .brand span{color:var(--lime);}
+  .page-label{
+    font-size:12px; color:var(--text-dim); font-weight:600;
+    text-transform:uppercase; letter-spacing:0.08em;
+  }
+
+  /* ---------- League tabs ---------- */
+  .tabs{
+    display:flex; gap:8px; overflow-x:auto;
+    padding:12px 16px 4px;
+    max-width:720px; margin:0 auto;
+    scrollbar-width:none;
+  }
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{
+    flex:0 0 auto;
+    padding:8px 16px;
+    border-radius:999px;
+    background:var(--navy-700);
+    border:1px solid var(--line);
+    color:var(--text-dim);
+    font-size:13px; font-weight:600;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:all .15s ease;
+  }
+  .tab.active{
+    background:var(--lime);
+    color:var(--navy-900);
+    border-color:var(--lime);
+  }
+
+  /* ---------- Date strip ---------- */
+  .date-strip{
+    display:flex; gap:8px; overflow-x:auto;
+    padding:10px 16px 16px;
+    max-width:720px; margin:0 auto;
+    scrollbar-width:none;
+  }
+  .date-strip::-webkit-scrollbar{display:none;}
+  .date-chip{
+    flex:0 0 auto;
+    text-align:center;
+    padding:8px 14px;
+    border-radius:10px;
+    background:var(--navy-800);
+    border:1px solid var(--line);
+    cursor:pointer;
+    min-width:56px;
+  }
+  .date-chip .d{font-size:11px; color:var(--text-faint); text-transform:uppercase; font-weight:600;}
+  .date-chip .n{font-size:15px; font-weight:700; margin-top:2px;}
+  .date-chip.active{
+    background:var(--navy-600);
+    border-color:var(--lime-dim);
+  }
+  .date-chip.active .n{color:var(--lime);}
+
+  /* ---------- Content ---------- */
+  main{max-width:720px; margin:0 auto; padding:0 16px;}
+
+  .status-row{
+    display:flex; align-items:center; gap:8px;
+    font-size:12px; color:var(--text-faint);
+    padding:4px 2px 10px;
+  }
+  .dot{width:6px; height:6px; border-radius:50%; background:var(--text-faint);}
+  .dot.live{background:#ff4d4d; box-shadow:0 0 0 3px rgba(255,77,77,0.15);}
+
+  .league-group{margin-bottom:22px;}
+  .league-header{
+    display:flex; align-items:center; gap:8px;
+    font-size:13px; font-weight:700;
+    color:var(--text-dim);
+    padding:10px 2px;
+    text-transform:uppercase; letter-spacing:0.04em;
+  }
+  .league-header .flag{font-size:15px;}
+
+  .fixture-card{
+    background:var(--navy-800);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:14px 16px;
+    margin-bottom:10px;
+    transition:border-color .15s ease;
+  }
+  .fixture-card:active{border-color:var(--lime-dim);}
+
+  .fixture-top{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:10px;
+  }
+  .kickoff{
+    font-size:12px; font-weight:700; color:var(--lime);
+    background:rgba(198,255,61,0.08);
+    padding:3px 9px; border-radius:6px;
+  }
+  .round{font-size:11px; color:var(--text-faint);}
+
+  .fixture-teams{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:10px;
+  }
+  .team{
+    display:flex; align-items:center; gap:10px;
+    flex:1; min-width:0;
+  }
+  .team.away{flex-direction:row-reverse; text-align:right;}
+  .crest{
+    width:28px; height:28px; border-radius:7px;
+    background:var(--navy-600);
+    display:flex; align-items:center; justify-content:center;
+    font-size:11px; font-weight:800; color:var(--text-dim);
+    flex-shrink:0;
+    border:1px solid var(--line);
+  }
+  .team-name{
+    font-size:14px; font-weight:600;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+  .vs{
+    font-size:11px; color:var(--text-faint); font-weight:700;
+    padding:0 6px; flex-shrink:0;
+  }
+
+  .empty{
+    text-align:center;
+    padding:60px 20px;
+    color:var(--text-faint);
+  }
+  .empty-icon{font-size:32px; margin-bottom:10px;}
+  .empty-title{font-size:15px; font-weight:700; color:var(--text-dim); margin-bottom:4px;}
+  .empty-sub{font-size:13px;}
+
+  .skeleton{
+    background:var(--navy-800);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:14px 16px;
+    margin-bottom:10px;
+    height:78px;
+    position:relative;
+    overflow:hidden;
+  }
+  .skeleton::after{
+    content:"";
+    position:absolute; top:0; left:-100%; width:100%; height:100%;
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent);
+    animation:shimmer 1.3s infinite;
+  }
+  @keyframes shimmer{
+    100%{left:100%;}
+  }
+
+  .retry-btn{
+    display:block; margin:14px auto 0;
+    background:var(--lime); color:var(--navy-900);
+    border:none; border-radius:8px;
+    padding:9px 20px; font-size:13px; font-weight:700;
+    cursor:pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-row">
+    <div class="brand">Bet<span>awin</span></div>
+    <div class="page-label">Fixtures</div>
+  </div>
+</div>
+
+<div class="tabs" id="leagueTabs">
+  <div class="tab active" data-league="">All</div>
+  <div class="tab" data-league="39">EPL</div>
+  <div class="tab" data-league="140">La Liga</div>
+  <div class="tab" data-league="135">Serie A</div>
+  <div class="tab" data-league="78">Bundesliga</div>
+  <div class="tab" data-league="61">Ligue 1</div>
+</div>
+
+<div class="date-strip" id="dateStrip"></div>
+
+<main>
+  <div class="status-row" id="statusRow">
+    <span class="dot"></span>
+    <span id="statusText">Loading fixtures…</span>
+  </div>
+  <div id="fixturesRoot">
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+  </div>
+</main>
+
+<script>
+  const API_BASE = ""; // same-origin; e.g. "" if served from your Express app
+  const state = {
+    league: "",
+    dateOffset: 0
+  };
+
+  function fmtDateISO(offset){
+    const d = new Date();
+    d.setDate(d.getDate() + offset);
+    return d.toISOString().slice(0,10);
+  }
+
+  function labelForOffset(offset){
+    if(offset === 0) return "Today";
+    if(offset === 1) return "Tomorrow";
+    const d = new Date();
+    d.setDate(d.getDate() + offset);
+    return d.toLocaleDateString(undefined, { weekday: "short" });
+  }
+
+  function buildDateStrip(){
+    const strip = document.getElementById("dateStrip");
+    strip.innerHTML = "";
+    for(let i = 0; i <= 6; i++){
+      const d = new Date();
+      d.setDate(d.getDate() + i);
+      const chip = document.createElement("div");
+      chip.className = "date-chip" + (i === state.dateOffset ? " active" : "");
+      chip.dataset.offset = i;
+      chip.innerHTML = `<div class="d">${labelForOffset(i)}</div><div class="n">${d.getDate()}</div>`;
+      chip.addEventListener("click", () => {
+        state.dateOffset = i;
+        buildDateStrip();
+        loadFixtures();
+      });
+      strip.appendChild(chip);
+    }
+  }
+
+  document.getElementById("leagueTabs").addEventListener("click", (e) => {
+    const tab = e.target.closest(".tab");
+    if(!tab) return;
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    state.league = tab.dataset.league;
+    loadFixtures();
+  });
+
+  function crestInitials(name){
+    if(!name) return "?";
+    return name.split(" ").map(w => w[0]).slice(0,2).join("").toUpperCase();
+  }
+
+  function renderFixtures(fixtures){
+    const root = document.getElementById("fixturesRoot");
+    const statusText = document.getElementById("statusText");
+    const dot = document.querySelector(".dot");
+
+    if(!fixtures || fixtures.length === 0){
+      dot.classList.remove("live");
+      statusText.textContent = "No fixtures found";
+      root.innerHTML = `
+        <div class="empty">
+          <div class="empty-icon">⚽</div>
+          <div class="empty-title">No matches scheduled</div>
+          <div class="empty-sub">Try a different date or league</div>
+        </div>`;
+      return;
+    }
+
+    statusText.textContent = `${fixtures.length} match${fixtures.length === 1 ? "" : "es"} scheduled`;
+    dot.classList.remove("live");
+
+    // Group by league
+    const groups = {};
+    fixtures.forEach(f => {
+      const leagueName = f.league?.name || "Other";
+      const flag = f.league?.flag || "";
+      const key = leagueName;
+      if(!groups[key]) groups[key] = { flag, items: [] };
+      groups[key].items.push(f);
+    });
+
+    root.innerHTML = "";
+    Object.entries(groups).forEach(([leagueName, group]) => {
+      const section = document.createElement("div");
+      section.className = "league-group";
+
+      const header = document.createElement("div");
+      header.className = "league-header";
+      header.innerHTML = `<span class="flag">🏆</span><span>${leagueName}</span>`;
+      section.appendChild(header);
+
+      group.items.forEach(f => {
+        const home = f.teams?.home?.name || "TBD";
+        const away = f.teams?.away?.name || "TBD";
+        const kickoff = f.fixture?.date
+          ? new Date(f.fixture.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+          : "--:--";
+        const round = f.league?.round || "";
+
+        const card = document.createElement("div");
+        card.className = "fixture-card";
+        card.innerHTML = `
+          <div class="fixture-top">
+            <span class="kickoff">${kickoff}</span>
+            <span class="round">${round}</span>
+          </div>
+          <div class="fixture-teams">
+            <div class="team home">
+              <div class="crest">${crestInitials(home)}</div>
+              <div class="team-name">${home}</div>
+            </div>
+            <div class="vs">VS</div>
+            <div class="team away">
+              <div class="crest">${crestInitials(away)}</div>
+              <div class="team-name">${away}</div>
+            </div>
+          </div>
+        `;
+        section.appendChild(card);
+      });
+
+      root.appendChild(section);
+    });
+  }
+
+  function renderError(){
+    const root = document.getElementById("fixturesRoot");
+    const statusText = document.getElementById("statusText");
+    statusText.textContent = "Couldn't load fixtures";
+    root.innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">⚠️</div>
+        <div class="empty-title">Something went wrong</div>
+        <div class="empty-sub">Check your connection and try again</div>
+        <button class="retry-btn" onclick="loadFixtures()">Retry</button>
+      </div>`;
+  }
+
+  async function loadFixtures(){
+    const root = document.getElementById("fixturesRoot");
+    const statusText = document.getElementById("statusText");
+    statusText.textContent = "Loading fixtures…";
+    root.innerHTML = `
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>`;
+
+    const date = fmtDateISO(state.dateOffset);
+    const params = new URLSearchParams({ date });
+    if(state.league) params.set("league", state.league);
+
+    try{
+      const res = await fetch(`${API_BASE}/api/sports/fixtures?${params.toString()}`);
+      const json = await res.json();
+
+      if(!json.success){
+        renderError();
+        return;
+      }
+
+      const fixtures = json.data?.response || [];
+      renderFixtures(fixtures);
+    }catch(err){
+      console.error("Fixture load failed:", err);
+      renderError();
+    }
+  }
+
+  buildDateStrip();
+  loadFixtures();
+</script>
+
+</body>
+</html>
