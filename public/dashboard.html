@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Betawin</title>
+<style>
+  :root{
+    --navy-900:#0a0e17;
+    --navy-800:#101624;
+    --navy-700:#161d2f;
+    --navy-600:#1e2740;
+    --line:#232c42;
+    --lime:#c6ff3d;
+    --lime-dim:#8fbf2c;
+    --red:#ff4d4d;
+    --text:#eef1f8;
+    --text-dim:#8891a7;
+    --text-faint:#5a6379;
+    --radius:14px;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  body{
+    background:var(--navy-900);
+    color:var(--text);
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    min-height:100vh;
+    padding-bottom:90px;
+    overflow-x:hidden;
+  }
+
+  /* ---------- Top bar ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:20;
+    background:rgba(10,14,23,0.92);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+    padding:14px 16px;
+  }
+  .topbar-row{
+    display:flex; align-items:center; justify-content:space-between;
+    max-width:720px; margin:0 auto;
+  }
+  .topbar-left{display:flex; align-items:center; gap:12px;}
+  .hamburger-btn{
+    width:36px; height:36px;
+    background:var(--navy-800);
+    border:1px solid var(--line);
+    border-radius:9px;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+  }
+  .hamburger-btn span{
+    display:block; width:16px; height:2px; background:var(--text);
+    position:relative;
+  }
+  .hamburger-btn span::before,
+  .hamburger-btn span::after{
+    content:""; position:absolute; left:0; width:16px; height:2px; background:var(--text);
+  }
+  .hamburger-btn span::before{top:-5px;}
+  .hamburger-btn span::after{top:5px;}
+  .brand{font-size:18px; font-weight:800; letter-spacing:-0.02em;}
+  .brand span{color:var(--lime);}
+  .avatar{
+    width:34px; height:34px; border-radius:50%;
+    background:var(--navy-600);
+    border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px; font-weight:800; color:var(--lime);
+  }
+
+  main{max-width:720px; margin:0 auto; padding:16px;}
+
+  /* ---------- Greeting ---------- */
+  .greeting{padding:6px 2px 18px;}
+  .greeting-name{font-size:22px; font-weight:800; letter-spacing:-0.01em;}
+  .greeting-sub{font-size:13px; color:var(--text-dim); margin-top:2px;}
+
+  /* ---------- Balance card ---------- */
+  .balance-card{
+    background:linear-gradient(135deg, var(--navy-700), var(--navy-800));
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:20px;
+    margin-bottom:16px;
+    position:relative;
+    overflow:hidden;
+  }
+  .balance-card::after{
+    content:"";
+    position:absolute; top:-40%; right:-20%;
+    width:180px; height:180px; border-radius:50%;
+    background:radial-gradient(circle, rgba(198,255,61,0.08), transparent 70%);
+  }
+  .balance-label{
+    font-size:12px; color:var(--text-dim); font-weight:600;
+    text-transform:uppercase; letter-spacing:0.06em;
+  }
+  .balance-value{
+    font-size:34px; font-weight:800; color:var(--lime);
+    margin-top:6px; letter-spacing:-0.02em;
+  }
+  .balance-value .cur{font-size:16px; color:var(--text-dim); font-weight:700; margin-right:4px;}
+  .balance-actions{display:flex; gap:10px; margin-top:16px;}
+  .btn{
+    flex:1; text-align:center;
+    padding:11px; border-radius:10px;
+    font-size:13px; font-weight:700;
+    border:none; cursor:pointer;
+  }
+  .btn-primary{background:var(--lime); color:var(--navy-900);}
+  .btn-ghost{background:var(--navy-600); color:var(--text); border:1px solid var(--line);}
+
+  /* ---------- Quick links ---------- */
+  .section-label{
+    font-size:12px; color:var(--text-dim); font-weight:700;
+    text-transform:uppercase; letter-spacing:0.06em;
+    padding:6px 2px 10px;
+  }
+  .quick-grid{
+    display:grid; grid-template-columns:repeat(4, 1fr);
+    gap:10px; margin-bottom:20px;
+  }
+  .quick-item{
+    background:var(--navy-800);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:14px 6px;
+    text-align:center;
+    text-decoration:none;
+    color:var(--text);
+    cursor:pointer;
+  }
+  .quick-icon{font-size:20px; margin-bottom:6px;}
+  .quick-name{font-size:11px; font-weight:600; color:var(--text-dim);}
+
+  /* ---------- Fixtures preview ---------- */
+  .preview-card{
+    background:var(--navy-800);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:14px 16px;
+    margin-bottom:10px;
+  }
+  .preview-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;}
+  .preview-kickoff{
+    font-size:11px; font-weight:700; color:var(--lime);
+    background:rgba(198,255,61,0.08);
+    padding:3px 8px; border-radius:6px;
+  }
+  .preview-league{font-size:11px; color:var(--text-faint);}
+  .preview-teams{display:flex; align-items:center; justify-content:space-between;}
+  .preview-team{
+    font-size:13px; font-weight:600; flex:1;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+  .preview-team.away{text-align:right;}
+  .preview-vs{font-size:11px; color:var(--text-faint); padding:0 8px;}
+
+  .see-all-link{
+    display:block; text-align:center;
+    font-size:13px; font-weight:700; color:var(--lime);
+    padding:12px; cursor:pointer; text-decoration:none;
+  }
+
+  .empty-mini{text-align:center; padding:30px 16px; color:var(--text-faint); font-size:13px;}
+
+  /* ---------- Bottom nav ---------- */
+  .bottom-nav{
+    position:fixed; bottom:0; left:0; right:0; z-index:20;
+    background:rgba(16,22,36,0.95);
+    backdrop-filter:blur(10px);
+    border-top:1px solid var(--line);
+    display:flex;
+    padding:8px 0 calc(8px + env(safe-area-inset-bottom));
+  }
+  .nav-item{
+    flex:1; text-align:center;
+    color:var(--text-faint);
+    font-size:10px; font-weight:600;
+    text-decoration:none;
+    cursor:pointer;
+    position:relative;
+  }
+  .nav-item .ni{font-size:19px; display:block; margin-bottom:3px;}
+  .nav-item.active{color:var(--lime);}
+  .betslip-count{
+    position:absolute; top:-3px; right:calc(50% - 18px);
+    background:var(--lime); color:var(--navy-900);
+    font-size:9px; font-weight:800;
+    width:15px; height:15px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  /* ---------- Hamburger drawer ---------- */
+  .overlay{
+    position:fixed; inset:0; z-index:30;
+    background:rgba(0,0,0,0.55);
+    opacity:0; pointer-events:none;
+    transition:opacity .2s ease;
+  }
+  .overlay.open{opacity:1; pointer-events:auto;}
+
+  .drawer{
+    position:fixed; top:0; bottom:0; left:0; z-index:31;
+    width:82%; max-width:320px;
+    background:var(--navy-800);
+    border-right:1px solid var(--line);
+    transform:translateX(-100%);
+    transition:transform .25s ease;
+    display:flex; flex-direction:column;
+    overflow-y:auto;
+  }
+  .drawer.open{transform:translateX(0);}
+
+  .drawer-header{
+    padding:22px 18px 18px;
+    border-bottom:1px solid var(--line);
+    display:flex; align-items:center; gap:12px;
+  }
+  .drawer-avatar{
+    width:44px; height:44px; border-radius:50%;
+    background:var(--navy-600);
+    border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-size:16px; font-weight:800; color:var(--lime);
+    flex-shrink:0;
+  }
+  .drawer-user-name{font-size:15px; font-weight:700;}
+  .drawer-user-phone{font-size:12px; color:var(--text-dim); margin-top:2px;}
+
+  .drawer-nav{padding:8px 0; flex:1;}
+  .drawer-section-label{
+    font-size:11px; font-weight:700; color:var(--text-faint);
+    text-transform:uppercase; letter-spacing:0.06em;
+    padding:14px 18px 6px;
+  }
+  .drawer-link{
+    display:flex; align-items:center; gap:14px;
+    padding:12px 18px;
+    color:var(--text);
+    text-decoration:none;
+    font-size:14px; font-weight:600;
+    cursor:pointer;
+  }
+  .drawer-link:active{background:var(--navy-700);}
+  .drawer-link .di{font-size:18px; width:22px; text-align:center; flex-shrink:0;}
+  .drawer-link .dt{flex:1;}
+  .drawer-link .chev{color:var(--text-faint); font-size:12px;}
+  .drawer-link.danger{color:var(--red);}
+
+  .drawer-sub{padding-left:16px;}
+  .drawer-sub .drawer-link{padding-left:36px; font-size:13px; font-weight:500; color:var(--text-dim);}
+
+  .theme-row{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 18px;
+  }
+  .theme-toggle{
+    width:44px; height:24px; border-radius:999px;
+    background:var(--navy-600);
+    border:1px solid var(--line);
+    position:relative;
+    cursor:pointer;
+  }
+  .theme-toggle::after{
+    content:"";
+    position:absolute; top:2px; left:2px;
+    width:18px; height:18px; border-radius:50%;
+    background:var(--lime);
+    transition:left .2s ease;
+  }
+  .theme-toggle.on::after{left:22px;}
+
+  .drawer-footer{
+    padding:14px 18px calc(18px + env(safe-area-inset-bottom));
+    border-top:1px solid var(--line);
+    font-size:11px; color:var(--text-faint);
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-row">
+    <div class="topbar-left">
+      <div class="hamburger-btn" id="hamburgerBtn"><span></span></div>
+      <div class="brand">Bet<span>awin</span></div>
+    </div>
+    <div class="avatar" id="avatarInitial">?</div>
+  </div>
+</div>
+
+<main>
+  <div class="greeting">
+    <div class="greeting-name" id="greetingName">Welcome back</div>
+    <div class="greeting-sub" id="greetingSub">Loading your account…</div>
+  </div>
+
+  <div class="balance-card">
+    <div class="balance-label">Balance</div>
+    <div class="balance-value"><span class="cur">KES</span><span id="balanceValue">0.00</span></div>
+    <div class="balance-actions">
+      <button class="btn btn-primary" onclick="location.href='wallet.html?tab=deposit'">Deposit</button>
+      <button class="btn btn-ghost" onclick="location.href='wallet.html?tab=withdraw'">Withdraw</button>
+    </div>
+  </div>
+
+  <div class="section-label">Quick links</div>
+  <div class="quick-grid">
+    <a class="quick-item" href="crash.html">
+      <div class="quick-icon">🚀</div>
+      <div class="quick-name">Crash</div>
+    </a>
+    <a class="quick-item" href="casino.html">
+      <div class="quick-icon">🎰</div>
+      <div class="quick-name">Casino</div>
+    </a>
+    <a class="quick-item" href="rewards.html">
+      <div class="quick-icon">🎁</div>
+      <div class="quick-name">Rewards</div>
+    </a>
+    <a class="quick-item" href="freebets.html">
+      <div class="quick-icon">🎟️</div>
+      <div class="quick-name">Free Bets</div>
+    </a>
+  </div>
+
+  <div class="section-label">Today's fixtures</div>
+  <div id="fixturesPreview">
+    <div class="empty-mini">Loading fixtures…</div>
+  </div>
+  <a class="see-all-link" href="sports.html">See all fixtures →</a>
+</main>
+
+<!-- Bottom Nav -->
+<div class="bottom-nav">
+  <a class="nav-item active" href="dashboard.html"><span class="ni">🏠</span>Home</a>
+  <a class="nav-item" href="sports.html"><span class="ni">⚽</span>Sports</a>
+  <a class="nav-item" href="live.html"><span class="ni">📡</span>Live</a>
+  <a class="nav-item" href="betslip.html"><span class="ni">🧾</span>Betslip<span class="betslip-count" id="betslipCount">0</span></a>
+  <a class="nav-item" href="profile.html"><span class="ni">👤</span>Profile</a>
+</div>
+
+<!-- Hamburger Drawer -->
+<div class="overlay" id="overlay"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <div class="drawer-avatar" id="drawerAvatar">?</div>
+    <div>
+      <div class="drawer-user-name" id="drawerName">Guest</div>
+      <div class="drawer-user-phone" id="drawerPhone">Not signed in</div>
+    </div>
+  </div>
+
+  <div class="drawer-nav">
+    <div class="drawer-section-label">Play</div>
+    <a class="drawer-link" href="crash.html"><span class="di">🚀</span><span class="dt">Crash Games</span><span class="chev">›</span></a>
+    <a class="drawer-link" href="casino.html"><span class="di">🎰</span><span class="dt">Casino</span><span class="chev">›</span></a>
+    <a class="drawer-link" href="sports.html"><span class="di">⚽</span><span class="dt">Sports</span><span class="chev">›</span></a>
+
+    <div class="drawer-section-label">Account</div>
+    <a class="drawer-link" href="wallet.html"><span class="di">💰</span><span class="dt">Wallet</span><span class="chev">›</span></a>
+    <a class="drawer-link" href="rewards.html"><span class="di">🎁</span><span class="dt">Rewards</span><span class="chev">›</span></a>
+    <a class="drawer-link" href="freebets.html"><span class="di">🎟️</span><span class="dt">Free Bets</span><span class="chev">›</span></a>
+
+    <div class="drawer-section-label">Settings</div>
+    <a class="drawer-link" href="account.html"><span class="di">👤</span><span class="dt">Account</span><span class="chev">›</span></a>
+    <div class="drawer-sub">
+      <a class="drawer-link" href="self-exclusion.html"><span class="di">🛡️</span><span class="dt">Self-Exclusion</span><span class="chev">›</span></a>
+    </div>
+    <a class="drawer-link" href="support.html"><span class="di">💬</span><span class="dt">Support</span><span class="chev">›</span></a>
+
+    <div class="drawer-section-label">Appearance</div>
+    <div class="theme-row">
+      <span style="font-size:14px; font-weight:600; display:flex; align-items:center; gap:14px;"><span class="di" style="display:inline-block;">🌓</span>Dark theme</span>
+      <div class="theme-toggle on" id="themeToggle"></div>
+    </div>
+  </div>
+
+  <a class="drawer-link danger" id="logoutBtn"><span class="di">🚪</span><span class="dt">Log Out</span></a>
+
+  <div class="drawer-footer">Betawin · Play responsibly · 18+</div>
+</div>
+
+<script>
+  const API_BASE = ""; // same-origin
+
+  function getToken(){
+    return localStorage.getItem("betawin_token");
+  }
+
+  function initials(name){
+    if(!name) return "?";
+    return name.split(" ").map(w => w[0]).slice(0,2).join("").toUpperCase();
+  }
+
+  /* ---------- Drawer open/close ---------- */
+  const drawer = document.getElementById("drawer");
+  const overlay = document.getElementById("overlay");
+
+  function openDrawer(){
+    drawer.classList.add("open");
+    overlay.classList.add("open");
+  }
+  function closeDrawer(){
+    drawer.classList.remove("open");
+    overlay.classList.remove("open");
+  }
+
+  document.getElementById("hamburgerBtn").addEventListener("click", openDrawer);
+  overlay.addEventListener("click", closeDrawer);
+
+  /* ---------- Theme toggle (visual only, no persistence per policy) ---------- */
+  document.getElementById("themeToggle").addEventListener("click", function(){
+    this.classList.toggle("on");
+  });
+
+  /* ---------- Logout ---------- */
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    localStorage.removeItem("betawin_token");
+    window.location.href = "login.html";
+  });
+
+  /* ---------- Load dashboard data ---------- */
+  async function loadDashboard(){
+    const token = getToken();
+
+    if(!token){
+      window.location.href = "login.html";
+      return;
+    }
+
+    try{
+      const res = await fetch(`${API_BASE}/api/dashboard`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const json = await res.json();
+
+      if(!json.success){
+        if(res.status === 401){
+          localStorage.removeItem("betawin_token");
+          window.location.href = "login.html";
+          return;
+        }
+        document.getElementById("greetingSub").textContent = "Couldn't load your account";
+        return;
+      }
+
+      const user = json.dashboard.user;
+      const firstName = user.name.split(" ")[0];
+
+      document.getElementById("greetingName").textContent = `Hi, ${firstName}`;
+      document.getElementById("greetingSub").textContent = user.phone;
+      document.getElementById("avatarInitial").textContent = initials(user.name);
+      document.getElementById("balanceValue").textContent =
+        Number(json.dashboard.balance).toLocaleString(undefined, { minimumFractionDigits: 2 });
+
+      document.getElementById("drawerName").textContent = user.name;
+      document.getElementById("drawerPhone").textContent = user.phone;
+      document.getElementById("drawerAvatar").textContent = initials(user.name);
+    }catch(err){
+      console.error("Dashboard load failed:", err);
+      document.getElementById("greetingSub").textContent = "Couldn't load your account";
+    }
+  }
+
+  /* ---------- Fixtures preview ---------- */
+  async function loadFixturesPreview(){
+    const root = document.getElementById("fixturesPreview");
+    const today = new Date().toISOString().slice(0,10);
+
+    try{
+      const res = await fetch(`${API_BASE}/api/sports/fixtures?date=${today}`);
+      const json = await res.json();
+
+      if(!json.success || !json.data?.response?.length){
+        root.innerHTML = `<div class="empty-mini">No fixtures scheduled today</div>`;
+        return;
+      }
+
+      const fixtures = json.data.response.slice(0, 3);
+      root.innerHTML = "";
+
+      fixtures.forEach(f => {
+        const home = f.teams?.home?.name || "TBD";
+        const away = f.teams?.away?.name || "TBD";
+        const kickoff = f.fixture?.date
+          ? new Date(f.fixture.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+          : "--:--";
+        const league = f.league?.name || "";
+
+        const card = document.createElement("div");
+        card.className = "preview-card";
+        card.innerHTML = `
+          <div class="preview-top">
+            <span class="preview-kickoff">${kickoff}</span>
+            <span class="preview-league">${league}</span>
+          </div>
+          <div class="preview-teams">
+            <div class="preview-team">${home}</div>
+            <div class="preview-vs">vs</div>
+            <div class="preview-team away">${away}</div>
+          </div>
+        `;
+        root.appendChild(card);
+      });
+    }catch(err){
+      console.error("Fixtures preview failed:", err);
+      root.innerHTML = `<div class="empty-mini">Couldn't load fixtures</div>`;
+    }
+  }
+
+  loadDashboard();
+  loadFixturesPreview();
+</script>
+
+</body>
+  </html>
+      
