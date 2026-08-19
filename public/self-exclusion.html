@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Self-Exclusion</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #080c12;
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 18px 20px;
+      background: #0d131b;
+      border-bottom: 1px solid #202b36;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    header a {
+      color: #b4ff39;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    header h1 {
+      font-size: 21px;
+    }
+
+    .container {
+      max-width: 650px;
+      margin: auto;
+      padding: 22px;
+    }
+
+    .warning {
+      background: #241b0b;
+      border: 1px solid #5b461b;
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 20px;
+    }
+
+    .warning h2 {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .warning p {
+      color: #c9c1ae;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .card {
+      background: #111821;
+      border: 1px solid #202c38;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .card h2 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      color: #9da8b4;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin: 14px 0 7px;
+      font-size: 14px;
+      color: #dce3e9;
+    }
+
+    select,
+    textarea {
+      width: 100%;
+      background: #0a1017;
+      border: 1px solid #2a3744;
+      border-radius: 10px;
+      color: white;
+      padding: 13px;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .check {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin: 18px 0;
+      color: #aab4bf;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .check input {
+      margin-top: 3px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 11px;
+      background: #b4ff39;
+      color: #071000;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+
+    .success {
+      display: none;
+      background: #10230d;
+      border: 1px solid #31551e;
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 15px;
+      color: #c9f99e;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .help {
+      text-align: center;
+      color: #7f8a96;
+      font-size: 12px;
+      margin-top: 20px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <a href="dashboard.html">← Dashboard</a>
+  <h1>Self-Exclusion</h1>
+</header>
+
+<main class="container">
+
+  <section class="warning">
+    <h2>🛡️ Take a break</h2>
+    <p>
+      Self-exclusion is a protective feature that can restrict access to
+      your account. Choose the option that best matches the break you want.
+    </p>
+  </section>
+
+  <section class="card">
+
+    <h2>Request Self-Exclusion</h2>
+
+    <p>
+      Once submitted, your request should be reviewed and applied by the
+      site's backend according to its responsible-play policy.
+    </p>
+
+    <label for="period">Restriction period</label>
+
+    <select id="period">
+      <option value="">Select a period</option>
+      <option value="24h">24 hours</option>
+      <option value="7d">7 days</option>
+      <option value="30d">30 days</option>
+      <option value="90d">90 days</option>
+      <option value="permanent">Permanent closure</option>
+    </select>
+
+    <label for="reason">Optional reason</label>
+
+    <textarea
+      id="reason"
+      placeholder="You can briefly explain your request..."
+    ></textarea>
+
+    <label class="check">
+      <input type="checkbox" id="confirm">
+      <span>
+        I understand that submitting this request may restrict or close
+        my account according to the selected option.
+      </span>
+    </label>
+
+    <button id="submitBtn" onclick="submitRequest()" disabled>
+      Submit Self-Exclusion Request
+    </button>
+
+    <div class="success" id="success">
+      <strong>Request submitted.</strong><br>
+      Your self-exclusion request has been recorded on this demo page.
+      Connect this form to your backend to apply the restriction to the
+      user's account.
+    </div>
+
+  </section>
+
+  <p class="help">
+    If you need immediate help or feel unable to control your gambling,
+    consider talking to a trusted adult or a qualified support professional.
+  </p>
+
+</main>
+
+<script>
+  const period = document.getElementById("period");
+  const confirmBox = document.getElementById("confirm");
+  const submitBtn = document.getElementById("submitBtn");
+  const success = document.getElementById("success");
+
+  function validate() {
+    submitBtn.disabled = !period.value || !confirmBox.checked;
+  }
+
+  period.addEventListener("change", validate);
+  confirmBox.addEventListener("change", validate);
+
+  function submitRequest() {
+    if (!period.value || !confirmBox.checked) return;
+
+    const request = {
+      period: period.value,
+      reason: document.getElementById("reason").value,
+      createdAt: new Date().toISOString()
+    };
+
+    // Demo storage only.
+    localStorage.setItem(
+      "selfExclusionRequest",
+      JSON.stringify(request)
+    );
+
+    success.style.display = "block";
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Request Submitted";
+
+    period.disabled = true;
+    confirmBox.disabled = true;
+    document.getElementById("reason").disabled = true;
+  }
+</script>
+
+</body>
+</html>
