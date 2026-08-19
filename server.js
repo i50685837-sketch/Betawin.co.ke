@@ -805,4 +805,127 @@ app.post("/api/support/message", async (req, res) => {
       approved support/AI service.
     */
 
-    const text = message.trim().toLowerCase(
+    
+    const text = message.trim().toLowerCase();
+
+    let reply =
+      "Thanks for contacting support. Please describe the issue you're experiencing.";
+
+    if (text.includes("login")) {
+      reply =
+        "For login problems, check that your phone number and password match the account you registered.";
+    } else if (text.includes("password")) {
+      reply =
+        "If you forgot your password, use the password-reset flow provided by the application.";
+    } else if (text.includes("sports")) {
+      reply =
+        "The sports section provides fixtures, live scores, teams and standings.";
+    } else if (text.includes("account")) {
+      reply =
+        "Please provide a clear description of the account problem so support can assist you.";
+    }
+
+    res.json({
+      success: true,
+      reply
+    });
+  } catch (error) {
+    console.error("Support error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Support service unavailable"
+    });
+  }
+});
+
+/* =========================================================
+   DEMO USER DASHBOARD
+========================================================= */
+
+app.get("/api/dashboard", authenticateToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select(
+      "-password"
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    res.json({
+      success: true,
+      dashboard: {
+        user: {
+          id: user._id,
+          name: user.name,
+          phone: user.phone
+        },
+
+        /*
+          Demo-only values.
+          No real-money wallet functionality.
+        */
+        balance: 0,
+        currency: "KES"
+      }
+    });
+  } catch (error) {
+    console.error("Dashboard error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Unable to load dashboard"
+    });
+  }
+});
+
+/* =========================================================
+   ROOT PAGE
+========================================================= */
+
+app.get("/", (req, res) => {
+  res.sendFile(
+    path.join(__dirname, "public", "index.html")
+  );
+});
+
+/* =========================================================
+   404 HANDLER
+========================================================= */
+
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "Route not found",
+    path: req.originalUrl
+  });
+});
+
+/* =========================================================
+   GLOBAL ERROR HANDLER
+========================================================= */
+
+app.use((err, req, res, next) => {
+  console.error("Unhandled error:", err);
+
+  res.status(500).json({
+    success: false,
+    message: "Internal server error"
+  });
+});
+
+/* =========================================================
+   START SERVER
+========================================================= */
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log("======================================");
+  console.log("🚀 Server started successfully");
+  console.log(`🌐 Port: ${PORT}`);
+  console.log(`📁 Public: ${path.join(__dirname, "public")}`);
+  console.log("======================================");
+});
