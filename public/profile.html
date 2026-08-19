@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile — Betawin</title>
+<style>
+  :root{
+    --navy-900:#0a0e17; --navy-800:#101624; --navy-700:#161d2f; --navy-600:#1e2740;
+    --line:#232c42; --lime:#c6ff3d; --lime-dim:#8fbf2c; --red:#ff4d4d;
+    --text:#eef1f8; --text-dim:#8891a7; --text-faint:#5a6379; --radius:14px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--navy-900); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; min-height:100vh; padding-bottom:90px;}
+  .topbar{position:sticky; top:0; z-index:20; background:rgba(10,14,23,0.92); backdrop-filter:blur(10px); border-bottom:1px solid var(--line); padding:14px 16px;}
+  .topbar-row{display:flex; align-items:center; gap:12px; max-width:720px; margin:0 auto;}
+  .back-btn{width:34px; height:34px; background:var(--navy-800); border:1px solid var(--line); border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:16px; color:var(--text); cursor:pointer; text-decoration:none;}
+  .page-title{font-size:17px; font-weight:800;}
+  main{max-width:720px; margin:0 auto; padding:16px;}
+
+  .hero{text-align:center; padding:24px 0 8px;}
+  .hero-avatar{
+    width:76px; height:76px; border-radius:50%; margin:0 auto 12px;
+    background:var(--navy-700); border:2px solid var(--lime-dim);
+    display:flex; align-items:center; justify-content:center;
+    font-size:26px; font-weight:800; color:var(--lime);
+  }
+  .hero-name{font-size:19px; font-weight:800;}
+  .hero-phone{font-size:13px; color:var(--text-dim); margin-top:2px;}
+  .hero-badge{
+    display:inline-block; margin-top:10px;
+    font-size:11px; font-weight:700; color:var(--lime);
+    background:rgba(198,255,61,0.1);
+    padding:4px 10px; border-radius:999px;
+  }
+
+  .stats-row{
+    display:grid; grid-template-columns:1fr 1fr; gap:10px;
+    margin:20px 0;
+  }
+  .stat-card{
+    background:var(--navy-800); border:1px solid var(--line); border-radius:var(--radius);
+    padding:14px; text-align:center;
+  }
+  .stat-value{font-size:18px; font-weight:800; color:var(--lime);}
+  .stat-label{font-size:11px; color:var(--text-faint); margin-top:4px; text-transform:uppercase; letter-spacing:0.04em;}
+
+  .section-label{
+    font-size:12px; color:var(--text-dim); font-weight:700;
+    text-transform:uppercase; letter-spacing:0.06em;
+    padding:6px 4px 10px;
+  }
+  .info-group{
+    background:var(--navy-800); border:1px solid var(--line); border-radius:var(--radius);
+    margin-bottom:22px; overflow:hidden;
+  }
+  .info-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:14px 16px; border-bottom:1px solid var(--line);
+  }
+  .info-row:last-child{border-bottom:none;}
+  .info-label{font-size:13px; color:var(--text-dim);}
+  .info-value{font-size:13px; font-weight:600; text-align:right;}
+  .verify-pill{
+    font-size:10px; font-weight:800; padding:3px 8px; border-radius:6px;
+  }
+  .verify-pill.yes{color:var(--lime); background:rgba(198,255,61,0.1);}
+  .verify-pill.no{color:var(--red); background:rgba(255,77,77,0.1);}
+
+  .settings-group{
+    background:var(--navy-800); border:1px solid var(--line); border-radius:var(--radius);
+    margin-bottom:22px; overflow:hidden;
+  }
+  .settings-row{
+    display:flex; align-items:center; gap:14px;
+    padding:14px 16px; text-decoration:none; color:var(--text);
+    cursor:pointer; border-bottom:1px solid var(--line);
+  }
+  .settings-row:last-child{border-bottom:none;}
+  .row-icon{font-size:18px; width:24px; text-align:center; flex-shrink:0;}
+  .row-title{font-size:14px; font-weight:600; flex:1;}
+  .row-chev{font-size:14px; color:var(--text-faint);}
+  .settings-row.danger .row-icon, .settings-row.danger .row-title{color:var(--red);}
+
+  .bottom-nav{
+    position:fixed; bottom:0; left:0; right:0; z-index:20;
+    background:rgba(16,22,36,0.95); backdrop-filter:blur(10px);
+    border-top:1px solid var(--line); display:flex;
+    padding:8px 0 calc(8px + env(safe-area-inset-bottom));
+  }
+  .nav-item{flex:1; text-align:center; color:var(--text-faint); font-size:10px; font-weight:600; text-decoration:none; cursor:pointer;}
+  .nav-item .ni{font-size:19px; display:block; margin-bottom:3px;}
+  .nav-item.active{color:var(--lime);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-row">
+    <a class="back-btn" href="dashboard.html">←</a>
+    <div class="page-title">Profile</div>
+  </div>
+</div>
+
+<main>
+  <div class="hero">
+    <div class="hero-avatar" id="heroAvatar">?</div>
+    <div class="hero-name" id="heroName">Loading…</div>
+    <div class="hero-phone" id="heroPhone"></div>
+    <div class="hero-badge">Standard Member</div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-value" id="statBalance">KES 0</div>
+      <div class="stat-label">Balance</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" id="statMember">—</div>
+      <div class="stat-label">Member since</div>
+    </div>
+  </div>
+
+  <div class="section-label">Account details</div>
+  <div class="info-group">
+    <div class="info-row"><span class="info-label">Full name</span><span class="info-value" id="infoName">—</span></div>
+    <div class="info-row"><span class="info-label">Phone number</span><span class="info-value" id="infoPhone">—</span></div>
+    <div class="info-row"><span class="info-label">ID verification</span><span class="verify-pill no">Not verified</span></div>
+  </div>
+
+  <div class="section-label">Manage</div>
+  <div class="settings-group">
+    <a class="settings-row" href="account.html"><span class="row-icon">✏️</span><span class="row-title">Edit profile</span><span class="row-chev">›</span></a>
+    <a class="settings-row" href="wallet.html"><span class="row-icon">💰</span><span class="row-title">Wallet</span><span class="row-chev">›</span></a>
+    <a class="settings-row" href="rewards.html"><span class="row-icon">🎁</span><span class="row-title">Rewards</span><span class="row-chev">›</span></a>
+    <a class="settings-row" href="settings.html"><span class="row-icon">⚙️</span><span class="row-title">Settings</span><span class="row-chev">›</span></a>
+    <a class="settings-row" href="support.html"><span class="row-icon">💬</span><span class="row-title">Support</span><span class="row-chev">›</span></a>
+  </div>
+
+  <div class="settings-group">
+    <div class="settings-row danger" id="logoutBtn">
+      <span class="row-icon">🚪</span><span class="row-title">Log out</span>
+    </div>
+  </div>
+</main>
+
+<div class="bottom-nav">
+  <a class="nav-item" href="dashboard.html"><span class="ni">🏠</span>Home</a>
+  <a class="nav-item" href="sports.html"><span class="ni">⚽</span>Sports</a>
+  <a class="nav-item" href="live.html"><span class="ni">📡</span>Live</a>
+  <a class="nav-item" href="betslip.html"><span class="ni">🧾</span>Betslip</a>
+  <a class="nav-item active" href="profile.html"><span class="ni">👤</span>Profile</a>
+</div>
+
+<script>
+  const API_BASE = "";
+
+  function getToken(){ return localStorage.getItem("betawin_token"); }
+  function initials(name){
+    if(!name) return "?";
+    return name.split(" ").map(w => w[0]).slice(0,2).join("").toUpperCase();
+  }
+
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    localStorage.removeItem("betawin_token");
+    window.location.href = "login.html";
+  });
+
+  async function loadProfile(){
+    const token = getToken();
+    if(!token){ window.location.href = "login.html"; return; }
+
+    try{
+      const [meRes, dashRes] = await Promise.all([
+        fetch(`${API_BASE}/api/auth/me`, { headers: { Authorization: `Bearer ${token}` } }),
+        fetch(`${API_BASE}/api/dashboard`, { headers: { Authorization: `Bearer ${token}` } })
+      ]);
+      const meJson = await meRes.json();
+      const dashJson = await dashRes.json();
+
+      if(!meJson.success){
+        if(meRes.status === 401){
+          localStorage.removeItem("betawin_token");
+          window.location.href = "login.html";
+          return;
+        }
+        document.getElementById("heroName").textContent = "Couldn't load profile";
+        return;
+      }
+
+      const user = meJson.user;
+      document.getElementById("heroName").textContent = user.name;
+      document.getElementById("heroPhone").textContent = user.phone;
+      document.getElementById("heroAvatar").textContent = initials(user.name);
+      document.getElementById("infoName").textContent = user.name;
+      document.getElementById("infoPhone").textContent = user.phone;
+
+      if(user.createdAt){
+        const d = new Date(user.createdAt);
+        document.getElementById("statMember").textContent = d.toLocaleDateString(undefined, { month: "short", year: "numeric" });
+      }
+
+      if(dashJson.success){
+        const bal = Number(dashJson.dashboard.balance).toLocaleString(undefined, { minimumFractionDigits: 2 });
+        document.getElementById("statBalance").textContent = `KES ${bal}`;
+      }
+    }catch(err){
+      console.error("Profile load failed:", err);
+      document.getElementById("heroName").textContent = "Couldn't load profile";
+    }
+  }
+
+  loadProfile();
+</script>
+</body>
+</html>
