@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rugby — Betawin</title>
+<style>
+  :root{
+    --navy-900:#0a0e17; --navy-800:#101624; --navy-700:#161d2f; --navy-600:#1e2740;
+    --line:#232c42; --lime:#c6ff3d; --lime-dim:#8fbf2c;
+    --text:#eef1f8; --text-dim:#8891a7; --text-faint:#5a6379; --radius:14px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--navy-900); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; min-height:100vh; padding-bottom:40px;}
+  .topbar{position:sticky; top:0; z-index:20; background:rgba(10,14,23,0.92); backdrop-filter:blur(10px); border-bottom:1px solid var(--line); padding:14px 16px;}
+  .topbar-row{display:flex; align-items:center; gap:12px; max-width:720px; margin:0 auto;}
+  .back-btn{width:34px; height:34px; background:var(--navy-800); border:1px solid var(--line); border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:16px; color:var(--text); cursor:pointer; text-decoration:none;}
+  .page-title{font-size:17px; font-weight:800; display:flex; align-items:center; gap:8px;}
+  main{max-width:720px; margin:0 auto; padding:16px;}
+  .status-row{display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-faint); padding:4px 2px 10px;}
+  .fixture-card{background:var(--navy-800); border:1px solid var(--line); border-radius:var(--radius); padding:14px 16px; margin-bottom:10px;}
+  .fixture-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;}
+  .kickoff{font-size:12px; font-weight:700; color:var(--lime); background:rgba(198,255,61,0.08); padding:3px 9px; border-radius:6px;}
+  .round{font-size:11px; color:var(--text-faint);}
+  .fixture-teams{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+  .team{display:flex; align-items:center; gap:10px; flex:1; min-width:0;}
+  .team.away{flex-direction:row-reverse; text-align:right;}
+  .crest{width:28px; height:28px; border-radius:7px; background:var(--navy-600); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:var(--text-dim); flex-shrink:0; border:1px solid var(--line);}
+  .team-name{font-size:14px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .vs{font-size:11px; color:var(--text-faint); font-weight:700; padding:0 6px; flex-shrink:0;}
+  .empty{text-align:center; padding:60px 20px; color:var(--text-faint);}
+  .empty-icon{font-size:32px; margin-bottom:10px;}
+  .empty-title{font-size:15px; font-weight:700; color:var(--text-dim); margin-bottom:4px;}
+  .empty-sub{font-size:13px; max-width:280px; margin:0 auto; line-height:1.5;}
+  .skeleton{background:var(--navy-800); border:1px solid var(--line); border-radius:var(--radius); padding:14px 16px; margin-bottom:10px; height:78px; position:relative; overflow:hidden;}
+  .skeleton::after{content:""; position:absolute; top:0; left:-100%; width:100%; height:100%; background:linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent); animation:shimmer 1.3s infinite;}
+  @keyframes shimmer{100%{left:100%;}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-row">
+    <a class="back-btn" href="dashboard.html">←</a>
+    <div class="page-title">🏉 Rugby</div>
+  </div>
+</div>
+
+<main>
+  <div class="status-row"><span id="statusText">Loading fixtures…</span></div>
+  <div id="fixturesRoot">
+    <div class="skeleton"></div><div class="skeleton"></div>
+  </div>
+</main>
+
+<script>
+  const API_BASE = "";
+
+  function crestInitials(name){
+    if(!name) return "?";
+    return name.split(" ").map(w => w[0]).slice(0,2).join("").toUpperCase();
+  }
+
+  function renderFixtures(fixtures){
+    const root = document.getElementById("fixturesRoot");
+    const statusText = document.getElementById("statusText");
+    if(!fixtures || fixtures.length === 0){
+      statusText.textContent = "No fixtures found";
+      root.innerHTML = `
+        <div class="empty">
+          <div class="empty-icon">🏉</div>
+          <div class="empty-title">Rugby coming soon</div>
+          <div class="empty-sub">We're setting up live rugby fixtures. Check back soon, or browse Football in the meantime.</div>
+        </div>`;
+      return;
+    }
+    statusText.textContent = `${fixtures.length} match${fixtures.length === 1 ? "" : "es"} scheduled`;
+    root.innerHTML = "";
+    fixtures.forEach(f => {
+      const home = f.teams?.home?.name || "TBD";
+      const away = f.teams?.away?.name || "TBD";
+      const kickoff = f.fixture?.date ? new Date(f.fixture.date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "--:--";
+      const round = f.league?.round || "";
+      const card = document.createElement("div");
+      card.className = "fixture-card";
+      card.innerHTML = `
+        <div class="fixture-top"><span class="kickoff">${kickoff}</span><span class="round">${round}</span></div>
+        <div class="fixture-teams">
+          <div class="team home"><div class="crest">${crestInitials(home)}</div><div class="team-name">${home}</div></div>
+          <div class="vs">VS</div>
+          <div class="team away"><div class="crest">${crestInitials(away)}</div><div class="team-name">${away}</div></div>
+        </div>`;
+      root.appendChild(card);
+    });
+  }
+
+  async function loadFixtures(){
+    const root = document.getElementById("fixturesRoot");
+    document.getElementById("statusText").textContent = "Loading fixtures…";
+    root.innerHTML = `<div class="skeleton"></div><div class="skeleton"></div>`;
+
+    try{
+      const res = await fetch(`${API_BASE}/api/sports/rugby/fixtures`);
+      const json = await res.json();
+
+      if(!json.success){
+        renderFixtures([]);
+        return;
+      }
+      renderFixtures(json.data?.response || []);
+    }catch(err){
+      console.error("Rugby fixtures failed:", err);
+      renderFixtures([]);
+    }
+  }
+
+  loadFixtures();
+</script>
+</body>
+</html>
