@@ -766,7 +766,7 @@ app.get(
 // SPA FALLBACK
 // =====================================================
 
-app.get("*", (req, res) => {
+app.get('/*splat', (req, res) => {
   res.sendFile(
     path.join(
       __dirname,
