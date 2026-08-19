@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log In — Betawin</title>
+<style>
+  :root{
+    --navy-900:#0a0e17;
+    --navy-800:#101624;
+    --navy-700:#161d2f;
+    --navy-600:#1e2740;
+    --line:#232c42;
+    --lime:#c6ff3d;
+    --lime-dim:#8fbf2c;
+    --red:#ff4d4d;
+    --text:#eef1f8;
+    --text-dim:#8891a7;
+    --text-faint:#5a6379;
+    --radius:14px;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  body{
+    background:var(--navy-900);
+    color:var(--text);
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+
+  .bg-glow{
+    position:fixed; top:-10%; right:-15%;
+    width:320px; height:320px; border-radius:50%;
+    background:radial-gradient(circle, rgba(198,255,61,0.08), transparent 70%);
+    pointer-events:none;
+  }
+
+  main{
+    flex:1;
+    max-width:420px; width:100%;
+    margin:0 auto;
+    padding:48px 24px 32px;
+    display:flex;
+    flex-direction:column;
+  }
+
+  .brand{
+    font-size:26px; font-weight:800; letter-spacing:-0.02em;
+    margin-bottom:6px;
+  }
+  .brand span{color:var(--lime);}
+
+  .headline{font-size:20px; font-weight:700; margin-top:28px;}
+  .subhead{font-size:13px; color:var(--text-dim); margin-top:6px; margin-bottom:28px;}
+
+  .field{margin-bottom:16px;}
+  .field-label{
+    font-size:12px; font-weight:600; color:var(--text-dim);
+    text-transform:uppercase; letter-spacing:0.05em;
+    margin-bottom:8px; display:block;
+  }
+  .input-wrap{position:relative;}
+  .input-icon{
+    position:absolute; left:14px; top:50%; transform:translateY(-50%);
+    font-size:15px; color:var(--text-faint);
+  }
+  input{
+    width:100%;
+    background:var(--navy-800);
+    border:1px solid var(--line);
+    border-radius:11px;
+    padding:14px 14px 14px 42px;
+    color:var(--text);
+    font-size:15px;
+    outline:none;
+    transition:border-color .15s ease;
+  }
+  input::placeholder{color:var(--text-faint);}
+  input:focus{border-color:var(--lime-dim);}
+  input.error{border-color:var(--red);}
+
+  .toggle-pw{
+    position:absolute; right:14px; top:50%; transform:translateY(-50%);
+    font-size:12px; font-weight:700; color:var(--text-dim);
+    cursor:pointer; background:none; border:none;
+  }
+
+  .field-error{
+    font-size:12px; color:var(--red); margin-top:6px; display:none;
+  }
+  .field-error.show{display:block;}
+
+  .row-between{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:26px;
+  }
+  .checkbox-row{
+    display:flex; align-items:center; gap:8px;
+    font-size:13px; color:var(--text-dim);
+  }
+  .checkbox-row input{width:16px; height:16px; padding:0; accent-color:var(--lime);}
+  .forgot-link{font-size:13px; color:var(--lime); font-weight:600; text-decoration:none;}
+
+  .btn-primary{
+    width:100%;
+    background:var(--lime); color:var(--navy-900);
+    border:none; border-radius:11px;
+    padding:15px; font-size:15px; font-weight:800;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .btn-primary:disabled{opacity:0.6; cursor:not-allowed;}
+
+  .spinner{
+    width:16px; height:16px; border-radius:50%;
+    border:2px solid rgba(10,14,23,0.3);
+    border-top-color:var(--navy-900);
+    animation:spin .6s linear infinite;
+    display:none;
+  }
+  .spinner.show{display:inline-block;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .alert{
+    background:rgba(255,77,77,0.08);
+    border:1px solid rgba(255,77,77,0.25);
+    color:var(--red);
+    border-radius:10px;
+    padding:12px 14px;
+    font-size:13px;
+    margin-bottom:18px;
+    display:none;
+  }
+  .alert.show{display:block;}
+
+  .divider{
+    display:flex; align-items:center; gap:12px;
+    margin:28px 0;
+    color:var(--text-faint); font-size:12px;
+  }
+  .divider::before, .divider::after{
+    content:""; flex:1; height:1px; background:var(--line);
+  }
+
+  .footer-note{
+    text-align:center; font-size:13px; color:var(--text-dim);
+    margin-top:auto; padding-top:24px;
+  }
+  .footer-note a{color:var(--lime); font-weight:700; text-decoration:none;}
+
+  .terms{
+    text-align:center; font-size:11px; color:var(--text-faint);
+    margin-top:20px; line-height:1.5;
+  }
+  .terms a{color:var(--text-dim);}
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<main>
+  <div class="brand">Bet<span>awin</span></div>
+
+  <div class="headline">Welcome back</div>
+  <div class="subhead">Log in to continue where you left off</div>
+
+  <div class="alert" id="formAlert"></div>
+
+  <form id="loginForm" novalidate>
+    <div class="field">
+      <label class="field-label" for="phone">Phone number</label>
+      <div class="input-wrap">
+        <span class="input-icon">📱</span>
+        <input type="tel" id="phone" placeholder="07XX XXX XXX" autocomplete="tel" inputmode="tel">
+      </div>
+      <div class="field-error" id="phoneError">Enter a valid phone number</div>
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="password">Password</label>
+      <div class="input-wrap">
+        <span class="input-icon">🔒</span>
+        <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password">
+        <button type="button" class="toggle-pw" id="togglePw">SHOW</button>
+      </div>
+      <div class="field-error" id="passwordError">Password is required</div>
+    </div>
+
+    <div class="row-between">
+      <label class="checkbox-row">
+        <input type="checkbox" id="remember">
+        Remember me
+      </label>
+      <a class="forgot-link" href="forgot-password.html">Forgot password?</a>
+    </div>
+
+    <button type="submit" class="btn-primary" id="submitBtn">
+      <span id="submitText">Log In</span>
+      <span class="spinner" id="submitSpinner"></span>
+    </button>
+  </form>
+
+  <div class="footer-note">
+    Don't have an account? <a href="register.html">Sign up</a>
+  </div>
+
+  <div class="terms">
+    By continuing you agree to our <a href="terms.html">Terms</a> and confirm you are 18+.
+  </div>
+</main>
+
+<!-- Other pages (dashboard.html, profile.html, etc.) should include auth.js
+     and use authFetch(path, options) instead of raw fetch() for any
+     Authorization-protected endpoint, so expired access tokens are
+     refreshed automatically instead of bouncing the user to login. -->
+<script>
+  const API_BASE = ""; // same-origin
+
+  const form = document.getElementById("loginForm");
+  const phoneInput = document.getElementById("phone");
+  const passwordInput = document.getElementById("password");
+  const phoneError = document.getElementById("phoneError");
+  const passwordError = document.getElementById("passwordError");
+  const formAlert = document.getElementById("formAlert");
+  const submitBtn = document.getElementById("submitBtn");
+  const submitText = document.getElementById("submitText");
+  const submitSpinner = document.getElementById("submitSpinner");
+
+  document.getElementById("togglePw").addEventListener("click", function(){
+    const isPw = passwordInput.type === "password";
+    passwordInput.type = isPw ? "text" : "password";
+    this.textContent = isPw ? "HIDE" : "SHOW";
+  });
+
+  function setLoading(loading){
+    submitBtn.disabled = loading;
+    submitText.textContent = loading ? "Logging in…" : "Log In";
+    submitSpinner.classList.toggle("show", loading);
+  }
+
+  function showAlert(msg){
+    formAlert.textContent = msg;
+    formAlert.classList.add("show");
+  }
+  function hideAlert(){
+    formAlert.classList.remove("show");
+  }
+
+  function validate(){
+    let valid = true;
+
+    phoneInput.classList.remove("error");
+    phoneError.classList.remove("show");
+    passwordInput.classList.remove("error");
+    passwordError.classList.remove("show");
+
+    const phone = phoneInput.value.trim();
+    const password = passwordInput.value;
+
+    if(!phone || phone.length < 9){
+      phoneInput.classList.add("error");
+      phoneError.classList.add("show");
+      valid = false;
+    }
+
+    if(!password){
+      passwordInput.classList.add("error");
+      passwordError.classList.add("show");
+      valid = false;
+    }
+
+    return valid;
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    hideAlert();
+
+    if(!validate()) return;
+
+    setLoading(true);
+
+    try{
+      const res = await fetch(`${API_BASE}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          phone: phoneInput.value.trim(),
+          password: passwordInput.value
+        })
+      });
+
+      const json = await res.json();
+
+      if(!json.success){
+        if(res.status === 423){
+          showAlert(json.message); // account locked, message includes wait time
+        } else {
+          showAlert(json.message || "Login failed. Please try again.");
+        }
+        setLoading(false);
+        return;
+      }
+
+      // Access token: short-lived (15 min), sent on every request.
+      // Refresh token: longer-lived (7 days), used only to silently
+      // obtain a new access token via /api/auth/refresh.
+      localStorage.setItem("betawin_token", json.accessToken);
+      localStorage.setItem("betawin_refresh_token", json.refreshToken);
+      window.location.href = "dashboard.html";
+    }catch(err){
+      console.error("Login failed:", err);
+      showAlert("Couldn't connect to the server. Check your connection and try again.");
+      setLoading(false);
+    }
+  });
+
+  // If already logged in, skip straight to dashboard
+  if(localStorage.getItem("betawin_token")){
+    window.location.href = "dashboard.html";
+  }
+</script>
+
+</body>
+</html>
