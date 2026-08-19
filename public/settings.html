@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings — Betawin</title>
+<style>
+  :root{
+    --navy-900:#0a0e17;
+    --navy-800:#101624;
+    --navy-700:#161d2f;
+    --navy-600:#1e2740;
+    --line:#232c42;
+    --lime:#c6ff3d;
+    --lime-dim:#8fbf2c;
+    --red:#ff4d4d;
+    --text:#eef1f8;
+    --text-dim:#8891a7;
+    --text-faint:#5a6379;
+    --radius:14px;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  body{
+    background:var(--navy-900);
+    color:var(--text);
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    min-height:100vh;
+    padding-bottom:40px;
+  }
+
+  .topbar{
+    position:sticky; top:0; z-index:20;
+    background:rgba(10,14,23,0.92);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+    padding:14px 16px;
+  }
+  .topbar-row{
+    display:flex; align-items:center; gap:12px;
+    max-width:720px; margin:0 auto;
+  }
+  .back-btn{
+    width:34px; height:34px;
+    background:var(--navy-800);
+    border:1px solid var(--line);
+    border-radius:9px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:16px; color:var(--text);
+    cursor:pointer; text-decoration:none;
+  }
+  .page-title{font-size:17px; font-weight:800;}
+
+  main{max-width:720px; margin:0 auto; padding:16px;}
+
+  /* ---------- Profile summary ---------- */
+  .profile-card{
+    display:flex; align-items:center; gap:14px;
+    background:var(--navy-800);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:16px;
+    margin-bottom:22px;
+  }
+  .profile-avatar{
+    width:48px; height:48px; border-radius:50%;
+    background:var(--navy-600);
+    border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-size:17px; font-weight:800; color:var(--lime);
+    flex-shrink:0;
+  }
+  .profile-name{font-size:15px; font-weight:700;}
+  .profile-phone{font-size:12px; color:var(--text-dim); margin-top:2px;}
+
+  /* ---------- Sections ---------- */
+  .section-label{
+    font-size:12px; color:var(--text-dim); font-weight:700;
+    text-transform:uppercase; letter-spacing:0.06em;
+    padding:6px 4px 10px;
+  }
+  .settings-group{
+    background:var(--navy-800);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    margin-bottom:22px;
+    overflow:hidden;
+  }
+  .settings-row{
+    display:flex; align-items:center; gap:14px;
+    padding:14px 16px;
+    text-decoration:none;
+    color:var(--text);
+    cursor:pointer;
+    border-bottom:1px solid var(--line);
+  }
+  .settings-row:last-child{border-bottom:none;}
+  .settings-row:active{background:var(--navy-700);}
+  .row-icon{
+    font-size:18px; width:24px; text-align:center; flex-shrink:0;
+  }
+  .row-text{flex:1; min-width:0;}
+  .row-title{font-size:14px; font-weight:600;}
+  .row-sub{font-size:11px; color:var(--text-faint); margin-top:2px;}
+  .row-chev{font-size:14px; color:var(--text-faint); flex-shrink:0;}
+  .row-badge{
+    font-size:10px; font-weight:800; color:var(--lime);
+    background:rgba(198,255,61,0.1);
+    padding:3px 8px; border-radius:6px;
+    flex-shrink:0;
+  }
+
+  .settings-row.danger .row-icon,
+  .settings-row.danger .row-title{color:var(--red);}
+
+  /* ---------- Theme row ---------- */
+  .theme-row{
+    display:flex; align-items:center; gap:14px;
+    padding:14px 16px;
+  }
+  .theme-toggle{
+    width:44px; height:24px; border-radius:999px;
+    background:var(--navy-600);
+    border:1px solid var(--line);
+    position:relative;
+    cursor:pointer;
+    flex-shrink:0;
+    margin-left:auto;
+  }
+  .theme-toggle::after{
+    content:"";
+    position:absolute; top:2px; left:2px;
+    width:18px; height:18px; border-radius:50%;
+    background:var(--lime);
+    transition:left .2s ease;
+  }
+  .theme-toggle.on::after{left:22px;}
+
+  .app-version{
+    text-align:center; font-size:11px; color:var(--text-faint);
+    padding-top:8px;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-row">
+    <a class="back-btn" href="dashboard.html">←</a>
+    <div class="page-title">Settings</div>
+  </div>
+</div>
+
+<main>
+  <div class="profile-card">
+    <div class="profile-avatar" id="profileAvatar">?</div>
+    <div>
+      <div class="profile-name" id="profileName">Loading…</div>
+      <div class="profile-phone" id="profilePhone"></div>
+    </div>
+  </div>
+
+  <div class="section-label">Account</div>
+  <div class="settings-group">
+    <a class="settings-row" href="account.html">
+      <span class="row-icon">👤</span>
+      <div class="row-text">
+        <div class="row-title">Account details</div>
+        <div class="row-sub">Name, phone, ID verification</div>
+      </div>
+      <span class="row-chev">›</span>
+    </a>
+    <a class="settings-row" href="change-password.html">
+      <span class="row-icon">🔑</span>
+      <div class="row-text">
+        <div class="row-title">Change password</div>
+      </div>
+      <span class="row-chev">›</span>
+    </a>
+    <a class="settings-row" href="wallet.html">
+      <span class="row-icon">💰</span>
+      <div class="row-text">
+        <div class="row-title">Wallet</div>
+        <div class="row-sub">Deposit, withdraw, transaction history</div>
+      </div>
+      <span class="row-chev">›</span>
+    </a>
+  </div>
+
+  <div class="section-label">Responsible gambling</div>
+  <div class="settings-group">
+    <a class="settings-row" href="self-exclusion.html">
+      <span class="row-icon">🛡️</span>
+      <div class="row-text">
+        <div class="row-title">Self-exclusion</div>
+        <div class="row-sub">Take a break or set limits on your account</div>
+      </div>
+      <span class="row-chev">›</span>
+    </a>
+    <a class="settings-row" href="deposit-limits.html">
+      <span class="row-icon">📉</span>
+      <div class="row-text">
+        <div class="row-title">Deposit limits</div>
+      </div>
+      <span class="row-chev">›</span>
+    </a>
+  </div>
+
+  <div class="section-label">Preferences</div>
+  <div class="settings-group">
+    <div class="theme-row">
+      <span class="row-icon">🌓</span>
+      <div class="row-text">
+        <div class="row-title">Dark theme</div>
+      </div>
+      <div class="theme-toggle on" id="themeToggle"></div>
+    </div>
+    <a class="settings-row" href="notifications.html">
+      <span class="row-icon">🔔</span>
+      <div class="row-text">
+        <div class="row-title">Notifications</div>
+      </div>
+      <span class="row-chev">›</span>
+    </a>
+  </div>
+
+  <div class="section-label">Support</div>
+  <div class="settings-group">
+    <a class="settings-row" href="support.html">
+      <span class="row-icon">💬</span>
+      <div class="row-text">
+        <div class="row-title">Help & support</div>
+      </div>
+      <span class="row-chev">›</span>
+    </a>
+    <a class="settings-row" href="terms.html">
+      <span class="row-icon">📄</span>
+      <div class="row-text">
+        <div class="row-title">Terms & policies</div>
+      </div>
+      <span class="row-chev">›</span>
+    </a>
+    <a class="settings-row" href="about.html">
+      <span class="row-icon">ℹ️</span>
+      <div class="row-text">
+        <div class="row-title">About Betawin</div>
+      </div>
+      <span class="row-chev">›</span>
+    </a>
+  </div>
+
+  <div class="settings-group">
+    <div class="settings-row danger" id="logoutBtn">
+      <span class="row-icon">🚪</span>
+      <div class="row-text">
+        <div class="row-title">Log out</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-version">Betawin v1.0.0 · Play responsibly · 18+</div>
+</main>
+
+<script>
+  const API_BASE = ""; // same-origin
+
+  function getToken(){
+    return localStorage.getItem("betawin_token");
+  }
+
+  function initials(name){
+    if(!name) return "?";
+    return name.split(" ").map(w => w[0]).slice(0,2).join("").toUpperCase();
+  }
+
+  document.getElementById("themeToggle").addEventListener("click", function(){
+    this.classList.toggle("on");
+  });
+
+  document.getElementById("logoutBtn").addEventListener("click", () => {
+    localStorage.removeItem("betawin_token");
+    window.location.href = "login.html";
+  });
+
+  async function loadProfile(){
+    const token = getToken();
+
+    if(!token){
+      window.location.href = "login.html";
+      return;
+    }
+
+    try{
+      const res = await fetch(`${API_BASE}/api/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const json = await res.json();
+
+      if(!json.success){
+        if(res.status === 401){
+          localStorage.removeItem("betawin_token");
+          window.location.href = "login.html";
+          return;
+        }
+        document.getElementById("profileName").textContent = "Couldn't load profile";
+        return;
+      }
+
+      const user = json.user;
+      document.getElementById("profileName").textContent = user.name;
+      document.getElementById("profilePhone").textContent = user.phone;
+      document.getElementById("profileAvatar").textContent = initials(user.name);
+    }catch(err){
+      console.error("Profile load failed:", err);
+      document.getElementById("profileName").textContent = "Couldn't load profile";
+    }
+  }
+
+  loadProfile();
+</script>
+
+</body>
+  </html>
+  
